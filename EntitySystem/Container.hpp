@@ -80,7 +80,7 @@ namespace Pocket {
             }
         }
         
-        void Clear() {
+        void Clear() override {
             entries.clear();
             freeEntries.clear();
             count = 0;
