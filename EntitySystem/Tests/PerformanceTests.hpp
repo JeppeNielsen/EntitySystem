@@ -6,9 +6,10 @@
 //  Copyright © 2016 Jeppe Nielsen. All rights reserved.
 //
 
-#ifndef PerformanceTests_hpp
-#define PerformanceTests_hpp
+#pragma once
+#include "TimeTest.hpp"
 
-#include <stdio.h>
-
-#endif /* PerformanceTests_hpp */
+class PerformanceTests : public TimeTest {
+protected:
+    void RunTests();
+};

@@ -9,6 +9,8 @@
 #include "UnitTest.hpp"
 #include <iostream>
 
+UnitTest::~UnitTest() {}
+
 void UnitTest::Run() {
     tests.clear();
     RunTests();
@@ -19,6 +21,6 @@ void UnitTest::Run() {
     }
 }
 
-void UnitTest::AddTest(const std::string &name, std::function<bool ()> test) {
+void UnitTest::AddTest(const std::string &name, TestMethod test) {
     tests.push_back({name, test });
 }

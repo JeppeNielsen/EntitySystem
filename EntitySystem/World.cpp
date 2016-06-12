@@ -59,10 +59,15 @@ int World::ObjectCount() const {
 }
 
 void World::Clear() {
-    for(auto o : root.children) {
-        o->Remove();
+    objects.Iterate([](Object* o) {
+        o->SetEnabled(false);
+    });
+    objects.Clear();
+    for(int i=0; i<MaxComponents; ++i) {
+        if (components[i]) {
+            components[i]->Clear();
+        }
     }
-    DoActions(removeActions);
 }
 
 ISystem* World::TryAddSystem(SystemID id, std::function<ISystem *(std::vector<int>& components)> constructor) {

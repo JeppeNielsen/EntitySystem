@@ -7,10 +7,14 @@
 //
 
 #include "LogicTests.hpp"
+#include "PerformanceTests.hpp"
 
 int main(int argc, const char * argv[]) {
     LogicTests logicTests;
     logicTests.Run();
+    
+    PerformanceTests performanceTests;
+    performanceTests.Run();
     
     return 0;
 }

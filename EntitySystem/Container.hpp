@@ -22,6 +22,7 @@ namespace Pocket {
         virtual void Delete(int index) = 0;
         virtual void Clone(int source, int& index) = 0;
         virtual void* Get(int index) = 0;
+        virtual void Clear() = 0;
     };
 
     template<typename T>
@@ -79,6 +80,11 @@ namespace Pocket {
             }
         }
         
+        void Clear() {
+            entries.clear();
+            freeEntries.clear();
+            count = 0;
+        }
     private:
     
         struct Entry {
@@ -95,7 +101,5 @@ namespace Pocket {
         
         using FreeEntries = std::vector<int>;
         FreeEntries freeEntries;
-        
-        int iterationIndex;
     };
 }

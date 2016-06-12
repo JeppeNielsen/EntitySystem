@@ -1,30 +1,35 @@
 //
-//  UnitTest.hpp
+//  TimeTest.hpp
 //  EntitySystem
 //
-//  Created by Jeppe Nielsen on 11/06/16.
+//  Created by Jeppe Nielsen on 12/06/16.
 //  Copyright © 2016 Jeppe Nielsen. All rights reserved.
 //
+
 #pragma once
 #include <functional>
 #include <string>
 #include <vector>
 
-class UnitTest {
+class TimeTest {
 private:
-    using TestMethod = std::function<bool()>;
-
+    using Method = std::function<void()>;
+    
     struct Test {
         std::string name;
-        TestMethod method;
+        Method test;
     };
     
     using Tests = std::vector<Test>;
     Tests tests;
 public:
+    virtual ~TimeTest();
     void Run();
-    virtual ~UnitTest();
 protected:
-    void AddTest(const std::string& name, TestMethod test);
+    void AddTest(const std::string& name, Method test);
+    
+    void Begin();
+    void End();
+    
     virtual void RunTests() = 0;
 };

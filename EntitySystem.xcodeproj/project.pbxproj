@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		7241D1981D0DAA6C00A3AEBB /* PerformanceTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7241D1961D0DAA6C00A3AEBB /* PerformanceTests.cpp */; };
+		7241D19B1D0DAB4A00A3AEBB /* TimeTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7241D1991D0DAB4A00A3AEBB /* TimeTest.cpp */; };
+		7241D1A01D0DAE0C00A3AEBB /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7241D19E1D0DAE0C00A3AEBB /* Timer.cpp */; };
 		72772F461D05F8D1005AC1D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F451D05F8D1005AC1D8 /* main.cpp */; };
 		72772F4E1D05F8F8005AC1D8 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F4C1D05F8F8005AC1D8 /* Object.cpp */; };
 		72772F511D05F9F1005AC1D8 /* EntityHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F4F1D05F9F1005AC1D8 /* EntityHelper.cpp */; };
@@ -33,6 +35,10 @@
 /* Begin PBXFileReference section */
 		7241D1961D0DAA6C00A3AEBB /* PerformanceTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerformanceTests.cpp; sourceTree = "<group>"; };
 		7241D1971D0DAA6C00A3AEBB /* PerformanceTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PerformanceTests.hpp; sourceTree = "<group>"; };
+		7241D1991D0DAB4A00A3AEBB /* TimeTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeTest.cpp; sourceTree = "<group>"; };
+		7241D19A1D0DAB4A00A3AEBB /* TimeTest.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TimeTest.hpp; sourceTree = "<group>"; };
+		7241D19E1D0DAE0C00A3AEBB /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timer.cpp; sourceTree = "<group>"; };
+		7241D19F1D0DAE0C00A3AEBB /* Timer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Timer.hpp; sourceTree = "<group>"; };
 		72772F421D05F8D1005AC1D8 /* EntitySystem */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EntitySystem; sourceTree = BUILT_PRODUCTS_DIR; };
 		72772F451D05F8D1005AC1D8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		72772F4C1D05F8F8005AC1D8 /* Object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Object.cpp; sourceTree = "<group>"; };
@@ -65,6 +71,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7241D19C1D0DADF800A3AEBB /* Timing */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Timing;
+			path = EntitySystem/Timing;
+			sourceTree = SOURCE_ROOT;
+		};
+		7241D19D1D0DAE0200A3AEBB /* Timing */ = {
+			isa = PBXGroup;
+			children = (
+				7241D19E1D0DAE0C00A3AEBB /* Timer.cpp */,
+				7241D19F1D0DAE0C00A3AEBB /* Timer.hpp */,
+			);
+			path = Timing;
+			sourceTree = "<group>";
+		};
 		72772F391D05F8D1005AC1D8 = {
 			isa = PBXGroup;
 			children = (
@@ -84,6 +107,7 @@
 		72772F441D05F8D1005AC1D8 /* EntitySystem */ = {
 			isa = PBXGroup;
 			children = (
+				7241D19D1D0DAE0200A3AEBB /* Timing */,
 				727734851D0C72D6005AC1D8 /* Tests */,
 				727734811D0B5D0E005AC1D8 /* Data */,
 				72772F451D05F8D1005AC1D8 /* main.cpp */,
@@ -104,6 +128,7 @@
 		727734811D0B5D0E005AC1D8 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				7241D19C1D0DADF800A3AEBB /* Timing */,
 				727734821D0B5D0E005AC1D8 /* DirtyProperty.hpp */,
 				727734831D0B5D0E005AC1D8 /* Event.hpp */,
 				727734841D0B5D0E005AC1D8 /* Property.hpp */,
@@ -116,10 +141,12 @@
 			children = (
 				727734861D0C731D005AC1D8 /* LogicTests.cpp */,
 				727734871D0C731D005AC1D8 /* LogicTests.hpp */,
-				727734891D0C76BD005AC1D8 /* UnitTest.cpp */,
-				7277348A1D0C76BD005AC1D8 /* UnitTest.hpp */,
 				7241D1961D0DAA6C00A3AEBB /* PerformanceTests.cpp */,
 				7241D1971D0DAA6C00A3AEBB /* PerformanceTests.hpp */,
+				727734891D0C76BD005AC1D8 /* UnitTest.cpp */,
+				7277348A1D0C76BD005AC1D8 /* UnitTest.hpp */,
+				7241D1991D0DAB4A00A3AEBB /* TimeTest.cpp */,
+				7241D19A1D0DAB4A00A3AEBB /* TimeTest.hpp */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -185,9 +212,11 @@
 				727734881D0C731D005AC1D8 /* LogicTests.cpp in Sources */,
 				72772F4E1D05F8F8005AC1D8 /* Object.cpp in Sources */,
 				72772F461D05F8D1005AC1D8 /* main.cpp in Sources */,
+				7241D1A01D0DAE0C00A3AEBB /* Timer.cpp in Sources */,
 				7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */,
 				72772F541D06003A005AC1D8 /* World.cpp in Sources */,
 				72772F511D05F9F1005AC1D8 /* EntityHelper.cpp in Sources */,
+				7241D19B1D0DAB4A00A3AEBB /* TimeTest.cpp in Sources */,
 				7241D1981D0DAA6C00A3AEBB /* PerformanceTests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -278,6 +307,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
