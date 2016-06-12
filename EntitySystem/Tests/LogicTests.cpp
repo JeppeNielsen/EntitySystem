@@ -6,13 +6,13 @@
 //  Copyright © 2016 Jeppe Nielsen. All rights reserved.
 //
 
-#include "EntitySystemTests.hpp"
+#include "LogicTests.hpp"
 #include "World.hpp"
 #include <cstdlib>
 
 using namespace Pocket;
 
-void EntitySystemTests::RunTests() {
+void LogicTests::RunTests() {
 
     AddTest("CreateObject", []() {
         World world;

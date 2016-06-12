@@ -6,10 +6,11 @@
 //  Copyright © 2016 Jeppe Nielsen. All rights reserved.
 //
 
-#include "EntitySystemTests.hpp"
+#include "LogicTests.hpp"
 
 int main(int argc, const char * argv[]) {
-    EntitySystemTests tests;
-    tests.Run();
+    LogicTests logicTests;
+    logicTests.Run();
+    
     return 0;
 }

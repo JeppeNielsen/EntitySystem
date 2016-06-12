@@ -7,13 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7241D1981D0DAA6C00A3AEBB /* PerformanceTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7241D1961D0DAA6C00A3AEBB /* PerformanceTests.cpp */; };
 		72772F461D05F8D1005AC1D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F451D05F8D1005AC1D8 /* main.cpp */; };
 		72772F4E1D05F8F8005AC1D8 /* Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F4C1D05F8F8005AC1D8 /* Object.cpp */; };
 		72772F511D05F9F1005AC1D8 /* EntityHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F4F1D05F9F1005AC1D8 /* EntityHelper.cpp */; };
 		72772F541D06003A005AC1D8 /* World.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F521D06003A005AC1D8 /* World.cpp */; };
 		72772F571D060110005AC1D8 /* Container.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F551D060110005AC1D8 /* Container.cpp */; };
 		7277347E1D088FF6005AC1D8 /* System.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7277347C1D088FF6005AC1D8 /* System.cpp */; };
-		727734881D0C731D005AC1D8 /* EntitySystemTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734861D0C731D005AC1D8 /* EntitySystemTests.cpp */; };
+		727734881D0C731D005AC1D8 /* LogicTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734861D0C731D005AC1D8 /* LogicTests.cpp */; };
 		7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734891D0C76BD005AC1D8 /* UnitTest.cpp */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7241D1961D0DAA6C00A3AEBB /* PerformanceTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerformanceTests.cpp; sourceTree = "<group>"; };
+		7241D1971D0DAA6C00A3AEBB /* PerformanceTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PerformanceTests.hpp; sourceTree = "<group>"; };
 		72772F421D05F8D1005AC1D8 /* EntitySystem */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EntitySystem; sourceTree = BUILT_PRODUCTS_DIR; };
 		72772F451D05F8D1005AC1D8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		72772F4C1D05F8F8005AC1D8 /* Object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Object.cpp; sourceTree = "<group>"; };
@@ -45,8 +48,8 @@
 		727734821D0B5D0E005AC1D8 /* DirtyProperty.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DirtyProperty.hpp; sourceTree = "<group>"; };
 		727734831D0B5D0E005AC1D8 /* Event.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Event.hpp; sourceTree = "<group>"; };
 		727734841D0B5D0E005AC1D8 /* Property.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Property.hpp; sourceTree = "<group>"; };
-		727734861D0C731D005AC1D8 /* EntitySystemTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EntitySystemTests.cpp; sourceTree = "<group>"; };
-		727734871D0C731D005AC1D8 /* EntitySystemTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = EntitySystemTests.hpp; sourceTree = "<group>"; };
+		727734861D0C731D005AC1D8 /* LogicTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LogicTests.cpp; sourceTree = "<group>"; };
+		727734871D0C731D005AC1D8 /* LogicTests.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = LogicTests.hpp; sourceTree = "<group>"; };
 		727734891D0C76BD005AC1D8 /* UnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UnitTest.cpp; sourceTree = "<group>"; };
 		7277348A1D0C76BD005AC1D8 /* UnitTest.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = UnitTest.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,10 +114,12 @@
 		727734851D0C72D6005AC1D8 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				727734861D0C731D005AC1D8 /* EntitySystemTests.cpp */,
-				727734871D0C731D005AC1D8 /* EntitySystemTests.hpp */,
+				727734861D0C731D005AC1D8 /* LogicTests.cpp */,
+				727734871D0C731D005AC1D8 /* LogicTests.hpp */,
 				727734891D0C76BD005AC1D8 /* UnitTest.cpp */,
 				7277348A1D0C76BD005AC1D8 /* UnitTest.hpp */,
+				7241D1961D0DAA6C00A3AEBB /* PerformanceTests.cpp */,
+				7241D1971D0DAA6C00A3AEBB /* PerformanceTests.hpp */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -177,12 +182,13 @@
 			files = (
 				7277347E1D088FF6005AC1D8 /* System.cpp in Sources */,
 				72772F571D060110005AC1D8 /* Container.cpp in Sources */,
-				727734881D0C731D005AC1D8 /* EntitySystemTests.cpp in Sources */,
+				727734881D0C731D005AC1D8 /* LogicTests.cpp in Sources */,
 				72772F4E1D05F8F8005AC1D8 /* Object.cpp in Sources */,
 				72772F461D05F8D1005AC1D8 /* main.cpp in Sources */,
 				7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */,
 				72772F541D06003A005AC1D8 /* World.cpp in Sources */,
 				72772F511D05F9F1005AC1D8 /* EntityHelper.cpp in Sources */,
+				7241D1981D0DAA6C00A3AEBB /* PerformanceTests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +309,7 @@
 				72772F4B1D05F8D1005AC1D8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

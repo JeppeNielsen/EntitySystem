@@ -9,7 +9,7 @@
 #pragma once
 #include "UnitTest.hpp"
 
-class EntitySystemTests : public UnitTest {
+class LogicTests : public UnitTest {
 protected:
     virtual void RunTests();
 };
