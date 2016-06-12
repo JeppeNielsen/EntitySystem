@@ -286,30 +286,26 @@ void EntitySystemTests::RunTests() {
     });
     
     AddTest("Remove system", []() {
-    
+        static int ObjectCount = 0;
         struct Transform { int x; };
         struct Renderable { int imageNo; };
         struct RenderSystem : public System<Transform, Renderable> {
         public:
-            int numberOfObjects;
-            void Initialize() { numberOfObjects = 0; }
-            void ObjectAdded(Object* o) { numberOfObjects++; }
-            void ObjectRemoved(Object* o) { numberOfObjects--; }
+            void ObjectAdded(Object* o) { ObjectCount++; }
+            void ObjectRemoved(Object* o) {ObjectCount--; }
         };
         
         World world;
-        auto system = world.CreateSystem<RenderSystem>();
         auto object = world.CreateObject();
         object->AddComponent<Transform>();
         object->AddComponent<Renderable>();
-        bool wasOneObject = system->numberOfObjects == 1;
+        world.Update(0);
+        world.CreateSystem<RenderSystem>();
+        bool wasOneObject = ObjectCount == 1;
         world.RemoveSystem<RenderSystem>();
-        bool hasNoObjects = system->numberOfObjects == 0;
+        bool hasNoObjects = ObjectCount == 0;
         return wasOneObject && hasNoObjects;
     });
-    
-    
-    
     
     
     

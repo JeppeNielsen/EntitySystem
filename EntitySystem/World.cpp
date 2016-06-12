@@ -85,12 +85,10 @@ ISystem* World::TryAddSystem(SystemID id, std::function<ISystem *(std::vector<in
         system->Initialize();
         
         objects.Iterate([system](Object* o) {
-            if (!o->WorldEnabled) return;
-            if (!((o->activeComponents & system->componentMask) == system->componentMask)) return;
-            if ((o->enabledComponents & system->componentMask) == system->componentMask) return;
-            o->enabledComponents |= system->componentMask;
-            system->objects.push_back(o);
-            system->ObjectAdded(o);
+            if ((o->enabledComponents & system->componentMask) == system->componentMask) {
+                system->objects.push_back(o);
+                system->ObjectAdded(o);
+            }
         });
     }
     return system;
@@ -101,8 +99,24 @@ void World::TryRemoveSystem(SystemID id) {
     ISystem* system = systemsIndexed[id];
     if (!system) return;
     
+    objects.Iterate([system](Object* o) {
+        if ((o->enabledComponents & system->componentMask) == system->componentMask) {
+            system->ObjectRemoved(o);
+            auto& objects = system->objects;
+            objects.erase(std::find(objects.begin(), objects.end(), o));
+        }
+    });
     
+    for(int i=0; i<MaxComponents; ++i) {
+        if (system->componentMask[i]) {
+            auto& list = systemsPerComponent[i];
+            list.erase(std::find(list.begin(), list.end(), system));
+        }
+    }
     
+    systems.erase(std::find(systems.begin(), systems.end(), system));
+    systemsIndexed[id] = 0;
+    delete system;
 }
 
 void World::DoActions(Actions &actions) {

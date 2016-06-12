@@ -179,11 +179,11 @@ void Object::TrySetComponentEnabled(ComponentID id, bool enable) {
     if (isEnabled==enable) {
         return; //cannot double enable/disable components
     }
-    if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
-    auto systemsUsingComponent = world->systemsPerComponent[id];
     
     if (enable) {
         enabledComponents[id] = enable;
+        if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
+        auto systemsUsingComponent = world->systemsPerComponent[id];
         for(auto s : systemsUsingComponent) {
             bool isInterest = (enabledComponents & s->componentMask) == s->componentMask;
             if (isInterest) {
@@ -192,6 +192,8 @@ void Object::TrySetComponentEnabled(ComponentID id, bool enable) {
             }
         }
     } else {
+        if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
+        auto systemsUsingComponent = world->systemsPerComponent[id];
         for(auto s : systemsUsingComponent) {
             bool wasInterest = (enabledComponents & s->componentMask) == s->componentMask;
             if (wasInterest) {
