@@ -53,11 +53,14 @@ namespace Pocket {
     
         Object root;
     
-        using Objects = Container<Object>;
+        using Objects = std::deque<Object>;
         Objects objects;
         
         using Components = std::array<IContainer*, MaxComponents>;
         Components components;
+        
+        using ObjectComponents = std::array<std::vector<void*>, MaxComponents>;
+        ObjectComponents objectComponents;
         
         using Systems = std::vector<ISystem*>;
         Systems systemsIndexed;

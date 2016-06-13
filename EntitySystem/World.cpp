@@ -31,10 +31,16 @@ World::~World() {
 const Object* World::Root() { return &root; }
 
 Object* World::CreateObject() {
-    int index;
-    objects.Create(index);
-    Object* object = static_cast<Object*>(objects.Get(index));
-    object->Parent = &root;
+    int index = (int)objects.size();
+    objects.resize(index + 1);
+    //objectComponents.resize(index + 1);
+    if (index>=objectComponents[0].size()) {
+        for(int i=0; i<MaxComponents; i++) {
+            objectComponents[i].resize(index + 32);
+        }
+    }
+    Object* object = &objects.back();
+    object->Parent() = &root;
     object->index = index;
     object->world = this;
     return object;
@@ -55,14 +61,14 @@ void World::Render() {
 }
 
 int World::ObjectCount() const {
-    return objects.Count();
+    return (int)objects.size();
 }
 
 void World::Clear() {
-    objects.Iterate([](Object* o) {
-        o->SetEnabled(false);
-    });
-    objects.Clear();
+    for(auto& o : objects) {
+        o.SetEnabled(false);
+    }
+    objects.clear();
     for(int i=0; i<MaxComponents; ++i) {
         if (components[i]) {
             components[i]->Clear();
@@ -89,12 +95,12 @@ ISystem* World::TryAddSystem(SystemID id, std::function<ISystem *(std::vector<in
         systems.push_back(system);
         system->Initialize();
         
-        objects.Iterate([system](Object* o) {
-            if ((o->enabledComponents & system->componentMask) == system->componentMask) {
-                system->objects.push_back(o);
-                system->ObjectAdded(o);
+        for(auto& o : objects) {
+            if ((o.data->enabledComponents & system->componentMask) == system->componentMask) {
+                system->objects.push_back(&o);
+                system->ObjectAdded(&o);
             }
-        });
+        }
     }
     return system;
 }
@@ -104,13 +110,14 @@ void World::TryRemoveSystem(SystemID id) {
     ISystem* system = systemsIndexed[id];
     if (!system) return;
     
-    objects.Iterate([system](Object* o) {
-        if ((o->enabledComponents & system->componentMask) == system->componentMask) {
-            system->ObjectRemoved(o);
+    for(auto& o : objects) {
+        if ((o.data->enabledComponents & system->componentMask) == system->componentMask) {
+            system->ObjectRemoved(&o);
             auto& objects = system->objects;
-            objects.erase(std::find(objects.begin(), objects.end(), o));
+            objects.erase(std::find(objects.begin(), objects.end(), &o));
         }
-    });
+    }
+
     
     for(int i=0; i<MaxComponents; ++i) {
         if (system->componentMask[i]) {

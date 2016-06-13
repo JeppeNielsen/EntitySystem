@@ -12,7 +12,6 @@
 #include "DirtyProperty.hpp"
 
 namespace Pocket {
-    class World;
     
     template<typename T>
     class Container;
@@ -20,6 +19,8 @@ namespace Pocket {
     class Object;
     
     using ObjectCollection = std::vector<Object*>;
+    
+    class World;
     
     class Object {
     public:
@@ -61,14 +62,14 @@ namespace Pocket {
         
         void Remove();
         
-        Property<Object*> Parent;
         const ObjectCollection& Children() const;
+        Property<Object*>& Parent();
+        Property<bool>& Enabled();
+        DirtyProperty<bool>& WorldEnabled();
         
-        Property<bool> Enabled;
-        DirtyProperty<bool> WorldEnabled;
-    private:
         Object();
         ~Object();
+    private:
         Object(const Object& o) = delete;
         Object(Object&& o) = delete;
         Object& operator=(const Object& o) = default;
@@ -84,14 +85,20 @@ namespace Pocket {
         void SetEnabled(bool enabled);
         void TrySetComponentEnabled(ComponentID id, bool enable);
         
-        World* world;
+        struct Data {
+            Data() : activeComponents(0), enabledComponents(0) {}
+            Property<Object*> Parent;
+            Property<bool> Enabled;
+            DirtyProperty<bool> WorldEnabled;
+            ComponentMask activeComponents;
+            ComponentMask enabledComponents;
+            ObjectCollection children;
+        };
+        
         int index;
-        ComponentMask activeComponents;
-        ComponentMask enabledComponents;
-        std::array<int, MaxComponents> components;
-        ObjectCollection children;
-        int childIndex;
-
+        World* world;
+        Data* data;
+        
         friend class Container<Object>;
         friend class World;
     };

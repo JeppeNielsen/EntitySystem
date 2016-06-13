@@ -113,8 +113,8 @@
 				72772F451D05F8D1005AC1D8 /* main.cpp */,
 				72772F4C1D05F8F8005AC1D8 /* Object.cpp */,
 				72772F4D1D05F8F8005AC1D8 /* Object.hpp */,
-				72772F4F1D05F9F1005AC1D8 /* EntityHelper.cpp */,
 				72772F501D05F9F1005AC1D8 /* EntityHelper.hpp */,
+				72772F4F1D05F9F1005AC1D8 /* EntityHelper.cpp */,
 				72772F521D06003A005AC1D8 /* World.cpp */,
 				72772F531D06003A005AC1D8 /* World.hpp */,
 				72772F551D060110005AC1D8 /* Container.cpp */,
@@ -308,6 +308,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;

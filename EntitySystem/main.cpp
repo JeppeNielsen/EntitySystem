@@ -5,16 +5,64 @@
 //  Created by Jeppe Nielsen on 06/06/16.
 //  Copyright © 2016 Jeppe Nielsen. All rights reserved.
 //
-
-#include "LogicTests.hpp"
+#include <iostream>
+#include "Timer.hpp"
+#include "World.hpp"
 #include "PerformanceTests.hpp"
 
+using namespace Pocket;
+
+struct Component { int x; };
+
 int main(int argc, const char * argv[]) {
-    LogicTests logicTests;
-    logicTests.Run();
+
+    for(int i = 0; i<100000; ++i) {
+            World world;
+            for(int j = 0; j<10; ++j) {
+                world.CreateObject();
+            }
+        }
+
+
+    return 0;
+    PerformanceTests performance;
+    performance.Run();
     
-    PerformanceTests performanceTests;
-    performanceTests.Run();
+    return 0;
+
+    Timer timer;
     
+    timer.Begin();
+    World world;
+    ObjectCollection objects;
+    for(int i=0; i<1000000; ++i) {
+        objects.push_back(world.CreateObject());
+    }
+    double createObjectTime = timer.End();
+    std::cout << "CreateObject Time = " << createObjectTime <<std::endl;
+    
+    timer.Begin();
+    for(int i = 0; i<objects.size(); ++i) {
+        objects[i]->AddComponent<Component>();
+    }
+    double addComponentTime = timer.End();
+    std::cout << "AddComponent Time = " << addComponentTime <<std::endl;
+    
+    timer.Begin();
+    //for (int j = 0; j<1000000; ++j) {
+    for(int i = 0; i<objects.size(); ++i) {
+        objects[i]->GetComponent<Component>()->x++;
+    }
+    //}
+    double time = timer.End();
+    std::cout << "GetComponent Time = " << time<<std::endl;
+//Time = 3.77209
+//       2.84425
+
+//0.0272441
+//0.0439391
+
+    std::cout << "sizeof(Object) = "<< sizeof(Object) << std::endl;
+    std::cout << "alignof(Object) = "<< alignof(Object) << std::endl;
     return 0;
 }

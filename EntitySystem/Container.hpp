@@ -17,10 +17,10 @@ namespace Pocket {
     class IContainer {
     public:
         virtual ~IContainer();
-        virtual void Create(int& index) = 0;
-        virtual void Reference(int index) = 0;
-        virtual void Delete(int index) = 0;
-        virtual void Clone(int source, int& index) = 0;
+        virtual void* Create() = 0;
+        virtual void Reference(void* element) = 0;
+        virtual void Delete(void* element) = 0;
+        virtual void* Clone(void* source) = 0;
         virtual void* Get(int index) = 0;
         virtual void Clear() = 0;
     };
@@ -31,39 +31,53 @@ namespace Pocket {
         Container() : count(0) {}
         virtual ~Container() { }
     
-        void Create(int& index) override {
-            if (freeEntries.empty()) {
-                index = (int)entries.size();
-                entries.resize(index + 1);
+        void* Create() override {
+            int freeIndex;
+            if (freeIndicies.empty()) {
+                freeIndex = (int)references.size();
+                references.resize(freeIndex + 1);
+                entries.resize(freeIndex + 1, defaultObject);
             } else {
-                index = freeEntries.back();
-                freeEntries.pop_back();
+                freeIndex = freeIndicies.back();
+                freeIndicies.pop_back();
             }
-            Entry& entry = entries[index];
-            assert(entry.references == 0);
-            entry.object = defaultObject;
-            entry.references = 1;
+            
             ++count;
+        
+            references[freeIndex] = 1;
+            return &entries[freeIndex];;
         }
         
-        void Reference(int index) override {
-            Entry& entry = entries[index];
-            assert(entry.references > 0);
-            ++entry.references;
-        }
-        
-        void Delete(int index) override {
-            Entry& entry = entries[index];
-            --entry.references;
-            if (entry.references == 0) {
-                freeEntries.push_back(index);
-                --count;
+        void Reference(void* element) override {
+            for(int i=0; i<entries.size(); ++i) {
+                if (&entries[i]==element) {
+                    assert(references[i] > 0);
+                    ++references[i];
+                    return;
+                }
             }
         }
         
-        void Clone(int source, int& index) override {
-            Create(index);
-            entries[index].object = entries[source].object;
+        void Delete(void* element) override {
+            return;
+            for(int i=0; i<entries.size(); ++i) {
+                if (&entries[i]==element) {
+                    assert(references[i] > 0);
+                    --references[i];
+                    if (references[i]==0) {
+                        --count;
+                        freeIndicies.push_back(i);
+                    }
+                    return;
+                }
+            }
+        }
+        
+        void* Clone(void* source) override {
+            T* clone = (T*)Create();
+            T* s = (T*)source;
+            (*clone) = (*s);
+            return clone;
         }
         
         void* Get(int index) override {
@@ -73,33 +87,31 @@ namespace Pocket {
         int Count() const { return count; }
         
         void Iterate(std::function<void(T* object)> function) {
-            for(int i=0; i<entries.size(); ++i) {
-                if (entries[i].references > 0) {
-                    function(&entries[i].object);
+            for(int i=0; i<references.size(); ++i) {
+                if (references[i] > 0) {
+                    function(&entries[i]);
                 }
             }
         }
         
         void Clear() override {
             entries.clear();
-            freeEntries.clear();
+            references.clear();
             count = 0;
         }
     private:
-    
-        struct Entry {
-            Entry() : references(0) { }
-            T object;
-            int references;
-        };
         
         int count;
         T defaultObject;
     
-        using Entries = std::deque<Entry>;
+        using Entries = std::deque<T>;
         Entries entries;
         
-        using FreeEntries = std::vector<int>;
-        FreeEntries freeEntries;
+        using References = std::vector<int>;
+        References references;
+        
+        using FreeIndicies = std::vector<int>;
+        FreeIndicies freeIndicies;
+        
     };
 }
