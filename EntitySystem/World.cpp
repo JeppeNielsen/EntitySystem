@@ -36,7 +36,7 @@ Object* World::CreateObject() {
     //objectComponents.resize(index + 1);
     if (index>=objectComponents[0].size()) {
         for(int i=0; i<MaxComponents; i++) {
-            objectComponents[i].resize(index + 32);
+            objectComponents[i].resize(index + 16);
         }
     }
     Object* object = &objects.back();

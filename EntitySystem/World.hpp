@@ -59,7 +59,7 @@ namespace Pocket {
         using Components = std::array<IContainer*, MaxComponents>;
         Components components;
         
-        using ObjectComponents = std::array<std::vector<void*>, MaxComponents>;
+        using ObjectComponents = std::array<std::vector<int>, MaxComponents>;
         ObjectComponents objectComponents;
         
         using Systems = std::vector<ISystem*>;
@@ -80,4 +80,15 @@ namespace Pocket {
         friend class Object;
         friend class ISystem;
     };
+    
+    
+    template<typename T>
+    T* Object::GetComponent() {
+        ComponentID id = EntityHelper::GetComponentID<T>();
+        Container<T>* container = static_cast<Container<T>*>(world->components[id]);
+        return &container->entries[world->objectComponents[id][index]];
+    }
+
+    
+    
 }

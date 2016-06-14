@@ -17,21 +17,23 @@ namespace Pocket {
     class IContainer {
     public:
         virtual ~IContainer();
-        virtual void* Create() = 0;
-        virtual void Reference(void* element) = 0;
-        virtual void Delete(void* element) = 0;
-        virtual void* Clone(void* source) = 0;
+        virtual int Create() = 0;
+        virtual void Reference(int index) = 0;
+        virtual void Delete(int index) = 0;
+        virtual int Clone(int index) = 0;
         virtual void* Get(int index) = 0;
         virtual void Clear() = 0;
+        int Count() const { return count; }
+        int count;
     };
 
     template<typename T>
     class Container : public IContainer {
     public:
-        Container() : count(0) {}
+        Container()  { count = 0; }
         virtual ~Container() { }
     
-        void* Create() override {
+        int Create() override {
             int freeIndex;
             if (freeIndicies.empty()) {
                 freeIndex = (int)references.size();
@@ -43,48 +45,31 @@ namespace Pocket {
             }
             
             ++count;
-        
             references[freeIndex] = 1;
-            return &entries[freeIndex];;
+            return freeIndex;
         }
         
-        void Reference(void* element) override {
-            for(int i=0; i<entries.size(); ++i) {
-                if (&entries[i]==element) {
-                    assert(references[i] > 0);
-                    ++references[i];
-                    return;
-                }
+        void Reference(int index) override {
+            ++references[index];
+        }
+        
+        void Delete(int index) override {
+            --references[index];
+            if (references[index]==0) {
+                --count;
+                freeIndicies.push_back(index);
             }
         }
         
-        void Delete(void* element) override {
-            return;
-            for(int i=0; i<entries.size(); ++i) {
-                if (&entries[i]==element) {
-                    assert(references[i] > 0);
-                    --references[i];
-                    if (references[i]==0) {
-                        --count;
-                        freeIndicies.push_back(i);
-                    }
-                    return;
-                }
-            }
-        }
-        
-        void* Clone(void* source) override {
-            T* clone = (T*)Create();
-            T* s = (T*)source;
-            (*clone) = (*s);
-            return clone;
+        int Clone(int index) override {
+            int cloneIndex = Create();
+            entries[cloneIndex] = entries[index];
+            return cloneIndex;
         }
         
         void* Get(int index) override {
             return &entries[index];
         }
-        
-        int Count() const { return count; }
         
         void Iterate(std::function<void(T* object)> function) {
             for(int i=0; i<references.size(); ++i) {
@@ -101,12 +86,13 @@ namespace Pocket {
         }
     private:
         
-        int count;
         T defaultObject;
     
+    public:
         using Entries = std::deque<T>;
         Entries entries;
         
+    private:
         using References = std::vector<int>;
         References references;
         

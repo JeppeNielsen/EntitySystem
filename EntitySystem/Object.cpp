@@ -67,9 +67,9 @@ bool Object::HasComponent(ComponentID id) const {
 }
 
 void* Object::GetComponent(ComponentID id) {
-    //assert(id<MaxComponents);
-    //IContainer* container = world->components[id];
-    return world->objectComponents[id][index];
+    assert(id<MaxComponents);
+    IContainer* container = world->components[id];
+    return container->Get(world->objectComponents[id][index]);
 }
 
 void Object::AddComponent(ComponentID id) {
@@ -93,7 +93,7 @@ void Object::AddComponent(ComponentID id, const Object* source) {
         return;
     }
     IContainer* container = world->components[id];
-    container->Reference((void*)world->objectComponents[id][index]);
+    container->Reference(world->objectComponents[id][index]);
     data->activeComponents[id] = true;
     
     world->createActions.emplace_back([this, id]() {
@@ -109,7 +109,7 @@ void Object::CloneComponent(ComponentID id, const Object* source) {
     }
     
     IContainer* container = world->components[id];
-    world->objectComponents[id][index] = container->Clone((void*)source);
+    world->objectComponents[id][index] = container->Clone(world->objectComponents[id][source->index]);
     data->activeComponents[id] = true;
     
     world->createActions.emplace_back([this, id]() {

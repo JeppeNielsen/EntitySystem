@@ -40,6 +40,7 @@ void PerformanceTests::RunTests() {
         End();
     });
     
+    
     AddTest("AddComponent x 100000", [this]() {
         struct Component { };
         World world;

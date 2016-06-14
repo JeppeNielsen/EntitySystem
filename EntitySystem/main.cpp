@@ -9,6 +9,7 @@
 #include "Timer.hpp"
 #include "World.hpp"
 #include "PerformanceTests.hpp"
+#include "LogicTests.hpp"
 
 using namespace Pocket;
 
@@ -16,17 +17,14 @@ struct Component { int x; };
 
 int main(int argc, const char * argv[]) {
 
-    for(int i = 0; i<100000; ++i) {
-            World world;
-            for(int j = 0; j<10; ++j) {
-                world.CreateObject();
-            }
-        }
+    std::cout << sizeof(Object)<<std::endl;
+    std::cout << sizeof(World)<<std::endl;
 
-
-    return 0;
     PerformanceTests performance;
     performance.Run();
+    
+    //LogicTests logicTests;
+    //logicTests.Run();
     
     return 0;
 
