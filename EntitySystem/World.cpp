@@ -38,7 +38,7 @@ Object* World::CreateObject() {
         objects.resize(index + 1);
         if (index>=objectComponents[0].size()) {
             for(int i=0; i<MaxComponents; i++) {
-                objectComponents[i].resize(index + 32, 0);
+                objectComponents[i].resize(index + 32);
             }
         }
     } else {
@@ -47,7 +47,7 @@ Object* World::CreateObject() {
     }
     
     for(int i=0; i<MaxComponents; i++) {
-        objectComponents[i][index] = 0;
+        objectComponents[i][index] = -1;
     }
     ++objectCount;
     Object& object = objects[index];
@@ -73,6 +73,10 @@ void World::Render() {
 
 int World::ObjectCount() const {
     return objectCount;
+}
+
+int World::CapacityCount() const {
+    return (int)objects.size();
 }
 
 void World::Clear() {

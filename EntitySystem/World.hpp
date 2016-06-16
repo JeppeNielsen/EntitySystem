@@ -46,6 +46,7 @@ namespace Pocket {
         void Render();
         
         int ObjectCount() const;
+        int CapacityCount() const;
         
         void Clear();
         void Trim();
@@ -91,8 +92,10 @@ namespace Pocket {
     template<typename T>
     T* Object::GetComponent() {
         ComponentID id = EntityHelper::GetComponentID<T>();
+        int componentIndex = world->objectComponents[id][index];
+        if (componentIndex == -1) return 0;
         Container<T>* container = static_cast<Container<T>*>(world->components[id]);
-        return &container->entries[world->objectComponents[id][index]];
+        return &container->entries[componentIndex];
     }
 
     

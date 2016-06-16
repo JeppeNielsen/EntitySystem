@@ -17,14 +17,11 @@ struct Component { int x; };
 
 int main(int argc, const char * argv[]) {
 
-    std::cout << sizeof(Object)<<std::endl;
-    std::cout << sizeof(World)<<std::endl;
-
+    LogicTests logicTests;
+    logicTests.Run();
+    
     PerformanceTests performance;
     performance.Run();
-    
-    //LogicTests logicTests;
-    //logicTests.Run();
     
     return 0;
 

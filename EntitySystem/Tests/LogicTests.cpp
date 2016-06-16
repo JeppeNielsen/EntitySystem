@@ -147,7 +147,6 @@ void LogicTests::RunTests() {
         auto sourceTransform = source->AddComponent<Transform>();
         sourceTransform->x = 123;
         
-        
         auto copy = world.CreateObject();
         auto copyTransform = copy->AddComponent<Transform>(source);
         

@@ -98,6 +98,26 @@ void PerformanceTests::RunTests() {
         End();
     });
 
+    AddTest("RemoveComponent x 1000000", [this]() {
+        struct Component { int x; };
+        
+        World world;
+        ObjectCollection objects;
+        for(int i=0; i<1000000; ++i) {
+            objects.push_back(world.CreateObject());
+        }
+        
+        for(int i = 0; i<objects.size(); ++i) {
+            objects[i]->AddComponent<Component>();
+        }
+        
+        Begin();
+        for(int i = 0; i<objects.size(); ++i) {
+            objects[i]->RemoveComponent<Component>();
+        }
+        world.Update(0);
+        End();
+    });
     
 
 }

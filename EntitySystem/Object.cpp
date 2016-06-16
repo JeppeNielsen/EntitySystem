@@ -71,6 +71,7 @@ bool Object::HasComponent(ComponentID id) const {
 
 void* Object::GetComponent(ComponentID id) {
     assert(id<MaxComponents);
+    if (!data->activeComponents[id]) return 0;
     IContainer* container = world->components[id];
     return container->Get(world->objectComponents[id][index]);
 }
@@ -96,7 +97,9 @@ void Object::AddComponent(ComponentID id, const Object* source) {
         return;
     }
     IContainer* container = world->components[id];
-    container->Reference(world->objectComponents[id][index]);
+    int referenceIndex = world->objectComponents[id][source->index];
+    world->objectComponents[id][index] = referenceIndex;
+    container->Reference(referenceIndex);
     data->activeComponents[id] = true;
     
     world->createActions.emplace_back([this, id]() {
@@ -133,6 +136,7 @@ void Object::RemoveComponent(ComponentID id) {
         TrySetComponentEnabled(id, false);
         IContainer* container = world->components[id];
         container->Delete(world->objectComponents[id][index]);
+        world->objectComponents[id][index] = -1;
         data->activeComponents[id] = false;
     });
 }
@@ -143,6 +147,7 @@ void Object::Remove() {
     world->removeActions.emplace_back([this, localIndex]() {
         SetEnabled(false);
         world->objectsFreeIndicies.push_back(localIndex);
+        --world->objectCount;
     });
     index = -1;
     data->Parent = 0;

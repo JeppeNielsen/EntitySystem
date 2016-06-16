@@ -43,6 +43,7 @@ namespace Pocket {
             } else {
                 freeIndex = freeIndicies.back();
                 freeIndicies.pop_back();
+                entries[freeIndex] = defaultObject;
             }
             
             ++count;

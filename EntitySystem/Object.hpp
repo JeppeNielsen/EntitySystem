@@ -32,9 +32,6 @@ namespace Pocket {
     
         template<typename T>
         T* GetComponent();
-//        {
-//            return static_cast<T*>(GetComponent(EntityHelper::GetComponentID<T>()));
-//        }
         
         template<typename T>
         T* AddComponent() {
