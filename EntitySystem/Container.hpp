@@ -23,6 +23,7 @@ namespace Pocket {
         virtual int Clone(int index) = 0;
         virtual void* Get(int index) = 0;
         virtual void Clear() = 0;
+        virtual void Trim() = 0;
         int Count() const { return count; }
         int count;
     };
@@ -37,8 +38,8 @@ namespace Pocket {
             int freeIndex;
             if (freeIndicies.empty()) {
                 freeIndex = (int)references.size();
-                references.resize(freeIndex + 1);
-                entries.resize(freeIndex + 1, defaultObject);
+                references.emplace_back(0);
+                entries.emplace_back(defaultObject);
             } else {
                 freeIndex = freeIndicies.back();
                 freeIndicies.pop_back();
@@ -84,20 +85,36 @@ namespace Pocket {
             references.clear();
             count = 0;
         }
-    private:
         
-        T defaultObject;
+        void Trim() override {
+            int smallestSize = 0;
+            for(int i = (int)references.size() - 1; i>=0; --i) {
+                if (references[i]>0) {
+                    smallestSize = i + 1;
+                    break;
+                }
+            }
+            if (smallestSize<references.size()) {
+                references.resize(smallestSize);
+                entries.resize(smallestSize);
+                for(int i=0; i<freeIndicies.size(); ++i) {
+                    if (freeIndicies[i]>=smallestSize) {
+                        freeIndicies.erase(freeIndicies.begin() + i);
+                        --i;
+                    }
+                }
+            }
+        }
     
-    public:
         using Entries = std::deque<T>;
         Entries entries;
         
-    private:
         using References = std::vector<int>;
         References references;
         
         using FreeIndicies = std::vector<int>;
         FreeIndicies freeIndicies;
         
+        T defaultObject;
     };
 }

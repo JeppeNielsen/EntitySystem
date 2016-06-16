@@ -70,10 +70,12 @@ namespace Pocket {
         
         Object();
         ~Object();
+        
     private:
-        Object(const Object& o) = delete;
+        
         Object(Object&& o) = delete;
-        Object& operator=(const Object& o) = default;
+        Object(const Object& o) = delete;
+        Object& operator=(const Object& o) = delete;
         
         bool HasComponent(ComponentID id) const;
         void* GetComponent(ComponentID id);
@@ -88,11 +90,11 @@ namespace Pocket {
         
         struct Data {
             Data() : activeComponents(0), enabledComponents(0) {}
+            ComponentMask activeComponents;
+            ComponentMask enabledComponents;
             Property<Object*> Parent;
             Property<bool> Enabled;
             DirtyProperty<bool> WorldEnabled;
-            ComponentMask activeComponents;
-            ComponentMask enabledComponents;
             ObjectCollection children;
         };
         

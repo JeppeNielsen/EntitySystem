@@ -16,6 +16,7 @@ World::World() {
         components[i] = 0;
     }
     root.world = this;
+    objectCount = 0;
 }
 
 World::~World() {
@@ -31,19 +32,29 @@ World::~World() {
 const Object* World::Root() { return &root; }
 
 Object* World::CreateObject() {
-    int index = (int)objects.size();
-    objects.resize(index + 1);
-    //objectComponents.resize(index + 1);
-    if (index>=objectComponents[0].size()) {
-        for(int i=0; i<MaxComponents; i++) {
-            objectComponents[i].resize(index + 16);
+    int index;
+    if (objectsFreeIndicies.empty()) {
+        index = (int)objects.size();
+        objects.resize(index + 1);
+        if (index>=objectComponents[0].size()) {
+            for(int i=0; i<MaxComponents; i++) {
+                objectComponents[i].resize(index + 32, 0);
+            }
         }
+    } else {
+        index = objectsFreeIndicies.back();
+        objectsFreeIndicies.pop_back();
     }
-    Object* object = &objects.back();
-    object->Parent() = &root;
-    object->index = index;
-    object->world = this;
-    return object;
+    
+    for(int i=0; i<MaxComponents; i++) {
+        objectComponents[i][index] = 0;
+    }
+    ++objectCount;
+    Object& object = objects[index];
+    object.Parent() = &root;
+    object.index = index;
+    object.world = this;
+    return &object;
 }
 
 void World::Update(float dt) {
@@ -61,17 +72,49 @@ void World::Render() {
 }
 
 int World::ObjectCount() const {
-    return (int)objects.size();
+    return objectCount;
 }
 
 void World::Clear() {
-    for(auto& o : objects) {
-        o.SetEnabled(false);
-    }
+    IterateObjects([](Object* o) {
+        o->SetEnabled(false);
+    });
+
     objects.clear();
+    objectsFreeIndicies.clear();
+    objectCount = 0;
     for(int i=0; i<MaxComponents; ++i) {
         if (components[i]) {
             components[i]->Clear();
+        }
+        objectComponents[i].clear();
+    }
+}
+
+void World::Trim() {
+    for(int i=0; i<MaxComponents; ++i) {
+        if (components[i]) {
+            components[i]->Trim();
+        }
+    }
+    
+    int smallestSize = 0;
+    for(int i = (int)objects.size() - 1; i>=0; --i) {
+        if (objects[i].index>=0) {
+            smallestSize = i + 1;
+            break;
+        }
+    }
+    if (smallestSize<objects.size()) {
+        for(int i=0; i<MaxComponents; ++i) {
+            objectComponents[i].resize(smallestSize);
+        }
+        objects.resize(smallestSize);
+        for(int i=0; i<objectsFreeIndicies.size(); ++i) {
+            if (objectsFreeIndicies[i]>=smallestSize) {
+                objectsFreeIndicies.erase(objectsFreeIndicies.begin() + i);
+                --i;
+            }
         }
     }
 }
@@ -95,12 +138,12 @@ ISystem* World::TryAddSystem(SystemID id, std::function<ISystem *(std::vector<in
         systems.push_back(system);
         system->Initialize();
         
-        for(auto& o : objects) {
-            if ((o.data->enabledComponents & system->componentMask) == system->componentMask) {
-                system->objects.push_back(&o);
-                system->ObjectAdded(&o);
+        IterateObjects([system](Object* o) {
+            if ((o->data->enabledComponents & system->componentMask) == system->componentMask) {
+                system->objects.push_back(o);
+                system->ObjectAdded(o);
             }
-        }
+        });
     }
     return system;
 }
@@ -110,13 +153,13 @@ void World::TryRemoveSystem(SystemID id) {
     ISystem* system = systemsIndexed[id];
     if (!system) return;
     
-    for(auto& o : objects) {
-        if ((o.data->enabledComponents & system->componentMask) == system->componentMask) {
-            system->ObjectRemoved(&o);
+    IterateObjects([system](Object* o) {
+        if ((o->data->enabledComponents & system->componentMask) == system->componentMask) {
+            system->ObjectRemoved(o);
             auto& objects = system->objects;
-            objects.erase(std::find(objects.begin(), objects.end(), &o));
+            objects.erase(std::find(objects.begin(), objects.end(), o));
         }
-    }
+    });
 
     
     for(int i=0; i<MaxComponents; ++i) {
@@ -136,4 +179,12 @@ void World::DoActions(Actions &actions) {
         action();
     }
     actions.clear();
+}
+
+void World::IterateObjects(std::function<void (Object *)> callback) {
+    for(auto& o : objects) {
+        if (o.index >= 0) {
+            callback(&o);
+        }
+    }
 }

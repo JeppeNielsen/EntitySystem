@@ -48,6 +48,7 @@ namespace Pocket {
         int ObjectCount() const;
         
         void Clear();
+        void Trim();
         
     private:
     
@@ -55,6 +56,8 @@ namespace Pocket {
     
         using Objects = std::deque<Object>;
         Objects objects;
+        using ObjectsFreeIndicies = std::vector<int>;
+        ObjectsFreeIndicies objectsFreeIndicies;
         
         using Components = std::array<IContainer*, MaxComponents>;
         Components components;
@@ -73,9 +76,12 @@ namespace Pocket {
         Actions createActions;
         Actions removeActions;
         
+        int objectCount;
+        
         ISystem* TryAddSystem(SystemID id, std::function<ISystem*(std::vector<int>& components)> constructor);
         void TryRemoveSystem(SystemID id);
         void DoActions(Actions& actions);
+        void IterateObjects(std::function<void(Object*)> callback);
         
         friend class Object;
         friend class ISystem;

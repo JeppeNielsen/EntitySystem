@@ -19,12 +19,13 @@ DirtyProperty<bool>& Object::WorldEnabled() { return data->WorldEnabled; }
 
 Object::Object()
     :
-    world(0), index(-1)
+    world(0), index(-1), data(0)
 {
     data = new Data();
 
     data->Enabled = true;
     data->Parent = 0;
+    
     data->Parent.Changed.Bind([this]() {
         assert(data->Parent!=this);
         Object* prevParent = data->Parent.PreviousValue();
@@ -59,7 +60,9 @@ Object::Object()
     data->Enabled.Changed.Bind(this, &Object::SetWorldEnableDirty);
 }
 
-Object::~Object() { delete data; }
+Object::~Object() {
+    delete data;
+}
 
 bool Object::HasComponent(ComponentID id) const {
     assert(id<MaxComponents);
@@ -139,7 +142,7 @@ void Object::Remove() {
     int localIndex = index;
     world->removeActions.emplace_back([this, localIndex]() {
         SetEnabled(false);
-        //world->objects.Delete(localIndex);
+        world->objectsFreeIndicies.push_back(localIndex);
     });
     index = -1;
     data->Parent = 0;
