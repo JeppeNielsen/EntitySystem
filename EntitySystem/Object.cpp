@@ -50,6 +50,12 @@ Object::Object()
             auto& children = currentParent->data->children;
             children.push_back(this);
             currentParent->data->WorldEnabled.HasBecomeDirty.Bind(this, &Object::SetWorldEnableDirty);
+            
+            bool prevWorldEnabled = data->WorldEnabled;
+            data->WorldEnabled.MakeDirty();
+            if (data->WorldEnabled()!=prevWorldEnabled) {
+                SetWorldEnableDirty();
+            }
         }
     });
     
@@ -190,7 +196,7 @@ void Object::TrySetComponentEnabled(ComponentID id, bool enable) {
     if (enable) {
         data->enabledComponents[id] = enable;
         if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
-        auto systemsUsingComponent = world->systemsPerComponent[id];
+        auto& systemsUsingComponent = world->systemsPerComponent[id];
         for(auto s : systemsUsingComponent) {
             bool isInterest = (data->enabledComponents & s->componentMask) == s->componentMask;
             if (isInterest) {
@@ -200,7 +206,7 @@ void Object::TrySetComponentEnabled(ComponentID id, bool enable) {
         }
     } else {
         if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
-        auto systemsUsingComponent = world->systemsPerComponent[id];
+        auto& systemsUsingComponent = world->systemsPerComponent[id];
         for(auto s : systemsUsingComponent) {
             bool wasInterest = (data->enabledComponents & s->componentMask) == s->componentMask;
             if (wasInterest) {
