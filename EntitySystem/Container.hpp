@@ -16,7 +16,7 @@ namespace Pocket {
 
     class IContainer {
     public:
-        virtual ~IContainer();
+        virtual ~IContainer() {}
         virtual int Create() = 0;
         virtual void Reference(int index) = 0;
         virtual void Delete(int index) = 0;
