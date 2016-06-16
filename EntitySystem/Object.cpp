@@ -142,12 +142,13 @@ void Object::RemoveComponent(ComponentID id) {
 }
 
 void Object::Remove() {
-    if (index==-1) return;
+    if (index<0) return;
     int localIndex = index;
     world->removeActions.emplace_back([this, localIndex]() {
         SetEnabled(false);
         world->objectsFreeIndicies.push_back(localIndex);
         --world->objectCount;
+        index = -2;
     });
     index = -1;
     data->Parent = 0;

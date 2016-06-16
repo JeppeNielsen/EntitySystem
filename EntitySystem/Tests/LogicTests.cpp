@@ -306,6 +306,39 @@ void LogicTests::RunTests() {
         return wasOneObject && hasNoObjects;
     });
     
+    AddTest("World::Trim", []() {
+        World world;
+        world.CreateObject();
+        Object* o2 = world.CreateObject();
+        Object* o3 = world.CreateObject();
+        
+        bool wasThree = world.ObjectCount() == 3;
+        bool wasThreeCapacity = world.CapacityCount() == 3;
+        o2->Remove();
+        o3->Remove();
+        world.Trim();
+        bool isCapacityStillThree = world.CapacityCount() == 3;
+        world.Update(0);
+        world.Trim();
+        bool isCapacityOne = world.CapacityCount() == 1;
+        bool oneObjectLeft = world.ObjectCount() == 1;
+        return wasThree && wasThreeCapacity && isCapacityStillThree && isCapacityOne && oneObjectLeft;
+    });
     
-    
+    AddTest("World::Trim2", []() {
+        World world;
+        world.CreateObject();
+        Object* o2 = world.CreateObject();
+        world.CreateObject();
+        bool wasThree = world.ObjectCount() == 3;
+        bool wasThreeCapacity = world.CapacityCount() == 3;
+        o2->Remove();
+        world.Trim();
+        bool isCapacityStillThree = world.CapacityCount() == 3;
+        world.Update(0);
+        world.Trim();
+        bool twoObjectsLeft = world.ObjectCount() == 2;
+        bool isCapacityStillThree2 = world.CapacityCount() == 3;
+        return wasThree && wasThreeCapacity && isCapacityStillThree && twoObjectsLeft && isCapacityStillThree2;
+    });
 }

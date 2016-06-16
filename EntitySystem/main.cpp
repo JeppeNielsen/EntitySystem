@@ -20,8 +20,8 @@ int main(int argc, const char * argv[]) {
     LogicTests logicTests;
     logicTests.Run();
     
-    PerformanceTests performance;
-    performance.Run();
+    //PerformanceTests performance;
+    //performance.Run();
     
     return 0;
 

@@ -104,7 +104,7 @@ void World::Trim() {
     
     int smallestSize = 0;
     for(int i = (int)objects.size() - 1; i>=0; --i) {
-        if (objects[i].index>=0) {
+        if (objects[i].index>=-1) {
             smallestSize = i + 1;
             break;
         }
