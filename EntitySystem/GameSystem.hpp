@@ -13,14 +13,14 @@
 
 namespace Pocket {
     
-    class World;
+    class GameWorld;
     class IGameSystem {
     protected:
-        World* const world;
+        GameWorld* const world;
         IGameSystem();
         virtual ~IGameSystem();
         void TryAddComponentContainer(ComponentID id, std::function<IContainer*()> constructor);
-        friend class World;
+        friend class GameWorld;
         virtual void Initialize();
         virtual void ObjectAdded(GameObject* object);
         virtual void ObjectRemoved(GameObject* object);
@@ -54,6 +54,6 @@ namespace Pocket {
             ExtractComponents<T...>(components);
         }
         
-        friend class World;
+        friend class GameWorld;
     };
 }

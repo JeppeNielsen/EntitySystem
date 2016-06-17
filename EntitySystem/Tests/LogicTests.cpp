@@ -7,7 +7,7 @@
 //
 
 #include "LogicTests.hpp"
-#include "World.hpp"
+#include "GameWorld.hpp"
 #include <cstdlib>
 
 using namespace Pocket;
@@ -15,13 +15,13 @@ using namespace Pocket;
 void LogicTests::RunTests() {
 
     AddTest("CreateObject", []() {
-        World world;
+        GameWorld world;
         world.CreateObject();
         return world.ObjectCount()==1;
     });
     
     AddTest("Remove GameObject", []() {
-        World world;
+        GameWorld world;
         GameObject* object = world.CreateObject();
         object->Remove();
         world.Update(0);
@@ -29,7 +29,7 @@ void LogicTests::RunTests() {
     });
     
     AddTest("Add/Remove GameObject in root.Children ", []() {
-        World world;
+        GameWorld world;
         GameObject* object = world.CreateObject();
         bool wasOne = world.ObjectCount() == 1 && world.Root()->Children().size() == 1;
         object->Remove();
@@ -38,8 +38,8 @@ void LogicTests::RunTests() {
         return wasOne && wasNone;
     });
     
-    AddTest("World::Clear", []() {
-        World world;
+    AddTest("GameWorld::Clear", []() {
+        GameWorld world;
         world.CreateObject();
         bool wasOne = world.ObjectCount() == 1;
         world.Clear();
@@ -48,13 +48,13 @@ void LogicTests::RunTests() {
     });
     
     AddTest("Default parent should be Root", []() {
-        World world;
+        GameWorld world;
         GameObject* object = world.CreateObject();
         return object->Parent() == world.Root();
     });
     
     AddTest("Parent set to 0 should be child of root", []() {
-        World world;
+        GameWorld world;
         GameObject* object = world.CreateObject();
         bool parentWasRoot = object->Parent() == world.Root();
         GameObject* parent = world.CreateObject();
@@ -68,7 +68,7 @@ void LogicTests::RunTests() {
     
     AddTest("GameObject::AddComponent", []() {
         struct Transform { int x; };
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         auto transform = object->AddComponent<Transform>();
         transform->x = 4;
@@ -77,7 +77,7 @@ void LogicTests::RunTests() {
 
     AddTest("double GameObject::AddComponent", []() {
         struct Transform { int x; };
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         auto transform = object->AddComponent<Transform>();
         transform->x = 4;
@@ -87,7 +87,7 @@ void LogicTests::RunTests() {
     
     AddTest("GameObject::HasComponent", []() {
         struct Transform { int x; };
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         auto transform = object->AddComponent<Transform>();
         return object && transform && object->HasComponent<Transform>();
@@ -95,7 +95,7 @@ void LogicTests::RunTests() {
     
     AddTest("GameObject::GetComponent", []() {
         struct Transform { int x; };
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         auto transform = object->AddComponent<Transform>();
         auto transform2 = object->GetComponent<Transform>();
@@ -105,7 +105,7 @@ void LogicTests::RunTests() {
     
     AddTest("GameObject::RemoveComponent", []() {
         struct Transform { int x; };
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         auto transform = object->AddComponent<Transform>();
         transform->x = 123;
@@ -119,7 +119,7 @@ void LogicTests::RunTests() {
     
     AddTest("Component reset", []() {
         struct Transform { Transform() : x(666) {} int x; };
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         auto transform = object->AddComponent<Transform>();
         transform->x = 123;
@@ -133,7 +133,7 @@ void LogicTests::RunTests() {
     
     AddTest("Multiple random GameObject::Add/RemoveComponent", []() {
         struct Transform { int x; };
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         
         for(int i=0; i<100; i++) {
@@ -150,7 +150,7 @@ void LogicTests::RunTests() {
     
     AddTest("Reference component", [](){
         struct Transform { int x; };
-        World world;
+        GameWorld world;
         auto source = world.CreateObject();
         auto sourceTransform = source->AddComponent<Transform>();
         sourceTransform->x = 123;
@@ -163,7 +163,7 @@ void LogicTests::RunTests() {
     
     AddTest("Clone component", [](){
         struct Transform { Transform() : x(666) {} int x; };
-        World world;
+        GameWorld world;
         auto source = world.CreateObject();
         auto sourceTransform = source->AddComponent<Transform>();
         sourceTransform->x = 123;
@@ -182,7 +182,7 @@ void LogicTests::RunTests() {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
         struct RenderSystem : public GameSystem<Transform, Renderable> { };
-        World world;
+        GameWorld world;
         RenderSystem* system = world.CreateSystem<RenderSystem>();
         bool wasNone = system->Objects().size() == 0;
         GameObject* object = world.CreateObject();
@@ -193,11 +193,11 @@ void LogicTests::RunTests() {
         return wasNone && wasOne;
     });
     
-    AddTest("World::Clear -> GameSystem::ObjectRemoved", [] () {
+    AddTest("GameWorld::Clear -> GameSystem::ObjectRemoved", [] () {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
         struct RenderSystem : public GameSystem<Transform, Renderable> { };
-        World world;
+        GameWorld world;
         RenderSystem* system = world.CreateSystem<RenderSystem>();
         bool wasNone = system->Objects().size() == 0;
         GameObject* object = world.CreateObject();
@@ -210,7 +210,7 @@ void LogicTests::RunTests() {
         return wasNone && wasOne && isNone;
     });
 
-    AddTest("World destructor cleanup ", [] () {
+    AddTest("GameWorld destructor cleanup ", [] () {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
         struct RenderSystem : public GameSystem<Transform, Renderable> {
@@ -226,7 +226,7 @@ void LogicTests::RunTests() {
         int ConstuctorDestructorCounter = 0;
         bool wasOne;
         {
-            World world;
+            GameWorld world;
             RenderSystem* system = world.CreateSystem<RenderSystem>();
             system->Counter = &Counter;
             system->ConstuctorDestructorCounter = &ConstuctorDestructorCounter;
@@ -243,7 +243,7 @@ void LogicTests::RunTests() {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
         struct RenderSystem : public GameSystem<Transform, Renderable> { };
-        World world;
+        GameWorld world;
         RenderSystem* system = world.CreateSystem<RenderSystem>();
         bool wasNone = system->Objects().size() == 0;
         GameObject* object = world.CreateObject();
@@ -268,7 +268,7 @@ void LogicTests::RunTests() {
             void ObjectRemoved(GameObject* o) { numberOfObjects--; }
         };
         
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         object->AddComponent<Transform>();
         object->AddComponent<Renderable>();
@@ -302,7 +302,7 @@ void LogicTests::RunTests() {
             void ObjectRemoved(GameObject* o) {ObjectCount--; }
         };
         
-        World world;
+        GameWorld world;
         auto object = world.CreateObject();
         object->AddComponent<Transform>();
         object->AddComponent<Renderable>();
@@ -314,8 +314,8 @@ void LogicTests::RunTests() {
         return wasOneObject && hasNoObjects;
     });
     
-    AddTest("World::Trim", []() {
-        World world;
+    AddTest("GameWorld::Trim", []() {
+        GameWorld world;
         world.CreateObject();
         GameObject* o2 = world.CreateObject();
         GameObject* o3 = world.CreateObject();
@@ -333,8 +333,8 @@ void LogicTests::RunTests() {
         return wasThree && wasThreeCapacity && isCapacityStillThree && isCapacityOne && oneObjectLeft;
     });
     
-    AddTest("World::Trim2", []() {
-        World world;
+    AddTest("GameWorld::Trim2", []() {
+        GameWorld world;
         world.CreateObject();
         GameObject* o2 = world.CreateObject();
         world.CreateObject();
@@ -351,7 +351,7 @@ void LogicTests::RunTests() {
     });
     
     AddTest("GameObject.Parent", []() {
-        World world;
+        GameWorld world;
         auto parent = world.CreateObject();
         auto child = world.CreateObject();
         bool twoObjects = world.ObjectCount() == 2;
@@ -361,7 +361,7 @@ void LogicTests::RunTests() {
     });
     
     AddTest("GameObject.Parent set to null", []() {
-        World world;
+        GameWorld world;
         auto parent = world.CreateObject();
         auto child = world.CreateObject();
         bool twoObjects = world.ObjectCount() == 2;
@@ -373,7 +373,7 @@ void LogicTests::RunTests() {
     });
 
     AddTest("Hierarchical removal ", []() {
-        World world;
+        GameWorld world;
         auto parent = world.CreateObject();
         auto child = world.CreateObject();
         auto grandChild = world.CreateObject();
@@ -394,7 +394,7 @@ void LogicTests::RunTests() {
             void ObjectAdded(GameObject* o) { ObjectCount++; }
             void ObjectRemoved(GameObject* o) {ObjectCount--; }
         };
-        World world;
+        GameWorld world;
         auto create = [&]() {
             auto o = world.CreateObject();
             o->AddComponent<Transform>();
@@ -426,7 +426,7 @@ void LogicTests::RunTests() {
             void ObjectAdded(GameObject* o) { ObjectCount++; }
             void ObjectRemoved(GameObject* o) {ObjectCount--; }
         };
-        World world;
+        GameWorld world;
         auto create = [&]() {
             auto o = world.CreateObject();
             o->AddComponent<Transform>();
@@ -449,7 +449,7 @@ void LogicTests::RunTests() {
         return renderSystemHasThreeObjects && renderSystemHasZeroObjects && renderSystemHasOneObject;
     });
     
-    AddTest("World dtor remove component from system", []() {
+    AddTest("GameWorld dtor remove component from system", []() {
         static int ObjectCount = 0;
         struct Transform { int x; };
         struct Renderable { int imageNo; };
@@ -460,7 +460,7 @@ void LogicTests::RunTests() {
         
         bool oneObjectCreated;
         {
-            World world;
+            GameWorld world;
             world.CreateSystem<RenderSystem>();
             auto o = world.CreateObject();
             o->AddComponent<Transform>();

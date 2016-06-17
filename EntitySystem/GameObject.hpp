@@ -20,7 +20,7 @@ namespace Pocket {
     
     using ObjectCollection = std::vector<GameObject*>;
     
-    class World;
+    class GameWorld;
     
     class GameObject {
     public:
@@ -96,10 +96,10 @@ namespace Pocket {
         };
         
         int index;
-        World* world;
+        GameWorld* world;
         Data* data;
         
         friend class Container<GameObject>;
-        friend class World;
+        friend class GameWorld;
     };
 }

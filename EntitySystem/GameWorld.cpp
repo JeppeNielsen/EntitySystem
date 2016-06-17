@@ -1,17 +1,17 @@
 //
-//  World.cpp
+//  GameWorld.cpp
 //  EntitySystem
 //
 //  Created by Jeppe Nielsen on 06/06/16.
 //  Copyright © 2016 Jeppe Nielsen. All rights reserved.
 //
 
-#include "World.hpp"
+#include "GameWorld.hpp"
 #include <iostream>
 
 using namespace Pocket;
 
-World::World() {
+GameWorld::GameWorld() {
     for(int i=0; i<MaxComponents; ++i) {
         components[i] = 0;
     }
@@ -19,7 +19,7 @@ World::World() {
     objectCount = 0;
 }
 
-World::~World() {
+GameWorld::~GameWorld() {
     Clear();
     for(auto s : systems) {
         delete s;
@@ -29,9 +29,9 @@ World::~World() {
     }
 }
 
-const GameObject* World::Root() { return &root; }
+const GameObject* GameWorld::Root() { return &root; }
 
-GameObject* World::CreateObject() {
+GameObject* GameWorld::CreateObject() {
     int index;
     if (objectsFreeIndicies.empty()) {
         index = (int)objects.size();
@@ -57,7 +57,7 @@ GameObject* World::CreateObject() {
     return &object;
 }
 
-void World::Update(float dt) {
+void GameWorld::Update(float dt) {
     for(auto system : systems) {
         system->Update(dt);
     }
@@ -65,21 +65,21 @@ void World::Update(float dt) {
     DoActions(removeActions);
 }
 
-void World::Render() {
+void GameWorld::Render() {
     for(auto system : systems) {
         system->Render();
     }
 }
 
-int World::ObjectCount() const {
+int GameWorld::ObjectCount() const {
     return objectCount;
 }
 
-int World::CapacityCount() const {
+int GameWorld::CapacityCount() const {
     return (int)objects.size();
 }
 
-void World::Clear() {
+void GameWorld::Clear() {
     IterateObjects([](GameObject* o) {
         o->SetEnabled(false);
     });
@@ -95,7 +95,7 @@ void World::Clear() {
     }
 }
 
-void World::Trim() {
+void GameWorld::Trim() {
     for(int i=0; i<MaxComponents; ++i) {
         if (components[i]) {
             components[i]->Trim();
@@ -123,7 +123,7 @@ void World::Trim() {
     }
 }
 
-IGameSystem* World::TryAddSystem(SystemID id, std::function<IGameSystem *(std::vector<int>& components)> constructor) {
+IGameSystem* GameWorld::TryAddSystem(SystemID id, std::function<IGameSystem *(std::vector<int>& components)> constructor) {
     if (id>=systemsIndexed.size()) {
         systemsIndexed.resize(id + 1, 0);
     }
@@ -152,7 +152,7 @@ IGameSystem* World::TryAddSystem(SystemID id, std::function<IGameSystem *(std::v
     return system;
 }
 
-void World::TryRemoveSystem(SystemID id) {
+void GameWorld::TryRemoveSystem(SystemID id) {
     if (id>=systemsIndexed.size()) return;
     IGameSystem* system = systemsIndexed[id];
     if (!system) return;
@@ -178,14 +178,14 @@ void World::TryRemoveSystem(SystemID id) {
     delete system;
 }
 
-void World::DoActions(Actions &actions) {
+void GameWorld::DoActions(Actions &actions) {
     for(auto action : actions) {
         action();
     }
     actions.clear();
 }
 
-void World::IterateObjects(std::function<void (GameObject *)> callback) {
+void GameWorld::IterateObjects(std::function<void (GameObject *)> callback) {
     for(auto& o : objects) {
         if (o.index >= 0) {
             callback(&o);

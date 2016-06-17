@@ -7,7 +7,7 @@
 //
 
 #include "GameSystem.hpp"
-#include "World.hpp"
+#include "GameWorld.hpp"
 
 using namespace Pocket;
 

@@ -8,7 +8,7 @@
 
 #include "GameObject.hpp"
 #include <assert.h>
-#include "World.hpp"
+#include "GameWorld.hpp"
 
 using namespace Pocket;
 

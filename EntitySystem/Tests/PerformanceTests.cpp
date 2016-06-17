@@ -7,23 +7,23 @@
 //
 
 #include "PerformanceTests.hpp"
-#include "World.hpp"
+#include "GameWorld.hpp"
 using namespace Pocket;
 
 void PerformanceTests::RunTests() {
     
-    AddTest("World ctor/dtor x 100000", [this]() {
+    AddTest("GameWorld ctor/dtor x 100000", [this]() {
         Begin();
         for(int i = 0; i<100000; ++i) {
-            World world;
+            GameWorld world;
         }
         End();
     });
     
-    AddTest("World ctor/dtor x 100000 x 10 objects", [this]() {
+    AddTest("GameWorld ctor/dtor x 100000 x 10 objects", [this]() {
         Begin();
         for(int i = 0; i<100000; ++i) {
-            World world;
+            GameWorld world;
             for(int j = 0; j<10; ++j) {
                 world.CreateObject();
             }
@@ -33,7 +33,7 @@ void PerformanceTests::RunTests() {
     
     AddTest("CreateObject x 1000000", [this]() {
         Begin();
-        World world;
+        GameWorld world;
         for(int i = 0; i<1000000; ++i) {
             world.CreateObject();
         }
@@ -43,7 +43,7 @@ void PerformanceTests::RunTests() {
     
     AddTest("AddComponent x 100000", [this]() {
         struct Component { };
-        World world;
+        GameWorld world;
         ObjectCollection objects;
         for(int i=0; i<100000; ++i) {
             objects.push_back(world.CreateObject());
@@ -58,7 +58,7 @@ void PerformanceTests::RunTests() {
     AddTest("GetComponent x 1000000", [this]() {
         struct Component { int x; };
         
-        World world;
+        GameWorld world;
         ObjectCollection objects;
         for(int i=0; i<1000000; ++i) {
             objects.push_back(world.CreateObject());
@@ -78,7 +78,7 @@ void PerformanceTests::RunTests() {
     AddTest("GetComponent x 10000 x 10000", [this]() {
         struct Component { int x; };
         
-        World world;
+        GameWorld world;
         ObjectCollection objects;
         for(int i=0; i<10000; ++i) {
             objects.push_back(world.CreateObject());
@@ -101,7 +101,7 @@ void PerformanceTests::RunTests() {
     AddTest("RemoveComponent x 1000000", [this]() {
         struct Component { int x; };
         
-        World world;
+        GameWorld world;
         ObjectCollection objects;
         for(int i=0; i<1000000; ++i) {
             objects.push_back(world.CreateObject());

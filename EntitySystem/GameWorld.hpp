@@ -1,5 +1,5 @@
 //
-//  World.hpp
+//  GameWorld.hpp
 //  EntitySystem
 //
 //  Created by Jeppe Nielsen on 06/06/16.
@@ -12,10 +12,10 @@
 #include "GameSystem.hpp"
 
 namespace Pocket {
-    class World {
+    class GameWorld {
     public:
-        World();
-        ~World();
+        GameWorld();
+        ~GameWorld();
         
         const GameObject* Root();
         
@@ -29,7 +29,7 @@ namespace Pocket {
             [this](std::vector<int>& components)
                 {
                     T* system = new T;
-                    World** worldC = ((World**)&system->world);
+                    GameWorld** worldC = ((GameWorld**)&system->world);
                     *(worldC) = this;
                     system->ExtractAllComponents(components);
                     return system;
