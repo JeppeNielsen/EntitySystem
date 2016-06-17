@@ -8,7 +8,7 @@
 
 #pragma once
 #include <vector>
-#include "EntityHelper.hpp"
+#include "GameIDHelper.hpp"
 #include "GameObject.hpp"
 
 namespace Pocket {
@@ -39,7 +39,7 @@ namespace Pocket {
     private:
         template<typename Last>
         void ExtractComponents(std::vector<int>& components) {
-            ComponentID id = EntityHelper::GetComponentID<Last>();
+            ComponentID id = GameIDHelper::GetComponentID<Last>();
             TryAddComponentContainer(id, [](){ return new Container<Last>(); });
             components.push_back(id);
         }

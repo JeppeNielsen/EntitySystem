@@ -1,5 +1,5 @@
 //
-//  EntityHelper.hpp
+//  GameIDHelper.hpp
 //  EntitySystem
 //
 //  Created by Jeppe Nielsen on 06/06/16.
@@ -19,7 +19,7 @@ namespace Pocket {
 
     using SystemID = int;
     
-    class EntityHelper {
+    class GameIDHelper {
     private:
         static ComponentID componentIDCounter;
         static SystemID systemIDCounter;

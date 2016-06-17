@@ -25,7 +25,7 @@ namespace Pocket {
         T* CreateSystem() {
             return static_cast<T*>(
             TryAddSystem(
-            EntityHelper::GetSystemID<T>(),
+            GameIDHelper::GetSystemID<T>(),
             [this](std::vector<int>& components)
                 {
                     T* system = new T;
@@ -39,7 +39,7 @@ namespace Pocket {
         
         template<typename T>
         void RemoveSystem() {
-            TryRemoveSystem(EntityHelper::GetSystemID<T>());
+            TryRemoveSystem(GameIDHelper::GetSystemID<T>());
         }
         
         void Update(float dt);
@@ -91,7 +91,7 @@ namespace Pocket {
     
     template<typename T>
     T* GameObject::GetComponent() {
-        ComponentID id = EntityHelper::GetComponentID<T>();
+        ComponentID id = GameIDHelper::GetComponentID<T>();
         int componentIndex = world->objectComponents[id][index];
         if (componentIndex == -1) return 0;
         Container<T>* container = static_cast<Container<T>*>(world->components[id]);

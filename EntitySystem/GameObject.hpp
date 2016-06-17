@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "EntityHelper.hpp"
+#include "GameIDHelper.hpp"
 #include "Property.hpp"
 #include "DirtyProperty.hpp"
 
@@ -27,7 +27,7 @@ namespace Pocket {
     
         template<typename T>
         bool HasComponent() const {
-            return HasComponent(EntityHelper::GetComponentID<T>());
+            return HasComponent(GameIDHelper::GetComponentID<T>());
         }
     
         template<typename T>
@@ -35,7 +35,7 @@ namespace Pocket {
         
         template<typename T>
         T* AddComponent() {
-            ComponentID id = EntityHelper::GetComponentID<T>();
+            ComponentID id = GameIDHelper::GetComponentID<T>();
             TryAddComponentContainer(id, [](){ return new Container<T>(); });
             AddComponent(id);
             return GetComponent<T>();
@@ -43,19 +43,19 @@ namespace Pocket {
         
         template<typename T>
         T* AddComponent(GameObject* source) {
-            AddComponent(EntityHelper::GetComponentID<T>(), source);
+            AddComponent(GameIDHelper::GetComponentID<T>(), source);
             return GetComponent<T>();
         }
         
         template<typename T>
         T* CloneComponent(GameObject* source) {
-            CloneComponent(EntityHelper::GetComponentID<T>(), source);
+            CloneComponent(GameIDHelper::GetComponentID<T>(), source);
             return GetComponent<T>();
         }
         
         template<typename T>
         void RemoveComponent() {
-            RemoveComponent(EntityHelper::GetComponentID<T>());
+            RemoveComponent(GameIDHelper::GetComponentID<T>());
         };
         
         void Remove();
