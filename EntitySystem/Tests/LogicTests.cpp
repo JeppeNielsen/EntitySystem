@@ -23,6 +23,14 @@ void LogicTests::RunTests() {
     AddTest("Remove Object", []() {
         World world;
         Object* object = world.CreateObject();
+        object->Remove();
+        world.Update(0);
+        return world.ObjectCount() == 0;
+    });
+    
+    AddTest("Add/Remove Object in root.Children ", []() {
+        World world;
+        Object* object = world.CreateObject();
         bool wasOne = world.ObjectCount() == 1 && world.Root()->Children().size() == 1;
         object->Remove();
         world.Update(0);
@@ -42,7 +50,7 @@ void LogicTests::RunTests() {
     AddTest("Default parent should be Root", []() {
         World world;
         Object* object = world.CreateObject();
-        return object->Parent() == world.Root() && world.Root()->Children().size() == 1;
+        return object->Parent() == world.Root();
     });
     
     AddTest("Parent set to 0 should be child of root", []() {
@@ -58,7 +66,7 @@ void LogicTests::RunTests() {
         return parentWasRoot && parentWasParent && objectIsRootChild && objectNotRootChild;
     });
     
-        AddTest("Object::AddComponent", []() {
+    AddTest("Object::AddComponent", []() {
         struct Transform { int x; };
         World world;
         auto object = world.CreateObject();
@@ -440,4 +448,28 @@ void LogicTests::RunTests() {
         bool renderSystemHasOneObject = ObjectCount == 1;
         return renderSystemHasThreeObjects && renderSystemHasZeroObjects && renderSystemHasOneObject;
     });
+    
+    AddTest("World dtor remove component from system", []() {
+        static int ObjectCount = 0;
+        struct Transform { int x; };
+        struct Renderable { int imageNo; };
+        struct RenderSystem : public System<Transform, Renderable> {
+            void ObjectAdded(Object* o) { ObjectCount++; }
+            void ObjectRemoved(Object* o) {ObjectCount--; }
+        };
+        
+        bool oneObjectCreated;
+        {
+            World world;
+            world.CreateSystem<RenderSystem>();
+            auto o = world.CreateObject();
+            o->AddComponent<Transform>();
+            o->AddComponent<Renderable>();
+            world.Update(0);
+            oneObjectCreated = ObjectCount == 1;
+        }
+        return ObjectCount == 0;
+    });
+
+    
 }
