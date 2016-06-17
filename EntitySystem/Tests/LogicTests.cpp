@@ -23,6 +23,14 @@ void LogicTests::RunTests() {
     AddTest("Remove Object", []() {
         World world;
         Object* object = world.CreateObject();
+        object->Remove();
+        world.Update(0);
+        return world.ObjectCount() == 0;
+    });
+    
+    AddTest("Add/Remove Object in root.Children ", []() {
+        World world;
+        Object* object = world.CreateObject();
         bool wasOne = world.ObjectCount() == 1 && world.Root()->Children().size() == 1;
         object->Remove();
         world.Update(0);
@@ -42,23 +50,23 @@ void LogicTests::RunTests() {
     AddTest("Default parent should be Root", []() {
         World world;
         Object* object = world.CreateObject();
-        return object->Parent == world.Root() && world.Root()->Children().size() == 1;
+        return object->Parent() == world.Root();
     });
     
     AddTest("Parent set to 0 should be child of root", []() {
         World world;
         Object* object = world.CreateObject();
-        bool parentWasRoot = object->Parent == world.Root();
+        bool parentWasRoot = object->Parent() == world.Root();
         Object* parent = world.CreateObject();
-        object->Parent = parent;
+        object->Parent() = parent;
         bool objectNotRootChild = std::find(world.Root()->Children().begin(), world.Root()->Children().end(), object)==world.Root()->Children().end();
-        bool parentWasParent = object->Parent == parent;
-        object->Parent = 0;
+        bool parentWasParent = object->Parent() == parent;
+        object->Parent() = 0;
         bool objectIsRootChild = std::find(world.Root()->Children().begin(), world.Root()->Children().end(), object)!=world.Root()->Children().end();
         return parentWasRoot && parentWasParent && objectIsRootChild && objectNotRootChild;
     });
     
-        AddTest("Object::AddComponent", []() {
+    AddTest("Object::AddComponent", []() {
         struct Transform { int x; };
         World world;
         auto object = world.CreateObject();
@@ -146,7 +154,6 @@ void LogicTests::RunTests() {
         auto source = world.CreateObject();
         auto sourceTransform = source->AddComponent<Transform>();
         sourceTransform->x = 123;
-        
         
         auto copy = world.CreateObject();
         auto copyTransform = copy->AddComponent<Transform>(source);
@@ -244,7 +251,7 @@ void LogicTests::RunTests() {
         object->AddComponent<Renderable>();
         world.Update(0);
         bool wasOne = system->Objects().size() == 1;
-        object->Enabled = false;
+        object->Enabled() = false;
         world.Update(0);
         bool isNone = system->Objects().size() == 0;
         return wasNone && wasOne && isNone;
@@ -274,7 +281,7 @@ void LogicTests::RunTests() {
         auto object1 = world.CreateObject();
         object1->AddComponent<Transform>();
         object1->AddComponent<Renderable>();
-        object1->Enabled = false;
+        object1->Enabled() = false;
         auto object2 = world.CreateObject();
         object2->AddComponent<Transform>();
         object2->AddComponent<Renderable>();
@@ -307,6 +314,162 @@ void LogicTests::RunTests() {
         return wasOneObject && hasNoObjects;
     });
     
+    AddTest("World::Trim", []() {
+        World world;
+        world.CreateObject();
+        Object* o2 = world.CreateObject();
+        Object* o3 = world.CreateObject();
+        
+        bool wasThree = world.ObjectCount() == 3;
+        bool wasThreeCapacity = world.CapacityCount() == 3;
+        o2->Remove();
+        o3->Remove();
+        world.Trim();
+        bool isCapacityStillThree = world.CapacityCount() == 3;
+        world.Update(0);
+        world.Trim();
+        bool isCapacityOne = world.CapacityCount() == 1;
+        bool oneObjectLeft = world.ObjectCount() == 1;
+        return wasThree && wasThreeCapacity && isCapacityStillThree && isCapacityOne && oneObjectLeft;
+    });
     
+    AddTest("World::Trim2", []() {
+        World world;
+        world.CreateObject();
+        Object* o2 = world.CreateObject();
+        world.CreateObject();
+        bool wasThree = world.ObjectCount() == 3;
+        bool wasThreeCapacity = world.CapacityCount() == 3;
+        o2->Remove();
+        world.Trim();
+        bool isCapacityStillThree = world.CapacityCount() == 3;
+        world.Update(0);
+        world.Trim();
+        bool twoObjectsLeft = world.ObjectCount() == 2;
+        bool isCapacityStillThree2 = world.CapacityCount() == 3;
+        return wasThree && wasThreeCapacity && isCapacityStillThree && twoObjectsLeft && isCapacityStillThree2;
+    });
+    
+    AddTest("Object.Parent", []() {
+        World world;
+        auto parent = world.CreateObject();
+        auto child = world.CreateObject();
+        bool twoObjects = world.ObjectCount() == 2;
+        child->Parent() = parent;
+        bool hasOneChild = parent->Children().size() == 1;
+        return twoObjects && hasOneChild;
+    });
+    
+    AddTest("Object.Parent set to null", []() {
+        World world;
+        auto parent = world.CreateObject();
+        auto child = world.CreateObject();
+        bool twoObjects = world.ObjectCount() == 2;
+        child->Parent() = parent;
+        bool hasOneChild = parent->Children().size() == 1;
+        child->Parent() = 0;
+        bool hasNoChildren = parent->Children().empty();
+        return twoObjects && hasOneChild && hasNoChildren;
+    });
+
+    AddTest("Hierarchical removal ", []() {
+        World world;
+        auto parent = world.CreateObject();
+        auto child = world.CreateObject();
+        auto grandChild = world.CreateObject();
+        child->Parent() = parent;
+        grandChild->Parent() = child;
+        bool threeObjectsInWorld = world.ObjectCount() == 3;
+        parent->Remove();
+        world.Update(0);
+        bool zeroObjectsInWorld = world.ObjectCount() == 0;
+        return threeObjectsInWorld && zeroObjectsInWorld;
+    });
+    
+    AddTest("Hierarchical Enabled ", []() {
+        static int ObjectCount = 0;
+        struct Transform { int x; };
+        struct Renderable { int imageNo; };
+        struct RenderSystem : public System<Transform, Renderable> {
+            void ObjectAdded(Object* o) { ObjectCount++; }
+            void ObjectRemoved(Object* o) {ObjectCount--; }
+        };
+        World world;
+        auto create = [&]() {
+            auto o = world.CreateObject();
+            o->AddComponent<Transform>();
+            o->AddComponent<Renderable>();
+            return o;
+        };
+        
+        world.CreateSystem<RenderSystem>();
+        auto parent = create();
+        auto child = create();
+        auto grandChild = create();
+        child->Parent() = parent;
+        grandChild->Parent() = child;
+        world.Update(0);
+        bool renderSystemHasThreeObjects = ObjectCount == 3;
+        parent->Enabled() = false;
+        parent->Enabled() = true;
+        parent->Enabled() = false;
+        world.Update(0);
+        bool renderSystemHasZeroObjects = ObjectCount == 0;
+        return renderSystemHasThreeObjects && renderSystemHasZeroObjects;
+    });
+    
+    AddTest("Parent set to disabled object ", []() {
+        static int ObjectCount = 0;
+        struct Transform { int x; };
+        struct Renderable { int imageNo; };
+        struct RenderSystem : public System<Transform, Renderable> {
+            void ObjectAdded(Object* o) { ObjectCount++; }
+            void ObjectRemoved(Object* o) {ObjectCount--; }
+        };
+        World world;
+        auto create = [&]() {
+            auto o = world.CreateObject();
+            o->AddComponent<Transform>();
+            o->AddComponent<Renderable>();
+            return o;
+        };
+        
+        world.CreateSystem<RenderSystem>();
+        auto o1 = create();
+        auto o2 = create();
+        world.Update(0);
+        bool renderSystemHasThreeObjects = ObjectCount == 2;
+        o1->Enabled() = false;
+        o2->Parent() = o1;
+        world.Update(0);
+        bool renderSystemHasZeroObjects = ObjectCount == 0;
+        o2->Parent() = 0;
+        world.Update(0);
+        bool renderSystemHasOneObject = ObjectCount == 1;
+        return renderSystemHasThreeObjects && renderSystemHasZeroObjects && renderSystemHasOneObject;
+    });
+    
+    AddTest("World dtor remove component from system", []() {
+        static int ObjectCount = 0;
+        struct Transform { int x; };
+        struct Renderable { int imageNo; };
+        struct RenderSystem : public System<Transform, Renderable> {
+            void ObjectAdded(Object* o) { ObjectCount++; }
+            void ObjectRemoved(Object* o) {ObjectCount--; }
+        };
+        
+        bool oneObjectCreated;
+        {
+            World world;
+            world.CreateSystem<RenderSystem>();
+            auto o = world.CreateObject();
+            o->AddComponent<Transform>();
+            o->AddComponent<Renderable>();
+            world.Update(0);
+            oneObjectCreated = ObjectCount == 1;
+        }
+        return ObjectCount == 0;
+    });
+
     
 }

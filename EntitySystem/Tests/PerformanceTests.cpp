@@ -31,14 +31,15 @@ void PerformanceTests::RunTests() {
         End();
     });
     
-    AddTest("CreateObject x 100000", [this]() {
+    AddTest("CreateObject x 1000000", [this]() {
         Begin();
         World world;
-        for(int i = 0; i<100000; ++i) {
+        for(int i = 0; i<1000000; ++i) {
             world.CreateObject();
         }
         End();
     });
+    
     
     AddTest("AddComponent x 100000", [this]() {
         struct Component { };
@@ -56,11 +57,13 @@ void PerformanceTests::RunTests() {
     
     AddTest("GetComponent x 1000000", [this]() {
         struct Component { int x; };
+        
         World world;
         ObjectCollection objects;
         for(int i=0; i<1000000; ++i) {
             objects.push_back(world.CreateObject());
         }
+        
         for(int i = 0; i<objects.size(); ++i) {
             objects[i]->AddComponent<Component>();
         }
@@ -71,5 +74,50 @@ void PerformanceTests::RunTests() {
         }
         End();
     });
+    
+    AddTest("GetComponent x 10000 x 10000", [this]() {
+        struct Component { int x; };
+        
+        World world;
+        ObjectCollection objects;
+        for(int i=0; i<10000; ++i) {
+            objects.push_back(world.CreateObject());
+        }
+        
+        
+        for(int i = 0; i<objects.size(); ++i) {
+            objects[i]->AddComponent<Component>();
+        }
+        
+        Begin();
+        for(int j=0; j<10000; ++j) {
+        for(int i = 0; i<objects.size(); ++i) {
+            objects[i]->GetComponent<Component>()->x++;
+        }
+        }
+        End();
+    });
+
+    AddTest("RemoveComponent x 1000000", [this]() {
+        struct Component { int x; };
+        
+        World world;
+        ObjectCollection objects;
+        for(int i=0; i<1000000; ++i) {
+            objects.push_back(world.CreateObject());
+        }
+        
+        for(int i = 0; i<objects.size(); ++i) {
+            objects[i]->AddComponent<Component>();
+        }
+        
+        Begin();
+        for(int i = 0; i<objects.size(); ++i) {
+            objects[i]->RemoveComponent<Component>();
+        }
+        world.Update(0);
+        End();
+    });
+    
 
 }

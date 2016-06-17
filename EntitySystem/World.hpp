@@ -46,18 +46,25 @@ namespace Pocket {
         void Render();
         
         int ObjectCount() const;
+        int CapacityCount() const;
         
         void Clear();
+        void Trim();
         
     private:
     
         Object root;
     
-        using Objects = Container<Object>;
+        using Objects = std::deque<Object>;
         Objects objects;
+        using ObjectsFreeIndicies = std::vector<int>;
+        ObjectsFreeIndicies objectsFreeIndicies;
         
         using Components = std::array<IContainer*, MaxComponents>;
         Components components;
+        
+        using ObjectComponents = std::array<std::vector<int>, MaxComponents>;
+        ObjectComponents objectComponents;
         
         using Systems = std::vector<ISystem*>;
         Systems systemsIndexed;
@@ -70,11 +77,27 @@ namespace Pocket {
         Actions createActions;
         Actions removeActions;
         
+        int objectCount;
+        
         ISystem* TryAddSystem(SystemID id, std::function<ISystem*(std::vector<int>& components)> constructor);
         void TryRemoveSystem(SystemID id);
         void DoActions(Actions& actions);
+        void IterateObjects(std::function<void(Object*)> callback);
         
         friend class Object;
         friend class ISystem;
     };
+    
+    
+    template<typename T>
+    T* Object::GetComponent() {
+        ComponentID id = EntityHelper::GetComponentID<T>();
+        int componentIndex = world->objectComponents[id][index];
+        if (componentIndex == -1) return 0;
+        Container<T>* container = static_cast<Container<T>*>(world->components[id]);
+        return &container->entries[componentIndex];
+    }
+
+    
+    
 }
