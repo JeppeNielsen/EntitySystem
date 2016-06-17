@@ -9,7 +9,7 @@
 #pragma once
 #include "Object.hpp"
 #include "Container.hpp"
-#include "System.hpp"
+#include "GameSystem.hpp"
 
 namespace Pocket {
     class World {
@@ -66,7 +66,7 @@ namespace Pocket {
         using ObjectComponents = std::array<std::vector<int>, MaxComponents>;
         ObjectComponents objectComponents;
         
-        using Systems = std::vector<ISystem*>;
+        using Systems = std::vector<IGameSystem*>;
         Systems systemsIndexed;
         Systems systems;
         using SystemsPerComponent = std::vector<Systems>;
@@ -79,13 +79,13 @@ namespace Pocket {
         
         int objectCount;
         
-        ISystem* TryAddSystem(SystemID id, std::function<ISystem*(std::vector<int>& components)> constructor);
+        IGameSystem* TryAddSystem(SystemID id, std::function<IGameSystem*(std::vector<int>& components)> constructor);
         void TryRemoveSystem(SystemID id);
         void DoActions(Actions& actions);
         void IterateObjects(std::function<void(Object*)> callback);
         
         friend class Object;
-        friend class ISystem;
+        friend class IGameSystem;
     };
     
     

@@ -178,10 +178,10 @@ void LogicTests::RunTests() {
         copyTransform->x == 123;
     });
     
-    AddTest("System::Object Count", [] () {
+    AddTest("GameSystem::Object Count", [] () {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> { };
+        struct RenderSystem : public GameSystem<Transform, Renderable> { };
         World world;
         RenderSystem* system = world.CreateSystem<RenderSystem>();
         bool wasNone = system->Objects().size() == 0;
@@ -193,10 +193,10 @@ void LogicTests::RunTests() {
         return wasNone && wasOne;
     });
     
-    AddTest("World::Clear -> System::ObjectRemoved", [] () {
+    AddTest("World::Clear -> GameSystem::ObjectRemoved", [] () {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> { };
+        struct RenderSystem : public GameSystem<Transform, Renderable> { };
         World world;
         RenderSystem* system = world.CreateSystem<RenderSystem>();
         bool wasNone = system->Objects().size() == 0;
@@ -213,7 +213,7 @@ void LogicTests::RunTests() {
     AddTest("World destructor cleanup ", [] () {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> {
+        struct RenderSystem : public GameSystem<Transform, Renderable> {
             int* Counter;
             int* ConstuctorDestructorCounter;
             ~RenderSystem() {
@@ -242,7 +242,7 @@ void LogicTests::RunTests() {
     AddTest("Object::Enabled", [] () {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> { };
+        struct RenderSystem : public GameSystem<Transform, Renderable> { };
         World world;
         RenderSystem* system = world.CreateSystem<RenderSystem>();
         bool wasNone = system->Objects().size() == 0;
@@ -257,10 +257,10 @@ void LogicTests::RunTests() {
         return wasNone && wasOne && isNone;
     });
 
-    AddTest("Add System", []() {
+    AddTest("Add GameSystem", []() {
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> {
+        struct RenderSystem : public GameSystem<Transform, Renderable> {
         public:
             int numberOfObjects;
             void Initialize() { numberOfObjects = 0; }
@@ -296,7 +296,7 @@ void LogicTests::RunTests() {
         static int ObjectCount = 0;
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> {
+        struct RenderSystem : public GameSystem<Transform, Renderable> {
         public:
             void ObjectAdded(Object* o) { ObjectCount++; }
             void ObjectRemoved(Object* o) {ObjectCount--; }
@@ -390,7 +390,7 @@ void LogicTests::RunTests() {
         static int ObjectCount = 0;
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> {
+        struct RenderSystem : public GameSystem<Transform, Renderable> {
             void ObjectAdded(Object* o) { ObjectCount++; }
             void ObjectRemoved(Object* o) {ObjectCount--; }
         };
@@ -422,7 +422,7 @@ void LogicTests::RunTests() {
         static int ObjectCount = 0;
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> {
+        struct RenderSystem : public GameSystem<Transform, Renderable> {
             void ObjectAdded(Object* o) { ObjectCount++; }
             void ObjectRemoved(Object* o) {ObjectCount--; }
         };
@@ -453,7 +453,7 @@ void LogicTests::RunTests() {
         static int ObjectCount = 0;
         struct Transform { int x; };
         struct Renderable { int imageNo; };
-        struct RenderSystem : public System<Transform, Renderable> {
+        struct RenderSystem : public GameSystem<Transform, Renderable> {
             void ObjectAdded(Object* o) { ObjectCount++; }
             void ObjectRemoved(Object* o) {ObjectCount--; }
         };

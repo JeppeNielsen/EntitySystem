@@ -123,11 +123,11 @@ void World::Trim() {
     }
 }
 
-ISystem* World::TryAddSystem(SystemID id, std::function<ISystem *(std::vector<int>& components)> constructor) {
+IGameSystem* World::TryAddSystem(SystemID id, std::function<IGameSystem *(std::vector<int>& components)> constructor) {
     if (id>=systemsIndexed.size()) {
         systemsIndexed.resize(id + 1, 0);
     }
-    ISystem* system = systemsIndexed[id];
+    IGameSystem* system = systemsIndexed[id];
     if (!system) {
         std::vector<int> componentIndices;
         system = constructor(componentIndices);
@@ -154,7 +154,7 @@ ISystem* World::TryAddSystem(SystemID id, std::function<ISystem *(std::vector<in
 
 void World::TryRemoveSystem(SystemID id) {
     if (id>=systemsIndexed.size()) return;
-    ISystem* system = systemsIndexed[id];
+    IGameSystem* system = systemsIndexed[id];
     if (!system) return;
     
     IterateObjects([system](Object* o) {

@@ -1,5 +1,5 @@
 //
-//  System.hpp
+//  GameSystem.hpp
 //  EntitySystem
 //
 //  Created by Jeppe Nielsen on 08/06/16.
@@ -14,11 +14,11 @@
 namespace Pocket {
     
     class World;
-    class ISystem {
+    class IGameSystem {
     protected:
         World* const world;
-        ISystem();
-        virtual ~ISystem();
+        IGameSystem();
+        virtual ~IGameSystem();
         void TryAddComponentContainer(ComponentID id, std::function<IContainer*()> constructor);
         friend class World;
         virtual void Initialize();
@@ -35,7 +35,7 @@ namespace Pocket {
     };
     
     template<typename ...T>
-    class System : public ISystem {
+    class GameSystem : public IGameSystem {
     private:
         template<typename Last>
         void ExtractComponents(std::vector<int>& components) {
