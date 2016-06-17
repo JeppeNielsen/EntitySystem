@@ -9,7 +9,7 @@
 #pragma once
 #include <vector>
 #include "EntityHelper.hpp"
-#include "Object.hpp"
+#include "GameObject.hpp"
 
 namespace Pocket {
     
@@ -22,14 +22,14 @@ namespace Pocket {
         void TryAddComponentContainer(ComponentID id, std::function<IContainer*()> constructor);
         friend class World;
         virtual void Initialize();
-        virtual void ObjectAdded(Object* object);
-        virtual void ObjectRemoved(Object* object);
+        virtual void ObjectAdded(GameObject* object);
+        virtual void ObjectRemoved(GameObject* object);
         virtual void Update(float dt);
         virtual void Render();
     private:
         ObjectCollection objects;
         ComponentMask componentMask;
-        friend class Object;
+        friend class GameObject;
     public:
         const ObjectCollection& Objects() const;
     };

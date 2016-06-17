@@ -21,8 +21,8 @@ void IGameSystem::TryAddComponentContainer(ComponentID id, std::function<IContai
 }
 
 void IGameSystem::Initialize() {}
-void IGameSystem::ObjectAdded(Pocket::Object *object) {}
-void IGameSystem::ObjectRemoved(Pocket::Object *object) {}
+void IGameSystem::ObjectAdded(Pocket::GameObject *object) {}
+void IGameSystem::ObjectRemoved(Pocket::GameObject *object) {}
 void IGameSystem::Update(float dt) {}
 void IGameSystem::Render() {}
 const ObjectCollection& IGameSystem::Objects() const { return objects; }

@@ -1,23 +1,23 @@
 //
-//  Object.cpp
+//  GameObject.cpp
 //  EntitySystem
 //
 //  Created by Jeppe Nielsen on 06/06/16.
 //  Copyright © 2016 Jeppe Nielsen. All rights reserved.
 //
 
-#include "Object.hpp"
+#include "GameObject.hpp"
 #include <assert.h>
 #include "World.hpp"
 
 using namespace Pocket;
 
-const ObjectCollection& Object::Children() const { return data->children; }
-Property<Object*>& Object::Parent() { return data->Parent; }
-Property<bool>& Object::Enabled() { return data->Enabled; }
-DirtyProperty<bool>& Object::WorldEnabled() { return data->WorldEnabled; }
+const ObjectCollection& GameObject::Children() const { return data->children; }
+Property<GameObject*>& GameObject::Parent() { return data->Parent; }
+Property<bool>& GameObject::Enabled() { return data->Enabled; }
+DirtyProperty<bool>& GameObject::WorldEnabled() { return data->WorldEnabled; }
 
-Object::Object()
+GameObject::GameObject()
     :
     world(0), index(-1), data(0)
 {
@@ -28,8 +28,8 @@ Object::Object()
     
     data->Parent.Changed.Bind([this]() {
         assert(data->Parent!=this);
-        Object* prevParent = data->Parent.PreviousValue();
-        Object* currentParent = data->Parent;
+        GameObject* prevParent = data->Parent.PreviousValue();
+        GameObject* currentParent = data->Parent;
         
         if (index>=0) {
             if (!prevParent) {
@@ -43,13 +43,13 @@ Object::Object()
         if (prevParent) {
             auto& children = prevParent->data->children;
             children.erase(std::find(children.begin(), children.end(), this));
-            prevParent->data->WorldEnabled.HasBecomeDirty.Unbind(this, &Object::SetWorldEnableDirty);
+            prevParent->data->WorldEnabled.HasBecomeDirty.Unbind(this, &GameObject::SetWorldEnableDirty);
         }
         
         if (currentParent) {
             auto& children = currentParent->data->children;
             children.push_back(this);
-            currentParent->data->WorldEnabled.HasBecomeDirty.Bind(this, &Object::SetWorldEnableDirty);
+            currentParent->data->WorldEnabled.HasBecomeDirty.Bind(this, &GameObject::SetWorldEnableDirty);
             
             bool prevWorldEnabled = data->WorldEnabled;
             data->WorldEnabled.MakeDirty();
@@ -63,26 +63,26 @@ Object::Object()
         value = (data->Parent) ? data->Parent()->data->WorldEnabled && data->Enabled : data->Enabled;
     };
     
-    data->Enabled.Changed.Bind(this, &Object::SetWorldEnableDirty);
+    data->Enabled.Changed.Bind(this, &GameObject::SetWorldEnableDirty);
 }
 
-Object::~Object() {
+GameObject::~GameObject() {
     delete data;
 }
 
-bool Object::HasComponent(ComponentID id) const {
+bool GameObject::HasComponent(ComponentID id) const {
     assert(id<MaxComponents);
     return data->activeComponents[id];
 }
 
-void* Object::GetComponent(ComponentID id) {
+void* GameObject::GetComponent(ComponentID id) {
     assert(id<MaxComponents);
     if (!data->activeComponents[id]) return 0;
     IContainer* container = world->components[id];
     return container->Get(world->objectComponents[id][index]);
 }
 
-void Object::AddComponent(ComponentID id) {
+void GameObject::AddComponent(ComponentID id) {
     assert(id<MaxComponents);
     if (HasComponent(id)) {
         return;
@@ -96,7 +96,7 @@ void Object::AddComponent(ComponentID id) {
     });
 }
 
-void Object::AddComponent(ComponentID id, const Object* source) {
+void GameObject::AddComponent(ComponentID id, const GameObject* source) {
     assert(id<MaxComponents);
     assert(source->HasComponent(id));
     if (HasComponent(id)) {
@@ -113,7 +113,7 @@ void Object::AddComponent(ComponentID id, const Object* source) {
     });
 }
 
-void Object::CloneComponent(ComponentID id, const Object* source) {
+void GameObject::CloneComponent(ComponentID id, const GameObject* source) {
     assert(id<MaxComponents);
     assert(source->HasComponent(id));
     if (HasComponent(id)) {
@@ -129,7 +129,7 @@ void Object::CloneComponent(ComponentID id, const Object* source) {
     });
 }
 
-void Object::RemoveComponent(ComponentID id) {
+void GameObject::RemoveComponent(ComponentID id) {
     assert(id<MaxComponents);
     if (!HasComponent(id)) {
         return;
@@ -147,7 +147,7 @@ void Object::RemoveComponent(ComponentID id) {
     });
 }
 
-void Object::Remove() {
+void GameObject::Remove() {
     if (index<0) return;
     int localIndex = index;
     world->removeActions.emplace_back([this, localIndex]() {
@@ -163,20 +163,20 @@ void Object::Remove() {
     }
 }
 
-void Object::TryAddComponentContainer(ComponentID id, std::function<IContainer *()> constructor) {
+void GameObject::TryAddComponentContainer(ComponentID id, std::function<IContainer *()> constructor) {
     if (!world->components[id]) {
         world->components[id] = constructor();
     }
 }
 
-void Object::SetWorldEnableDirty() {
+void GameObject::SetWorldEnableDirty() {
     data->WorldEnabled.MakeDirty();
     world->createActions.emplace_back([this](){
         SetEnabled(data->WorldEnabled);
     });
 }
 
-void Object::SetEnabled(bool enabled) {
+void GameObject::SetEnabled(bool enabled) {
     for(int i=0; i<MaxComponents; ++i) {
         if (data->activeComponents[i]) {
             TrySetComponentEnabled(i, enabled);
@@ -184,7 +184,7 @@ void Object::SetEnabled(bool enabled) {
     }
 }
 
-void Object::TrySetComponentEnabled(ComponentID id, bool enable) {
+void GameObject::TrySetComponentEnabled(ComponentID id, bool enable) {
     
     enable = enable && WorldEnabled();
 

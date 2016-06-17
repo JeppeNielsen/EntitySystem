@@ -1,5 +1,5 @@
 //
-//  Object.hpp
+//  GameObject.hpp
 //  EntitySystem
 //
 //  Created by Jeppe Nielsen on 06/06/16.
@@ -16,13 +16,13 @@ namespace Pocket {
     template<typename T>
     class Container;
     
-    class Object;
+    class GameObject;
     
-    using ObjectCollection = std::vector<Object*>;
+    using ObjectCollection = std::vector<GameObject*>;
     
     class World;
     
-    class Object {
+    class GameObject {
     public:
     
         template<typename T>
@@ -42,13 +42,13 @@ namespace Pocket {
         }
         
         template<typename T>
-        T* AddComponent(Object* source) {
+        T* AddComponent(GameObject* source) {
             AddComponent(EntityHelper::GetComponentID<T>(), source);
             return GetComponent<T>();
         }
         
         template<typename T>
-        T* CloneComponent(Object* source) {
+        T* CloneComponent(GameObject* source) {
             CloneComponent(EntityHelper::GetComponentID<T>(), source);
             return GetComponent<T>();
         }
@@ -61,24 +61,24 @@ namespace Pocket {
         void Remove();
         
         const ObjectCollection& Children() const;
-        Property<Object*>& Parent();
+        Property<GameObject*>& Parent();
         Property<bool>& Enabled();
         DirtyProperty<bool>& WorldEnabled();
         
-        Object();
-        ~Object();
+        GameObject();
+        ~GameObject();
         
     private:
         
-        Object(Object&& o) = delete;
-        Object(const Object& o) = delete;
-        Object& operator=(const Object& o) = delete;
+        GameObject(GameObject&& o) = delete;
+        GameObject(const GameObject& o) = delete;
+        GameObject& operator=(const GameObject& o) = delete;
         
         bool HasComponent(ComponentID id) const;
         void* GetComponent(ComponentID id);
         void AddComponent(ComponentID id);
-        void AddComponent(ComponentID id, const Object* source);
-        void CloneComponent(ComponentID id, const Object* source);
+        void AddComponent(ComponentID id, const GameObject* source);
+        void CloneComponent(ComponentID id, const GameObject* source);
         void RemoveComponent(ComponentID id);
         void TryAddComponentContainer(ComponentID id, std::function<IContainer*()> constructor);
         void SetWorldEnableDirty();
@@ -89,7 +89,7 @@ namespace Pocket {
             Data() : activeComponents(0), enabledComponents(0) {}
             ComponentMask activeComponents;
             ComponentMask enabledComponents;
-            Property<Object*> Parent;
+            Property<GameObject*> Parent;
             Property<bool> Enabled;
             DirtyProperty<bool> WorldEnabled;
             ObjectCollection children;
@@ -99,7 +99,7 @@ namespace Pocket {
         World* world;
         Data* data;
         
-        friend class Container<Object>;
+        friend class Container<GameObject>;
         friend class World;
     };
 }

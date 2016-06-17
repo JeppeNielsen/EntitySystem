@@ -29,9 +29,9 @@ World::~World() {
     }
 }
 
-const Object* World::Root() { return &root; }
+const GameObject* World::Root() { return &root; }
 
-Object* World::CreateObject() {
+GameObject* World::CreateObject() {
     int index;
     if (objectsFreeIndicies.empty()) {
         index = (int)objects.size();
@@ -50,7 +50,7 @@ Object* World::CreateObject() {
         objectComponents[i][index] = -1;
     }
     ++objectCount;
-    Object& object = objects[index];
+    GameObject& object = objects[index];
     object.Parent() = &root;
     object.index = index;
     object.world = this;
@@ -80,7 +80,7 @@ int World::CapacityCount() const {
 }
 
 void World::Clear() {
-    IterateObjects([](Object* o) {
+    IterateObjects([](GameObject* o) {
         o->SetEnabled(false);
     });
 
@@ -142,7 +142,7 @@ IGameSystem* World::TryAddSystem(SystemID id, std::function<IGameSystem *(std::v
         systems.push_back(system);
         system->Initialize();
         
-        IterateObjects([system](Object* o) {
+        IterateObjects([system](GameObject* o) {
             if ((o->data->enabledComponents & system->componentMask) == system->componentMask) {
                 system->objects.push_back(o);
                 system->ObjectAdded(o);
@@ -157,7 +157,7 @@ void World::TryRemoveSystem(SystemID id) {
     IGameSystem* system = systemsIndexed[id];
     if (!system) return;
     
-    IterateObjects([system](Object* o) {
+    IterateObjects([system](GameObject* o) {
         if ((o->data->enabledComponents & system->componentMask) == system->componentMask) {
             system->ObjectRemoved(o);
             auto& objects = system->objects;
@@ -185,7 +185,7 @@ void World::DoActions(Actions &actions) {
     actions.clear();
 }
 
-void World::IterateObjects(std::function<void (Object *)> callback) {
+void World::IterateObjects(std::function<void (GameObject *)> callback) {
     for(auto& o : objects) {
         if (o.index >= 0) {
             callback(&o);

@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include "Object.hpp"
+#include "GameObject.hpp"
 #include "Container.hpp"
 #include "GameSystem.hpp"
 
@@ -17,9 +17,9 @@ namespace Pocket {
         World();
         ~World();
         
-        const Object* Root();
+        const GameObject* Root();
         
-        Object* CreateObject();
+        GameObject* CreateObject();
         
         template<typename T>
         T* CreateSystem() {
@@ -53,9 +53,9 @@ namespace Pocket {
         
     private:
     
-        Object root;
+        GameObject root;
     
-        using Objects = std::deque<Object>;
+        using Objects = std::deque<GameObject>;
         Objects objects;
         using ObjectsFreeIndicies = std::vector<int>;
         ObjectsFreeIndicies objectsFreeIndicies;
@@ -82,15 +82,15 @@ namespace Pocket {
         IGameSystem* TryAddSystem(SystemID id, std::function<IGameSystem*(std::vector<int>& components)> constructor);
         void TryRemoveSystem(SystemID id);
         void DoActions(Actions& actions);
-        void IterateObjects(std::function<void(Object*)> callback);
+        void IterateObjects(std::function<void(GameObject*)> callback);
         
-        friend class Object;
+        friend class GameObject;
         friend class IGameSystem;
     };
     
     
     template<typename T>
-    T* Object::GetComponent() {
+    T* GameObject::GetComponent() {
         ComponentID id = EntityHelper::GetComponentID<T>();
         int componentIndex = world->objectComponents[id][index];
         if (componentIndex == -1) return 0;
