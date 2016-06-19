@@ -69,14 +69,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		7241D19C1D0DADF800A3AEBB /* Timing */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Timing;
-			path = EntitySystem/Timing;
-			sourceTree = SOURCE_ROOT;
-		};
 		7241D19D1D0DAE0200A3AEBB /* Timing */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,7 +117,6 @@
 		727734811D0B5D0E005AC1D8 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				7241D19C1D0DADF800A3AEBB /* Timing */,
 				727734821D0B5D0E005AC1D8 /* DirtyProperty.hpp */,
 				727734831D0B5D0E005AC1D8 /* Event.hpp */,
 				727734841D0B5D0E005AC1D8 /* Property.hpp */,
