@@ -7,8 +7,13 @@
 //
 #include "PerformanceTests.hpp"
 #include "LogicTests.hpp"
+#include "GameWorld.hpp"
+#include <iostream>
+using namespace Pocket;
 
 int main(int argc, const char * argv[]) {
+
+    std::cout << sizeof(GameObject)<<std::endl;
 
     LogicTests logicTests;
     logicTests.Run();
