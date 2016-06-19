@@ -77,12 +77,6 @@ namespace Pocket {
         Actions createActions;
         Actions removeActions;
         
-        using ScriptComponents = std::vector<IContainer*>;
-        ScriptComponents scriptComponents;
-        
-        using ScriptObjectComponents = std::vector<std::vector<int>>;
-        ScriptObjectComponents scriptObjectComponents;
-        
         int objectCount;
         
         IGameSystem* TryAddSystem(SystemID id, std::function<IGameSystem*(std::vector<int>& components)> constructor);
