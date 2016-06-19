@@ -9,28 +9,29 @@
 #include "LogicTests.hpp"
 #include "GameWorld.hpp"
 #include <iostream>
-#include "dynamic_bitset.hpp"
+#include "Bitset.hpp"
 
 using namespace Pocket;
 
 int main(int argc, const char * argv[]) {
 
-    boost::dynamic_bitset<> components;
-    components.resize(128);
+    Bitset components;
+    Bitset system;
     
-    components.set(0);
-    components.set(3);
-    components.set(4);
+    system.Resize(12);
+    components.Resize(12);
     
-    boost::dynamic_bitset<> system;
-    system.resize(128);
+    system.Set(0, true);
+    system.Set(1, true);
+    system.Set(3, true);
     
-    system.set(0);
-    system.set(3);
-    system.set(4);
+    components.Set(0, true);
+    components.Set(1, true);
+    components.Set(2, true);
+    components.Set(2, true);
     
     
-    bool contains = (system & components) == system;
+    bool contains = system.Contains(components);
     
     std::cout << sizeof(system)<<std::endl;
     

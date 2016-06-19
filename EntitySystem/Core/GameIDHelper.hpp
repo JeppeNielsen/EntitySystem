@@ -10,13 +10,12 @@
 #include <array>
 #include <functional>
 #include "Container.hpp"
+#include "Bitset.hpp"
 
 namespace Pocket {
     
     using ComponentID = int;
-    const ComponentID MaxComponents = 64;
-    using ComponentMask = std::bitset<MaxComponents>;
-
+    
     using SystemID = int;
     
     class GameIDHelper {

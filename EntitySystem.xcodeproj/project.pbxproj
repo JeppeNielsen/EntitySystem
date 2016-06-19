@@ -15,6 +15,7 @@
 		724E339A1D1722850007E8CA /* GameSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33941D1722850007E8CA /* GameSystem.cpp */; };
 		724E339B1D1722850007E8CA /* GameWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33961D1722850007E8CA /* GameWorld.cpp */; };
 		724E33B11D1724D10007E8CA /* libclang.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 724E33B01D1724D10007E8CA /* libclang.dylib */; };
+		724E33BC1D1749F10007E8CA /* Bitset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33BA1D1749F10007E8CA /* Bitset.cpp */; };
 		72772F461D05F8D1005AC1D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F451D05F8D1005AC1D8 /* main.cpp */; };
 		727734881D0C731D005AC1D8 /* LogicTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734861D0C731D005AC1D8 /* LogicTests.cpp */; };
 		7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734891D0C76BD005AC1D8 /* UnitTest.cpp */; };
@@ -53,8 +54,8 @@
 		724E33A01D17246F0007E8CA /* minijson_writer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = minijson_writer.hpp; sourceTree = "<group>"; };
 		724E33A11D17246F0007E8CA /* TypeInfo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TypeInfo.hpp; sourceTree = "<group>"; };
 		724E33B01D1724D10007E8CA /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libclang.dylib; sourceTree = "<group>"; };
-		724E33B21D17397F0007E8CA /* dynamic_bitset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dynamic_bitset.hpp; sourceTree = "<group>"; };
-		724E33B31D1740120007E8CA /* dynamic_bitset_impl.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dynamic_bitset_impl.hpp; sourceTree = "<group>"; };
+		724E33BA1D1749F10007E8CA /* Bitset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bitset.cpp; sourceTree = "<group>"; };
+		724E33BB1D1749F10007E8CA /* Bitset.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Bitset.hpp; sourceTree = "<group>"; };
 		72772F421D05F8D1005AC1D8 /* EntitySystem */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EntitySystem; sourceTree = BUILT_PRODUCTS_DIR; };
 		72772F451D05F8D1005AC1D8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		727734821D0B5D0E005AC1D8 /* DirtyProperty.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DirtyProperty.hpp; sourceTree = "<group>"; };
@@ -155,11 +156,11 @@
 		727734811D0B5D0E005AC1D8 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				724E33B31D1740120007E8CA /* dynamic_bitset_impl.hpp */,
-				724E33B21D17397F0007E8CA /* dynamic_bitset.hpp */,
 				727734821D0B5D0E005AC1D8 /* DirtyProperty.hpp */,
 				727734831D0B5D0E005AC1D8 /* Event.hpp */,
 				727734841D0B5D0E005AC1D8 /* Property.hpp */,
+				724E33BA1D1749F10007E8CA /* Bitset.cpp */,
+				724E33BB1D1749F10007E8CA /* Bitset.hpp */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -244,6 +245,7 @@
 				7241D1A01D0DAE0C00A3AEBB /* Timer.cpp in Sources */,
 				7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */,
 				7241D19B1D0DAB4A00A3AEBB /* TimeTest.cpp in Sources */,
+				724E33BC1D1749F10007E8CA /* Bitset.cpp in Sources */,
 				7241D1981D0DAA6C00A3AEBB /* PerformanceTests.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,11 +12,9 @@
 using namespace Pocket;
 
 GameWorld::GameWorld() {
-    for(int i=0; i<MaxComponents; ++i) {
-        components[i] = 0;
-    }
     root.world = this;
     objectCount = 0;
+    numComponentTypes = 0;
 }
 
 GameWorld::~GameWorld() {
@@ -24,7 +22,7 @@ GameWorld::~GameWorld() {
     for(auto s : systems) {
         delete s;
     }
-    for(int i=0; i<MaxComponents; ++i) {
+    for(int i=0; i<numComponentTypes; ++i) {
         delete components[i];
     }
 }
@@ -36,21 +34,25 @@ GameObject* GameWorld::CreateObject() {
     if (objectsFreeIndicies.empty()) {
         index = (int)objects.size();
         objects.resize(index + 1);
-        if (index>=objectComponents[0].size()) {
-            for(int i=0; i<MaxComponents; i++) {
+        if (numComponentTypes>0 && index>=objectComponents[0].size()) {
+            for(int i=0; i<numComponentTypes; i++) {
                 objectComponents[i].resize(index + 32);
             }
         }
+        objects[index].data->activeComponents.Resize(numComponentTypes);
+        objects[index].data->enabledComponents.Resize(numComponentTypes);
     } else {
         index = objectsFreeIndicies.back();
         objectsFreeIndicies.pop_back();
     }
     
-    for(int i=0; i<MaxComponents; i++) {
+    for(int i=0; i<numComponentTypes; i++) {
         objectComponents[i][index] = -1;
     }
     ++objectCount;
     GameObject& object = objects[index];
+    object.data->activeComponents.Reset();
+    object.data->enabledComponents.Reset();
     object.Parent() = &root;
     object.index = index;
     object.world = this;
@@ -87,16 +89,19 @@ void GameWorld::Clear() {
     objects.clear();
     objectsFreeIndicies.clear();
     objectCount = 0;
-    for(int i=0; i<MaxComponents; ++i) {
+    for(int i=0; i<numComponentTypes; ++i) {
         if (components[i]) {
             components[i]->Clear();
         }
         objectComponents[i].clear();
     }
+    components.clear();
+    objectComponents.clear();
+    numComponentTypes = 0;
 }
 
 void GameWorld::Trim() {
-    for(int i=0; i<MaxComponents; ++i) {
+    for(int i=0; i<numComponentTypes; ++i) {
         if (components[i]) {
             components[i]->Trim();
         }
@@ -110,7 +115,7 @@ void GameWorld::Trim() {
         }
     }
     if (smallestSize<objects.size()) {
-        for(int i=0; i<MaxComponents; ++i) {
+        for(int i=0; i<numComponentTypes; ++i) {
             objectComponents[i].resize(smallestSize);
         }
         objects.resize(smallestSize);
@@ -132,7 +137,8 @@ IGameSystem* GameWorld::TryAddSystem(SystemID id, std::function<IGameSystem *(st
         std::vector<int> componentIndices;
         system = constructor(componentIndices);
         for(auto c : componentIndices) {
-            system->componentMask[c] = true;
+            system->componentMask.Resize(numComponentTypes);
+            system->componentMask.Set(c, true);
             if (c>=systemsPerComponent.size()) {
                 systemsPerComponent.resize(c + 1);
             }
@@ -143,7 +149,7 @@ IGameSystem* GameWorld::TryAddSystem(SystemID id, std::function<IGameSystem *(st
         system->Initialize();
         
         IterateObjects([system](GameObject* o) {
-            if ((o->data->enabledComponents & system->componentMask) == system->componentMask) {
+            if (system->componentMask.Contains(o->data->enabledComponents)) {
                 system->objects.push_back(o);
                 system->ObjectAdded(o);
             }
@@ -158,15 +164,14 @@ void GameWorld::TryRemoveSystem(SystemID id) {
     if (!system) return;
     
     IterateObjects([system](GameObject* o) {
-        if ((o->data->enabledComponents & system->componentMask) == system->componentMask) {
+        if (system->componentMask.Contains(o->data->enabledComponents)) {
             system->ObjectRemoved(o);
             auto& objects = system->objects;
             objects.erase(std::find(objects.begin(), objects.end(), o));
         }
     });
-
     
-    for(int i=0; i<MaxComponents; ++i) {
+    for(int i=0; i<numComponentTypes; ++i) {
         if (system->componentMask[i]) {
             auto& list = systemsPerComponent[i];
             list.erase(std::find(list.begin(), list.end(), system));
@@ -190,5 +195,25 @@ void GameWorld::IterateObjects(std::function<void (GameObject *)> callback) {
         if (o.index >= 0) {
             callback(&o);
         }
+    }
+}
+
+void GameWorld::TryAddComponentContainer(ComponentID id, std::function<IContainer *()> &&constructor) {
+    if (id>=components.size()) {
+        int count = id + 1;
+        components.resize(count, 0);
+        IterateObjects([count](GameObject* o) {
+            o->data->activeComponents.Resize(count);
+            o->data->enabledComponents.Resize(count);
+        });
+        numComponentTypes = count;
+        objectComponents.resize(count);
+        for(int i=0; i<count; ++i) {
+            objectComponents[i].resize(objects.size(),-1);
+        }
+    }
+
+    if (!components[id]) {
+        components[id] = constructor();
     }
 }

@@ -71,33 +71,32 @@ GameObject::~GameObject() {
 }
 
 bool GameObject::HasComponent(ComponentID id) const {
-    assert(id<MaxComponents);
+    assert(id<world->numComponentTypes);
     return data->activeComponents[id];
 }
 
 void* GameObject::GetComponent(ComponentID id) {
-    assert(id<MaxComponents);
+    assert(id<world->numComponentTypes);
     if (!data->activeComponents[id]) return 0;
     IContainer* container = world->components[id];
     return container->Get(world->objectComponents[id][index]);
 }
 
 void GameObject::AddComponent(ComponentID id) {
-    assert(id<MaxComponents);
+    assert(id<world->numComponentTypes);
     if (HasComponent(id)) {
         return;
     }
     IContainer* container = world->components[id];
     world->objectComponents[id][index] = container->Create();
-    data->activeComponents[id] = true;
-    
+    data->activeComponents.Set(id, true);
     world->createActions.emplace_back([this, id]() {
         TrySetComponentEnabled(id, true);
     });
 }
 
 void GameObject::AddComponent(ComponentID id, GameObject* source) {
-    assert(id<MaxComponents);
+    assert(id<world->numComponentTypes);
     assert(source->HasComponent(id));
     if (HasComponent(id)) {
         return;
@@ -106,7 +105,7 @@ void GameObject::AddComponent(ComponentID id, GameObject* source) {
     int referenceIndex = world->objectComponents[id][source->index];
     world->objectComponents[id][index] = referenceIndex;
     container->Reference(referenceIndex);
-    data->activeComponents[id] = true;
+    data->activeComponents.Set(id, true);
     
     world->createActions.emplace_back([this, id]() {
         TrySetComponentEnabled(id, true);
@@ -114,7 +113,7 @@ void GameObject::AddComponent(ComponentID id, GameObject* source) {
 }
 
 void GameObject::CloneComponent(ComponentID id, GameObject* source) {
-    assert(id<MaxComponents);
+    assert(id<world->numComponentTypes);
     assert(source->HasComponent(id));
     if (HasComponent(id)) {
         return;
@@ -122,7 +121,7 @@ void GameObject::CloneComponent(ComponentID id, GameObject* source) {
     
     IContainer* container = world->components[id];
     world->objectComponents[id][index] = container->Clone(world->objectComponents[id][source->index]);
-    data->activeComponents[id] = true;
+    data->activeComponents.Set(id, true);
     
     world->createActions.emplace_back([this, id]() {
         TrySetComponentEnabled(id, true);
@@ -130,11 +129,10 @@ void GameObject::CloneComponent(ComponentID id, GameObject* source) {
 }
 
 void GameObject::RemoveComponent(ComponentID id) {
-    assert(id<MaxComponents);
+    if (id>=world->numComponentTypes) return;
     if (!HasComponent(id)) {
         return;
     }
-    
     world->removeActions.emplace_back([this, id]() {
         if (!data->activeComponents[id]) {
            return; // might have been removed by earlier remove action, eg if two consecutive RemoveComponent<> was called
@@ -143,7 +141,7 @@ void GameObject::RemoveComponent(ComponentID id) {
         IContainer* container = world->components[id];
         container->Delete(world->objectComponents[id][index]);
         world->objectComponents[id][index] = -1;
-        data->activeComponents[id] = false;
+        data->activeComponents.Set(id, false);
     });
 }
 
@@ -163,10 +161,8 @@ void GameObject::Remove() {
     }
 }
 
-void GameObject::TryAddComponentContainer(ComponentID id, std::function<IContainer *()> constructor) {
-    if (!world->components[id]) {
-        world->components[id] = constructor();
-    }
+void GameObject::TryAddComponentContainer(ComponentID id, std::function<IContainer *()>&& constructor) {
+    world->TryAddComponentContainer(id, std::move(constructor));
 }
 
 void GameObject::SetWorldEnableDirty() {
@@ -177,7 +173,7 @@ void GameObject::SetWorldEnableDirty() {
 }
 
 void GameObject::SetEnabled(bool enabled) {
-    for(int i=0; i<MaxComponents; ++i) {
+    for(int i=0; i<world->numComponentTypes; ++i) {
         if (data->activeComponents[i]) {
             TrySetComponentEnabled(i, enabled);
         }
@@ -194,11 +190,12 @@ void GameObject::TrySetComponentEnabled(ComponentID id, bool enable) {
     }
     
     if (enable) {
-        data->enabledComponents[id] = enable;
+        data->enabledComponents.Set(id, true);
         if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
         auto& systemsUsingComponent = world->systemsPerComponent[id];
         for(auto s : systemsUsingComponent) {
-            bool isInterest = (data->enabledComponents & s->componentMask) == s->componentMask;
+            bool isInterest = s->componentMask.Contains(data->enabledComponents);
+            //(data->enabledComponents & s->componentMask) == s->componentMask;
             if (isInterest) {
                 s->objects.push_back(this);
                 s->ObjectAdded(this);
@@ -208,14 +205,15 @@ void GameObject::TrySetComponentEnabled(ComponentID id, bool enable) {
         if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
         auto& systemsUsingComponent = world->systemsPerComponent[id];
         for(auto s : systemsUsingComponent) {
-            bool wasInterest = (data->enabledComponents & s->componentMask) == s->componentMask;
+            bool wasInterest = s->componentMask.Contains(data->enabledComponents);
+            //(data->enabledComponents & s->componentMask) == s->componentMask;
             if (wasInterest) {
                 s->ObjectRemoved(this);
                 auto& objects = s->objects;
                 objects.erase(std::find(objects.begin(), objects.end(), this));
             }
         }
-        data->enabledComponents[id] = enable;
+        data->enabledComponents.Set(id, false);
     }
 }
 

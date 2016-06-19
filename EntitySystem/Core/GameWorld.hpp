@@ -60,10 +60,10 @@ namespace Pocket {
         using ObjectsFreeIndicies = std::vector<int>;
         ObjectsFreeIndicies objectsFreeIndicies;
         
-        using Components = std::array<IContainer*, MaxComponents>;
+        using Components = std::vector<IContainer*>;
         Components components;
         
-        using ObjectComponents = std::array<std::vector<int>, MaxComponents>;
+        using ObjectComponents = std::vector<std::vector<int>>;
         ObjectComponents objectComponents;
         
         using Systems = std::vector<IGameSystem*>;
@@ -78,11 +78,13 @@ namespace Pocket {
         Actions removeActions;
         
         int objectCount;
+        int numComponentTypes;
         
         IGameSystem* TryAddSystem(SystemID id, std::function<IGameSystem*(std::vector<int>& components)> constructor);
         void TryRemoveSystem(SystemID id);
         void DoActions(Actions& actions);
         void IterateObjects(std::function<void(GameObject*)> callback);
+        void TryAddComponentContainer(ComponentID id, std::function<IContainer *()>&& constructor);
         
         friend class GameObject;
         friend class IGameSystem;

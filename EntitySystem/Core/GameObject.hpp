@@ -92,7 +92,7 @@ namespace Pocket {
         void AddComponent(ComponentID id, GameObject* source) override;
         void CloneComponent(ComponentID id, GameObject* source)  override;
         void RemoveComponent(ComponentID id) override;
-        void TryAddComponentContainer(ComponentID id, std::function<IContainer*()> constructor);
+        void TryAddComponentContainer(ComponentID id, std::function<IContainer*()>&& constructor);
         void SetWorldEnableDirty();
         void SetEnabled(bool enabled);
         void TrySetComponentEnabled(ComponentID id, bool enable);
@@ -102,9 +102,9 @@ namespace Pocket {
         void RemoveScriptComponent(ComponentID id) override;
         
         struct Data {
-            Data() : activeComponents(0), enabledComponents(0) {}
-            ComponentMask activeComponents;
-            ComponentMask enabledComponents;
+            Data() {}
+            Bitset activeComponents;
+            Bitset enabledComponents;
             Property<GameObject*> Parent;
             Property<bool> Enabled;
             DirtyProperty<bool> WorldEnabled;

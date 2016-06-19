@@ -14,10 +14,8 @@ using namespace Pocket;
 IGameSystem::IGameSystem() : world(0) {}
 IGameSystem::~IGameSystem() {}
 
-void IGameSystem::TryAddComponentContainer(ComponentID id, std::function<IContainer *()> constructor) {
-    if (!world->components[id]) {
-        world->components[id] = constructor();
-    }
+void IGameSystem::TryAddComponentContainer(ComponentID id, std::function<IContainer *()>&& constructor) {
+    world->TryAddComponentContainer(id, std::move(constructor));
 }
 
 void IGameSystem::Initialize() {}

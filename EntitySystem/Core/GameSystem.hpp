@@ -19,7 +19,7 @@ namespace Pocket {
         GameWorld* const world;
         IGameSystem();
         virtual ~IGameSystem();
-        void TryAddComponentContainer(ComponentID id, std::function<IContainer*()> constructor);
+        void TryAddComponentContainer(ComponentID id, std::function<IContainer*()>&& constructor);
         friend class GameWorld;
         virtual void Initialize();
         virtual void ObjectAdded(GameObject* object);
@@ -28,7 +28,7 @@ namespace Pocket {
         virtual void Render();
     private:
         ObjectCollection objects;
-        ComponentMask componentMask;
+        Bitset componentMask;
         friend class GameObject;
     public:
         const ObjectCollection& Objects() const;
