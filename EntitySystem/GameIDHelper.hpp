@@ -37,5 +37,13 @@ namespace Pocket {
             static SystemID id = systemIDCounter++;
             return id;
         }
+        
+        template<typename Class>
+        static std::string GetClassName() {
+            std::string functionName = __PRETTY_FUNCTION__;
+            const std::string token = "Class = ";
+            size_t equal = functionName.find(token) + token.size();
+            return functionName.substr(equal, functionName.size() - equal - 1);
+        }
     };
 }
