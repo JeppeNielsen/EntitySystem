@@ -11,6 +11,7 @@
 #include "ScriptParser.hpp"
 #include <set>
 #include "IScriptSystem.hpp"
+#include <iostream>
 
 using namespace std;
 using namespace Pocket;
@@ -471,6 +472,7 @@ bool ScriptWorld::FindComponentIndex(std::string componentName, bool &staticComp
     
     return false;
 }
+
 
 template<>
 Container<void*>::ObjectInstance* Container<void*>::CreateInstance() {

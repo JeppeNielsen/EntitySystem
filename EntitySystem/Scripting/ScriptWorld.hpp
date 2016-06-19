@@ -96,6 +96,16 @@ private:
     
     GetTypeInfoFunction getTypeInfo;
     DeleteTypeInfo deleteTypeInfo;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 };
 
 }

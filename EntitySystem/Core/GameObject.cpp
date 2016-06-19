@@ -96,7 +96,7 @@ void GameObject::AddComponent(ComponentID id) {
     });
 }
 
-void GameObject::AddComponent(ComponentID id, const GameObject* source) {
+void GameObject::AddComponent(ComponentID id, GameObject* source) {
     assert(id<MaxComponents);
     assert(source->HasComponent(id));
     if (HasComponent(id)) {
@@ -113,7 +113,7 @@ void GameObject::AddComponent(ComponentID id, const GameObject* source) {
     });
 }
 
-void GameObject::CloneComponent(ComponentID id, const GameObject* source) {
+void GameObject::CloneComponent(ComponentID id, GameObject* source) {
     assert(id<MaxComponents);
     assert(source->HasComponent(id));
     if (HasComponent(id)) {
@@ -217,4 +217,17 @@ void GameObject::TrySetComponentEnabled(ComponentID id, bool enable) {
         }
         data->enabledComponents[id] = enable;
     }
+}
+
+void* GameObject::GetScriptComponent(ComponentID id) {
+
+    return 0;
+}
+
+void GameObject::AddScriptComponent(ComponentID id) {
+
+}
+
+void GameObject::RemoveScriptComponent(ComponentID id) {
+
 }

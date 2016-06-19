@@ -14,6 +14,11 @@
 		724E33991D1722850007E8CA /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33921D1722850007E8CA /* GameObject.cpp */; };
 		724E339A1D1722850007E8CA /* GameSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33941D1722850007E8CA /* GameSystem.cpp */; };
 		724E339B1D1722850007E8CA /* GameWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33961D1722850007E8CA /* GameWorld.cpp */; };
+		724E33AB1D1724790007E8CA /* ClangUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33A21D1724790007E8CA /* ClangUtil.cpp */; };
+		724E33AC1D1724790007E8CA /* ScriptClass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33A51D1724790007E8CA /* ScriptClass.cpp */; };
+		724E33AD1D1724790007E8CA /* ScriptParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33A71D1724790007E8CA /* ScriptParser.cpp */; };
+		724E33AE1D1724790007E8CA /* ScriptWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33A91D1724790007E8CA /* ScriptWorld.cpp */; };
+		724E33B11D1724D10007E8CA /* libclang.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 724E33B01D1724D10007E8CA /* libclang.dylib */; };
 		72772F461D05F8D1005AC1D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F451D05F8D1005AC1D8 /* main.cpp */; };
 		727734881D0C731D005AC1D8 /* LogicTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734861D0C731D005AC1D8 /* LogicTests.cpp */; };
 		7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734891D0C76BD005AC1D8 /* UnitTest.cpp */; };
@@ -47,6 +52,20 @@
 		724E33951D1722850007E8CA /* GameSystem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GameSystem.hpp; sourceTree = "<group>"; };
 		724E33961D1722850007E8CA /* GameWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameWorld.cpp; sourceTree = "<group>"; };
 		724E33971D1722850007E8CA /* GameWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GameWorld.hpp; sourceTree = "<group>"; };
+		724E339E1D17246F0007E8CA /* JsonSerializer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = JsonSerializer.hpp; sourceTree = "<group>"; };
+		724E339F1D17246F0007E8CA /* minijson_reader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = minijson_reader.hpp; sourceTree = "<group>"; };
+		724E33A01D17246F0007E8CA /* minijson_writer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = minijson_writer.hpp; sourceTree = "<group>"; };
+		724E33A11D17246F0007E8CA /* TypeInfo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TypeInfo.hpp; sourceTree = "<group>"; };
+		724E33A21D1724790007E8CA /* ClangUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ClangUtil.cpp; sourceTree = "<group>"; };
+		724E33A31D1724790007E8CA /* ClangUtil.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ClangUtil.hpp; sourceTree = "<group>"; };
+		724E33A41D1724790007E8CA /* IScriptSystem.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = IScriptSystem.hpp; sourceTree = "<group>"; };
+		724E33A51D1724790007E8CA /* ScriptClass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScriptClass.cpp; sourceTree = "<group>"; };
+		724E33A61D1724790007E8CA /* ScriptClass.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ScriptClass.hpp; sourceTree = "<group>"; };
+		724E33A71D1724790007E8CA /* ScriptParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScriptParser.cpp; sourceTree = "<group>"; };
+		724E33A81D1724790007E8CA /* ScriptParser.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ScriptParser.hpp; sourceTree = "<group>"; };
+		724E33A91D1724790007E8CA /* ScriptWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ScriptWorld.cpp; sourceTree = "<group>"; };
+		724E33AA1D1724790007E8CA /* ScriptWorld.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ScriptWorld.hpp; sourceTree = "<group>"; };
+		724E33B01D1724D10007E8CA /* libclang.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libclang.dylib; sourceTree = "<group>"; };
 		72772F421D05F8D1005AC1D8 /* EntitySystem */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EntitySystem; sourceTree = BUILT_PRODUCTS_DIR; };
 		72772F451D05F8D1005AC1D8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		727734821D0B5D0E005AC1D8 /* DirtyProperty.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DirtyProperty.hpp; sourceTree = "<group>"; };
@@ -63,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				724E33B11D1724D10007E8CA /* libclang.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +114,42 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		724E339C1D1723FD0007E8CA /* Scripting */ = {
+			isa = PBXGroup;
+			children = (
+				724E33A21D1724790007E8CA /* ClangUtil.cpp */,
+				724E33A31D1724790007E8CA /* ClangUtil.hpp */,
+				724E33A41D1724790007E8CA /* IScriptSystem.hpp */,
+				724E33A51D1724790007E8CA /* ScriptClass.cpp */,
+				724E33A61D1724790007E8CA /* ScriptClass.hpp */,
+				724E33A71D1724790007E8CA /* ScriptParser.cpp */,
+				724E33A81D1724790007E8CA /* ScriptParser.hpp */,
+				724E33A91D1724790007E8CA /* ScriptWorld.cpp */,
+				724E33AA1D1724790007E8CA /* ScriptWorld.hpp */,
+			);
+			name = Scripting;
+			path = EntitySystem/Scripting;
+			sourceTree = SOURCE_ROOT;
+		};
+		724E339D1D17246F0007E8CA /* Serialization */ = {
+			isa = PBXGroup;
+			children = (
+				724E339E1D17246F0007E8CA /* JsonSerializer.hpp */,
+				724E339F1D17246F0007E8CA /* minijson_reader.hpp */,
+				724E33A01D17246F0007E8CA /* minijson_writer.hpp */,
+				724E33A11D17246F0007E8CA /* TypeInfo.hpp */,
+			);
+			path = Serialization;
+			sourceTree = "<group>";
+		};
+		724E33AF1D1724D10007E8CA /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				724E33B01D1724D10007E8CA /* libclang.dylib */,
+			);
+			path = Libs;
+			sourceTree = "<group>";
+		};
 		72772F391D05F8D1005AC1D8 = {
 			isa = PBXGroup;
 			children = (
@@ -113,10 +169,13 @@
 		72772F441D05F8D1005AC1D8 /* EntitySystem */ = {
 			isa = PBXGroup;
 			children = (
+				724E33AF1D1724D10007E8CA /* Libs */,
+				724E339D1D17246F0007E8CA /* Serialization */,
 				724E338E1D1722850007E8CA /* Core */,
-				7241D19D1D0DAE0200A3AEBB /* Timing */,
-				727734851D0C72D6005AC1D8 /* Tests */,
 				727734811D0B5D0E005AC1D8 /* Data */,
+				724E339C1D1723FD0007E8CA /* Scripting */,
+				727734851D0C72D6005AC1D8 /* Tests */,
+				7241D19D1D0DAE0200A3AEBB /* Timing */,
 				72772F451D05F8D1005AC1D8 /* main.cpp */,
 			);
 			path = EntitySystem;
@@ -204,12 +263,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				724E339A1D1722850007E8CA /* GameSystem.cpp in Sources */,
+				724E33AE1D1724790007E8CA /* ScriptWorld.cpp in Sources */,
 				724E33991D1722850007E8CA /* GameObject.cpp in Sources */,
 				724E339B1D1722850007E8CA /* GameWorld.cpp in Sources */,
+				724E33AC1D1724790007E8CA /* ScriptClass.cpp in Sources */,
 				724E33981D1722850007E8CA /* GameIDHelper.cpp in Sources */,
+				724E33AD1D1724790007E8CA /* ScriptParser.cpp in Sources */,
 				727734881D0C731D005AC1D8 /* LogicTests.cpp in Sources */,
 				72772F461D05F8D1005AC1D8 /* main.cpp in Sources */,
 				7241D1A01D0DAE0C00A3AEBB /* Timer.cpp in Sources */,
+				724E33AB1D1724790007E8CA /* ClangUtil.cpp in Sources */,
 				7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */,
 				7241D19B1D0DAB4A00A3AEBB /* TimeTest.cpp in Sources */,
 				7241D1981D0DAA6C00A3AEBB /* PerformanceTests.cpp in Sources */,
@@ -304,6 +367,11 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_OPTIMIZATION_LEVEL = fast;
+				HEADER_SEARCH_PATHS = "/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/include";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/EntitySystem/Libs",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -312,6 +380,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				HEADER_SEARCH_PATHS = "/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/include";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/EntitySystem/Libs",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
