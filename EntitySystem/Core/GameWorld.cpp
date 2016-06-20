@@ -136,21 +136,24 @@ IGameSystem* GameWorld::TryAddSystem(SystemID id, std::function<IGameSystem *(st
     if (!system) {
         std::vector<int> componentIndices;
         system = constructor(componentIndices);
+        Bitset systemBitset;
+        int systemIndex = (int)systems.size();
         for(auto c : componentIndices) {
-            system->componentMask.Resize(numComponentTypes);
-            system->componentMask.Set(c, true);
+            systemBitset.Resize(c + 1);
+            systemBitset.Set(c, true);
             if (c>=systemsPerComponent.size()) {
                 systemsPerComponent.resize(c + 1);
             }
-            systemsPerComponent[c].push_back(system);
+            systemsPerComponent[c].push_back(systemIndex);
         }
         systemsIndexed[id] = system;
         systems.push_back(system);
+        systemBitsets.push_back(systemBitset);
         system->Initialize();
         
-        IterateObjects([system](GameObject* o) {
-            if (system->componentMask.Contains(o->data->enabledComponents)) {
-                system->objects.push_back(o);
+        IterateObjects([system, &systemBitset](GameObject* o) {
+            if (systemBitset.Contains(o->data->enabledComponents)) {
+                system->AddObject(o);
                 system->ObjectAdded(o);
             }
         });
@@ -162,19 +165,26 @@ void GameWorld::TryRemoveSystem(SystemID id) {
     if (id>=systemsIndexed.size()) return;
     IGameSystem* system = systemsIndexed[id];
     if (!system) return;
+    int systemIndex = 0;
+    for(auto s : systems) {
+        if (s == system) {
+            break;
+        }
+        systemIndex++;
+    }
+    Bitset& systemBitset = systemBitsets[systemIndex];
     
-    IterateObjects([system](GameObject* o) {
-        if (system->componentMask.Contains(o->data->enabledComponents)) {
+    IterateObjects([system, &systemBitset](GameObject* o) {
+        if (systemBitset.Contains(o->data->enabledComponents)) {
             system->ObjectRemoved(o);
-            auto& objects = system->objects;
-            objects.erase(std::find(objects.begin(), objects.end(), o));
+            system->RemoveObject(o);
         }
     });
     
     for(int i=0; i<numComponentTypes; ++i) {
-        if (system->componentMask[i]) {
+        if (systemBitset[i]) {
             auto& list = systemsPerComponent[i];
-            list.erase(std::find(list.begin(), list.end(), system));
+            list.erase(std::find(list.begin(), list.end(), systemIndex));
         }
     }
     
@@ -198,10 +208,12 @@ void GameWorld::IterateObjects(std::function<void (GameObject *)> callback) {
     }
 }
 
-void GameWorld::TryAddComponentContainer(ComponentID id, std::function<IContainer *()> &&constructor) {
+void GameWorld::TryAddComponentContainer(ComponentID id, std::function<IContainer *(std::string&)> &&constructor) {
     if (id>=components.size()) {
         int count = id + 1;
         components.resize(count, 0);
+        componentNames.resize(count);
+       
         IterateObjects([count](GameObject* o) {
             o->data->activeComponents.Resize(count);
             o->data->enabledComponents.Resize(count);
@@ -214,6 +226,6 @@ void GameWorld::TryAddComponentContainer(ComponentID id, std::function<IContaine
     }
 
     if (!components[id]) {
-        components[id] = constructor();
+        components[id] = constructor(componentNames[id]);
     }
 }

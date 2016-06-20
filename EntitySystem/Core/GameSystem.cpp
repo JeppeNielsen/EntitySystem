@@ -11,16 +11,28 @@
 
 using namespace Pocket;
 
-IGameSystem::IGameSystem() : world(0) {}
 IGameSystem::~IGameSystem() {}
 
-void IGameSystem::TryAddComponentContainer(ComponentID id, std::function<IContainer *()>&& constructor) {
+GameSystemBase::GameSystemBase() : world(0) {}
+GameSystemBase::~GameSystemBase() {}
+
+void GameSystemBase::TryAddComponentContainer(ComponentID id, std::function<IContainer *(std::string&)>&& constructor) {
     world->TryAddComponentContainer(id, std::move(constructor));
 }
 
-void IGameSystem::Initialize() {}
-void IGameSystem::ObjectAdded(Pocket::GameObject *object) {}
-void IGameSystem::ObjectRemoved(Pocket::GameObject *object) {}
-void IGameSystem::Update(float dt) {}
-void IGameSystem::Render() {}
-const ObjectCollection& IGameSystem::Objects() const { return objects; }
+void GameSystemBase::Initialize() {}
+void GameSystemBase::ObjectAdded(Pocket::GameObject *object) {}
+void GameSystemBase::ObjectRemoved(Pocket::GameObject *object) {}
+void GameSystemBase::Update(float dt) {}
+void GameSystemBase::Render() {}
+const ObjectCollection& GameSystemBase::Objects() const { return objects; }
+
+int GameSystemBase::AddObject(Pocket::GameObject *object) {
+    int count = (int)objects.size();
+    objects.push_back(object);
+    return count;
+}
+
+void GameSystemBase::RemoveObject(Pocket::GameObject *object) {
+    objects.erase(std::find(objects.begin(), objects.end(), object));
+}

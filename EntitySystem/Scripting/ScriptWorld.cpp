@@ -10,7 +10,6 @@
 #include <dlfcn.h>
 #include "ScriptParser.hpp"
 #include <set>
-#include "IScriptSystem.hpp"
 #include <iostream>
 
 using namespace std;
@@ -98,16 +97,21 @@ bool ScriptWorld::Build() {
     WriteMainCppFile(mainCppFile);
     
     string compilerPath ="/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/bin/clang++";
-    string compilerFlags = "-dynamiclib -std=c++14 -stdlib=libc++ -g";
+    string compilerFlags = "-v -dynamiclib -std=c++11 -stdlib=libc++ -g";
+    //-stdlib=libc++
     string outputFile = "-o " + dynamicLibPath;
     
     string compilerArgs = compilerPath + " " + compilerFlags + " ";
+    //compilerArgs += "-I/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/include/c++/v1/ ";
     
     for(auto& header : headerPaths) {
         compilerArgs += header + " ";
     }
     compilerArgs += mainCppFile + " ";
     compilerArgs += outputFile;
+    
+    std::cout << compilerArgs;
+    std::cout << std::endl;
     
     auto out = Compile(compilerArgs);
     for(auto s : out) {
@@ -283,9 +287,6 @@ void ScriptWorld::WriteMainGameObject(std::ofstream &file) {
     file << "    virtual void* AddComponent(int componentID) = 0;"<<std::endl;
     file << "    virtual void* AddComponent(int componentID, GameObject* referenceObject) = 0;"<<std::endl;
     file << "    virtual void RemoveComponent(int componentID) = 0;"<<std::endl;
-    file << "    virtual void* GetScriptComponent(int componentID) = 0; "<< std::endl;
-    file << "    virtual void* AddScriptComponent(int componentID) = 0; "<< std::endl;
-    file << "    virtual void RemoveScriptComponent(int componentID) = 0; "<< std::endl;
     file << "public:" << std::endl;
     file << "    template<typename T> T* GetComponent() { return (T*)0; }"<<std::endl;
     file << "    template<typename T> T* AddComponent() { return (T*)0; }"<<std::endl;
@@ -310,11 +311,11 @@ void ScriptWorld::WriteMainGameObject(std::ofstream &file) {
     int index = 0;
     for (auto it : scriptComponents) {
         auto& component = it.second;
-        file<<"template<> " << component.name  << "* GameObject::GetComponent<"<< component.name << ">() { return ("<< component.name <<"*) GetScriptComponent("<<index<<"); }"<<std::endl;
+        file<<"template<> " << component.name  << "* GameObject::GetComponent<"<< component.name << ">() { return ("<< component.name <<"*) GetComponent("<<index<<"); }"<<std::endl;
         
-        file<<"template<> " << component.name  << "* GameObject::AddComponent<"<< component.name << ">() { return ("<< component.name <<"*) AddScriptComponent("<<index<<"); }"<<std::endl;
+        file<<"template<> " << component.name  << "* GameObject::AddComponent<"<< component.name << ">() { return ("<< component.name <<"*) AddComponent("<<index<<"); }"<<std::endl;
         
-        file<<"template<> void GameObject::RemoveComponent<"<< component.name << ">() { RemoveScriptComponent("<<index<<"); }"<<std::endl;
+        file<<"template<> void GameObject::RemoveComponent<"<< component.name << ">() { RemoveComponent("<<index<<"); }"<<std::endl;
         index++;
     }
 }
@@ -330,7 +331,7 @@ void ScriptWorld::WriteMainSystems(std::ofstream &file) {
     }
     
     {
-        file<<"extern \"C\" IScriptSystem* CreateSystem(int systemID) {"<<std::endl;
+        file<<"extern \"C\" IGameSystem* CreateSystem(int systemID) {"<<std::endl;
             file << "   switch (systemID) { " << std::endl;
                 int index = 0;
                 for(auto& system : systems) {
@@ -343,7 +344,7 @@ void ScriptWorld::WriteMainSystems(std::ofstream &file) {
     }
     
     {
-       file<<"extern \"C\" void DeleteSystem(IScriptSystem* scriptSystem) {"<<std::endl;
+       file<<"extern \"C\" void DeleteSystem(IGameSystem* scriptSystem) {"<<std::endl;
        file<<"   delete scriptSystem; "<<std::endl;
        file<<"}"<<std::endl;
     }
@@ -361,7 +362,9 @@ void ScriptWorld::WriteMainComponents(std::ofstream &file) {
     
     {
         file<<"extern \"C\" void* CreateComponent(int componentID) {"<<std::endl;
-            file << "   switch (componentID) { " << std::endl;
+        file << "std::cout << \"Create Component: \"<<componentID<< std::endl;"<<std::endl;
+        
+                file << "   switch (componentID) { " << std::endl;
                 int index = 0;
                 for(auto& component : components) {
                     file<<"      case "<<index <<":"<<" return new "<<component.second.name<<"();"<<std::endl;
@@ -374,6 +377,7 @@ void ScriptWorld::WriteMainComponents(std::ofstream &file) {
     
     {
        file<<"extern \"C\" void DeleteComponent(int componentID, void* component) {"<<std::endl;
+            file << "std::cout << \"Delete Component\"<<componentID<<std::endl;"<<std::endl;
             file << "   switch (componentID) { " << std::endl;
                 int index = 0;
                 for(auto& component : components) {
@@ -473,7 +477,7 @@ bool ScriptWorld::FindComponentIndex(std::string componentName, bool &staticComp
     return false;
 }
 
-
+/*
 template<>
 Container<void*>::ObjectInstance* Container<void*>::CreateInstance() {
     typedef void* (*CreateComponent)(int);
@@ -499,6 +503,7 @@ void Container<void*>::ResetInstance(Container<void *>::ObjectInstance *instance
     ResetComponent func = (*(resetComponent));
     func(contextIndex, instance->object, defaultObject->object);
 }
+*/
 
 void ScriptWorld::SetWorldType(GameWorld& world) {
     worldComponentNames.clear();
@@ -516,6 +521,8 @@ void ScriptWorld::SetWorldType(GameWorld& world) {
     }
 }
 
+
+
 void ScriptWorld::AddGameWorld(GameWorld& world) {
     /*
     worldComponentNames.clear();
@@ -530,11 +537,73 @@ void ScriptWorld::AddGameWorld(GameWorld& world) {
         worldComponentNames.push_back({ world.componentNames[i], i });
     }
     */
-
+    
+    int scriptSystemBaseIndex = (int)world.systems.size();
+    
     int numberOfSystems = countSystems();
     int numberOfComponents = countComponents();
     
     componentCount = numberOfComponents;
+    
+
+    /*
+    for (int i=0; i<numberOfSystems; ++i) {
+        IGameSystem* system = createSystem(i);
+        world.systems.push_back(system);
+        world.TryAddSystem(i, );
+    }
+    */
+    
+    
+    auto& scriptSystems = scriptClasses.children["Systems"].children;
+    
+    int index = 0;
+    for (auto& scriptSystem : scriptSystems) {
+        
+        world.TryAddSystem(index, [this, &scriptSystem, index](std::vector<int>& components) {
+            
+            for (auto& component : scriptSystem.second.templateArguments) {
+                int componentIndex;
+                bool staticComponent;
+                if (FindComponentIndex(component, staticComponent, componentIndex)) {
+                    components.push_back(componentIndex);
+                    
+                    //std::cout << scriptSystem.first << "  " << component<< " : " << componentIndex<<  std::endl;
+                
+                    /*if (staticComponent) {
+                        staticScriptSystemComponents[componentIndex].push_back(index);
+                        data.staticComponents[componentIndex] = true;
+                    } else {
+                        dynamicScriptSystemComponents[componentIndex].push_back(index);
+                        data.scriptComponents.push_back(componentIndex);
+                    }
+                    */
+                }
+            }
+            
+            return createSystem(index);
+        });
+        index++;
+    }
+
+    for(int i=0; i<numberOfComponents; ++i) {
+        world.TryAddComponentContainer(i, [this, i](std::string& componentName) {
+            Container<ScriptComponent>* container = new Container<ScriptComponent>();
+            container->defaultObject.world = this;
+            container->defaultObject.componentID = i;
+            container->defaultObject.data = createComponent(i);
+            std::cout << container->defaultObject.data <<std::endl;
+            componentName = "ScriptComponent";
+            return container;
+        });
+    }
+    
+    
+    
+    
+    
+    
+    /*
 
     world.InitializeScriptData(
         numberOfSystems, numberOfComponents,
@@ -573,20 +642,22 @@ void ScriptWorld::AddGameWorld(GameWorld& world) {
             }
         }
     );
+    */
 }
 
 void ScriptWorld::RemoveGameWorld(GameWorld& world) {
-    world.ClearScripingData([this] (auto scriptSystem){
+    /*world.ClearScripingData([this] (auto scriptSystem){
         deleteSystem(scriptSystem);
     });
+    */
 }
 
-TypeInfo ScriptWorld::GetTypeInfo(GameObject& object, int index) {
-    void* component = object.GetScriptComponent(index);
+TypeInfo ScriptWorld::GetTypeInfo(GameObject& object, ComponentID id) {
+    void* component = object.GetComponent(id);
     if (!component) {
         return TypeInfo();
     }
-    TypeInfo* info = getTypeInfo(index, component);
+    TypeInfo* info = getTypeInfo(id, component);
     TypeInfo t;
     t.UpdateFromPointer(info);
     deleteTypeInfo(info);

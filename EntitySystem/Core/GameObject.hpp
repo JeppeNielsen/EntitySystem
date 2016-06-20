@@ -13,6 +13,8 @@
 
 namespace Pocket {
     
+    class ScriptWorld;
+    
     template<typename T>
     class Container;
     
@@ -28,10 +30,6 @@ namespace Pocket {
         virtual void AddComponent(ComponentID id, GameObject* referenceObject) = 0;
         virtual void RemoveComponent(ComponentID id) = 0;
         virtual void CloneComponent(ComponentID id, GameObject* object) = 0;
-        
-        virtual void* GetScriptComponent(ComponentID id) = 0;
-        virtual void AddScriptComponent(ComponentID id) = 0;
-        virtual void RemoveScriptComponent(ComponentID id) = 0;
     };
     
     class GameObject : public IGameObject {
@@ -48,7 +46,10 @@ namespace Pocket {
         template<typename T>
         T* AddComponent() {
             ComponentID id = GameIDHelper::GetComponentID<T>();
-            TryAddComponentContainer(id, [](){ return new Container<T>(); });
+            TryAddComponentContainer(id, [](std::string& componentName){
+                componentName = GameIDHelper::GetClassName<T>();
+                return new Container<T>();
+            });
             AddComponent(id);
             return GetComponent<T>();
         }
@@ -87,19 +88,18 @@ namespace Pocket {
         GameObject& operator=(const GameObject& o) = delete;
         
         bool HasComponent(ComponentID id) const;
+        
+    public:
         void* GetComponent(ComponentID id) override;
         void AddComponent(ComponentID id) override;
         void AddComponent(ComponentID id, GameObject* source) override;
         void CloneComponent(ComponentID id, GameObject* source)  override;
         void RemoveComponent(ComponentID id) override;
-        void TryAddComponentContainer(ComponentID id, std::function<IContainer*()>&& constructor);
+    private:
+        void TryAddComponentContainer(ComponentID id, std::function<IContainer*(std::string&)>&& constructor);
         void SetWorldEnableDirty();
         void SetEnabled(bool enabled);
         void TrySetComponentEnabled(ComponentID id, bool enable);
-        
-        void* GetScriptComponent(ComponentID id) override;
-        void AddScriptComponent(ComponentID id) override;
-        void RemoveScriptComponent(ComponentID id) override;
         
         struct Data {
             Data() {}
@@ -117,5 +117,6 @@ namespace Pocket {
         
         friend class Container<GameObject>;
         friend class GameWorld;
+        friend class ScriptWorld;
     };
 }

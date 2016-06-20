@@ -12,6 +12,7 @@
 #include "GameSystem.hpp"
 
 namespace Pocket {
+    class ScriptWorld;
     class GameWorld {
     public:
         GameWorld();
@@ -69,13 +70,19 @@ namespace Pocket {
         using Systems = std::vector<IGameSystem*>;
         Systems systemsIndexed;
         Systems systems;
-        using SystemsPerComponent = std::vector<Systems>;
+        using SystemsPerComponent = std::vector<std::vector<int>>;
         SystemsPerComponent systemsPerComponent;
+        
+        using SystemBitsets = std::vector<Bitset>;
+        SystemBitsets systemBitsets;
         
         using Action = std::function<void()>;
         using Actions = std::vector<Action>;
         Actions createActions;
         Actions removeActions;
+        
+        using ComponentNames = std::vector<std::string>;
+        ComponentNames componentNames;
         
         int objectCount;
         int numComponentTypes;
@@ -84,10 +91,11 @@ namespace Pocket {
         void TryRemoveSystem(SystemID id);
         void DoActions(Actions& actions);
         void IterateObjects(std::function<void(GameObject*)> callback);
-        void TryAddComponentContainer(ComponentID id, std::function<IContainer *()>&& constructor);
+        void TryAddComponentContainer(ComponentID id, std::function<IContainer *(std::string&)>&& constructor);
         
         friend class GameObject;
-        friend class IGameSystem;
+        friend class GameSystemBase;
+        friend class ScriptWorld;
     };
     
     

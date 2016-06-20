@@ -10,9 +10,8 @@
 #include <vector>
 #include <iostream>
 #include <type_traits>
-#include "MetaLibrary.hpp"
+//#include "MetaLibrary.hpp"
 #include "JsonSerializer.hpp"
-#include "Vector3.hpp"
 
 namespace Pocket {
 
@@ -253,20 +252,20 @@ public:
             case 1: AddField(*static_cast<FieldInfo<float>*>(fieldInfo)->field, fieldInfo->name); break;
             case 2: AddField(*static_cast<FieldInfo<double>*>(fieldInfo)->field, fieldInfo->name); break;
             case 3: AddField(*static_cast<FieldInfo<std::string>*>(fieldInfo)->field, fieldInfo->name); break;
-            case 4: AddField(*static_cast<FieldInfo<Pocket::Vector2>*>(fieldInfo)->field, fieldInfo->name); break;
-            case 5: AddField(*static_cast<FieldInfo<Pocket::Vector3>*>(fieldInfo)->field, fieldInfo->name); break;
+            //case 4: AddField(*static_cast<FieldInfo<Pocket::Vector2>*>(fieldInfo)->field, fieldInfo->name); break;
+            //case 5: AddField(*static_cast<FieldInfo<Pocket::Vector3>*>(fieldInfo)->field, fieldInfo->name); break;
             
             case 1000: AddField(*static_cast<FieldInfo<Property<int>>*>(fieldInfo)->field, fieldInfo->name); break;
             case 1001: AddField(*static_cast<FieldInfo<Property<float>>*>(fieldInfo)->field, fieldInfo->name); break;
             case 1002: AddField(*static_cast<FieldInfo<Property<double>>*>(fieldInfo)->field, fieldInfo->name); break;
             case 1003: AddField(*static_cast<FieldInfo<Property<std::string>>*>(fieldInfo)->field, fieldInfo->name); break;
-            case 1004: AddField(*static_cast<FieldInfo<Property<Pocket::Vector2>>*>(fieldInfo)->field, fieldInfo->name); break;
-            case 1005: AddField(*static_cast<FieldInfo<Property<Pocket::Vector3>>*>(fieldInfo)->field, fieldInfo->name); break;
-            
+            //case 1004: AddField(*static_cast<FieldInfo<Property<Pocket::Vector2>>*>(fieldInfo)->field, fieldInfo->name); break;
+            //case 1005: AddField(*static_cast<FieldInfo<Property<Pocket::Vector3>>*>(fieldInfo)->field, fieldInfo->name); break;
         }
     }
 };
 
+/*
 template<typename T>
 struct JsonSerializer<T, typename std::enable_if_t< Pocket::Meta::HasGetTypeFunction::apply<T>::value >> {
     static void Serialize(std::string& key, const T& value, minijson::object_writer& writer) {
@@ -288,6 +287,7 @@ struct JsonSerializer<T, typename std::enable_if_t< Pocket::Meta::HasGetTypeFunc
         type.Deserialize(context);
     }
 };
+*/
 
 inline std::string className(const std::string& prettyFunction)
 {

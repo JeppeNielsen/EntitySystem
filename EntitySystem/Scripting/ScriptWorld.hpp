@@ -12,10 +12,10 @@
 #include <fstream>
 #include "ScriptClass.hpp"
 #include "GameWorld.hpp"
+#include "TypeInfo.hpp"
 
 namespace Pocket {
 
-class IScriptSystem;
 class TypeInfo;
 
 class ScriptWorld {
@@ -36,7 +36,7 @@ public:
     
     void AddGameWorld(GameWorld& world);
     void RemoveGameWorld(GameWorld& world);
-    TypeInfo GetTypeInfo(GameObject& object, int index);
+    TypeInfo GetTypeInfo(GameObject& object, ComponentID id);
     
     int ComponentCount();
     
@@ -73,9 +73,9 @@ private:
     
     LibHandle libHandle;
     
-    typedef IScriptSystem* (*CreateSystem)(int);
+    typedef IGameSystem* (*CreateSystem)(int);
     typedef int (*CountSystems)();
-    typedef void (*DeleteSystem)(IScriptSystem*);
+    typedef void (*DeleteSystem)(IGameSystem*);
     
     typedef void* (*CreateComponent)(int);
     typedef int (*CountComponents)();
@@ -98,7 +98,48 @@ private:
     DeleteTypeInfo deleteTypeInfo;
     
     
-    
+    struct ScriptComponent {
+        void* data;
+        int componentID;
+        ScriptWorld* world;
+        
+        ScriptComponent() : data(0), world(0), componentID(0) { }
+        
+        ScriptComponent(ScriptComponent&& other) = delete;
+        
+        /*ScriptComponent(ScriptComponent&& other) : data(0) {
+            world = other.world;
+            componentID = other.componentID;
+            data = world->createComponent(componentID);
+            other.world = 0;
+            other.data = 0;
+        }
+        */
+        
+         ScriptComponent (const ScriptComponent& other) {
+            this->componentID = other.componentID;
+            this->world = other.world;
+            data = world->createComponent(componentID);
+            world->resetComponent(componentID, data, other.data);
+            std::cout << data<<std::endl;
+        }
+
+        ScriptComponent& operator=(const ScriptComponent& other) {
+            this->componentID = other.componentID;
+            this->world = other.world;
+            if (!data) {
+               data = world->createComponent(componentID);
+            }
+            world->resetComponent(componentID, data, other.data);
+            return *this;
+        }
+        
+        ~ScriptComponent() {
+            if (data && world) {
+                world->deleteComponent(componentID, data);
+            }
+        }
+    };
     
     
     

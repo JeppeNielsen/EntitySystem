@@ -5,43 +5,65 @@
 //  Created by Jeppe Nielsen on 06/06/16.
 //  Copyright © 2016 Jeppe Nielsen. All rights reserved.
 //
-#include "PerformanceTests.hpp"
-#include "LogicTests.hpp"
 #include "GameWorld.hpp"
+#include "ScriptWorld.hpp"
 #include <iostream>
-#include "Bitset.hpp"
 
 using namespace Pocket;
 
 int main(int argc, const char * argv[]) {
-
-    Bitset components;
-    Bitset system;
     
-    system.Resize(12);
-    components.Resize(12);
+    GameWorld world;
     
-    system.Set(0, true);
-    system.Set(1, true);
-    system.Set(3, true);
+    ScriptWorld scriptWorld;
     
-    components.Set(0, true);
-    components.Set(1, true);
-    components.Set(2, true);
-    components.Set(2, true);
+    scriptWorld.SetFiles(
+        "EntitySystem.so",
+        "/Projects/EntitySystem/EntitySystem/Scripting/ScriptInclude",
+        {
+            "/Projects/EntitySystem/EntitySystem/ScriptExample.cpp"
+        },{
+            "/Projects/EntitySystem/EntitySystem/Data/Property.hpp"
+        }
+        /*{
+            "/Projects/PocketEngine/Pocket/Logic/Spatial/Transform.hpp",
+            "/Projects/PocketEngine/Pocket/Logic/Rendering/Mesh.hpp",
+            "/Projects/PocketEngine/Pocket/Data/Property.hpp",
+            "/Projects/PocketEngine/Pocket/Math/Vector2.hpp",
+            "/Projects/PocketEngine/Pocket/Math/Vector3.hpp",
+            "/Projects/PocketEngine/Pocket/Logic/Gui/Sizeable.hpp",
+            "/Projects/PocketEngine/Pocket/Rendering/VertexMesh.hpp",
+            "/Projects/PocketEngine/Pocket/Rendering/TextureAtlas.hpp",
+            "/Projects/PocketEngine/Pocket/Rendering/Colour.hpp",
+            "/Projects/PocketEngine/Pocket/Logic/Interaction/Touchable.hpp",
+        }
+        */
+        );
+    scriptWorld.Build();
+    scriptWorld.AddGameWorld(world);
+    
+    auto object = world.CreateObject();
+    object->AddComponent(0);
+    object->AddComponent(1);
+    /*
+    auto type = scriptWorld.GetTypeInfo(*object, 1);
+    
+    FieldInfo<int>* info =  ((FieldInfo<int>*) type.GetField("vx"));
+    *info->field = 2;
     
     
-    bool contains = system.Contains(components);
+    minijson::writer_configuration config;
+    config = config.pretty_printing(true);
+    minijson::object_writer writer(std::cout, config);
     
-    std::cout << sizeof(system)<<std::endl;
+    type.Serialize(writer);
+    writer.close();
+    */
     
-    std::cout << sizeof(GameObject)<<std::endl;
-
-    LogicTests logicTests;
-    logicTests.Run();
     
-    PerformanceTests performance;
-    performance.Run();
+    world.Update(0);
+    world.Update(0);
+    world.Update(0);
     
     return 0;
 }

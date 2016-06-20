@@ -161,7 +161,7 @@ void GameObject::Remove() {
     }
 }
 
-void GameObject::TryAddComponentContainer(ComponentID id, std::function<IContainer *()>&& constructor) {
+void GameObject::TryAddComponentContainer(ComponentID id, std::function<IContainer *(std::string&)>&& constructor) {
     world->TryAddComponentContainer(id, std::move(constructor));
 }
 
@@ -193,39 +193,27 @@ void GameObject::TrySetComponentEnabled(ComponentID id, bool enable) {
         data->enabledComponents.Set(id, true);
         if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
         auto& systemsUsingComponent = world->systemsPerComponent[id];
-        for(auto s : systemsUsingComponent) {
-            bool isInterest = s->componentMask.Contains(data->enabledComponents);
-            //(data->enabledComponents & s->componentMask) == s->componentMask;
+        for(auto systemIndex : systemsUsingComponent) {
+            auto& bitset = world->systemBitsets[systemIndex];
+            bool isInterest = bitset.Contains(data->enabledComponents);
             if (isInterest) {
-                s->objects.push_back(this);
-                s->ObjectAdded(this);
+                auto* system = world->systems[systemIndex];
+                system->AddObject(this);
+                system->ObjectAdded(this);
             }
         }
     } else {
         if (id>=world->systemsPerComponent.size()) return; // component id is beyond systems
         auto& systemsUsingComponent = world->systemsPerComponent[id];
-        for(auto s : systemsUsingComponent) {
-            bool wasInterest = s->componentMask.Contains(data->enabledComponents);
-            //(data->enabledComponents & s->componentMask) == s->componentMask;
+        for(auto systemIndex : systemsUsingComponent) {
+            auto& bitset = world->systemBitsets[systemIndex];
+            bool wasInterest = bitset.Contains(data->enabledComponents);
             if (wasInterest) {
-                s->ObjectRemoved(this);
-                auto& objects = s->objects;
-                objects.erase(std::find(objects.begin(), objects.end(), this));
+                auto* system = world->systems[systemIndex];
+                system->ObjectRemoved(this);
+                system->RemoveObject(this);
             }
         }
         data->enabledComponents.Set(id, false);
     }
-}
-
-void* GameObject::GetScriptComponent(ComponentID id) {
-
-    return 0;
-}
-
-void GameObject::AddScriptComponent(ComponentID id) {
-
-}
-
-void GameObject::RemoveScriptComponent(ComponentID id) {
-
 }
