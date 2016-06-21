@@ -194,8 +194,8 @@ void GameWorld::TryRemoveSystem(SystemID id) {
 }
 
 void GameWorld::DoActions(Actions &actions) {
-    for(auto action : actions) {
-        action();
+    for(int i=0; i<actions.size();++i) {
+        actions[i]();
     }
     actions.clear();
 }

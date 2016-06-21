@@ -20,6 +20,9 @@ struct MovementSystem : public GameSystem<Position, Velocity> {
     void ObjectAdded(GameObject* object) {
         int x = object->GetComponent<Position>()->x;
         
+        object->AddComponent<Pocket::Transform>();
+        object->AddComponent<Pocket::Renderable>();
+        
         std::cout << "MovementSystem::ObjectAdded "<<x<<std::endl;
     }
  

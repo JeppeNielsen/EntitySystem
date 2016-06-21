@@ -11,11 +11,33 @@
 
 using namespace Pocket;
 
+struct Transform {
+    int position;
+};
+
+struct Renderable {
+    int imageNo;
+};
+
+struct RenderSystem : public GameSystem<Transform, Renderable> {
+
+    void ObjectAdded(GameObject* object) {
+        std::cout << "RenderSystem::ObjectAdded" << std::endl;
+    }
+    
+    void ObjectRemoved(GameObject* object) {
+        std::cout << "RenderSystem::ObjectRemoved" << std::endl;
+    }
+
+};
+
 int main(int argc, const char * argv[]) {
     
     GameWorld world;
+    world.CreateSystem<RenderSystem>();
     
     ScriptWorld scriptWorld;
+    
     
     scriptWorld.SetFiles(
         "EntitySystem.so",
@@ -39,12 +61,14 @@ int main(int argc, const char * argv[]) {
         }
         */
         );
+    
+    scriptWorld.SetWorldType(world);
     scriptWorld.Build();
     scriptWorld.AddGameWorld(world);
     
     auto object = world.CreateObject();
-    object->AddComponent(0);
-    object->AddComponent(1);
+    object->AddComponent(2);
+    object->AddComponent(3);
     /*
     auto type = scriptWorld.GetTypeInfo(*object, 1);
     
