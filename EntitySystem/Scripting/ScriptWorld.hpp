@@ -115,7 +115,6 @@ struct ScriptComponent {
         this->world = other.world;
         data = world->createComponent(componentID);
         world->resetComponent(componentID, data, other.data);
-        //std::cout << data<<std::endl;
     }
     
     ScriptComponent& operator=(const ScriptComponent& other) {
@@ -129,7 +128,6 @@ struct ScriptComponent {
     }
     
     ~ScriptComponent() {
-        //std::cout <<"dtor"<< data<<std::endl;
         if (data) {
             world->deleteComponent(componentID, data);
         }

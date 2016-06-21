@@ -598,7 +598,6 @@ void ScriptWorld::AddGameWorld(GameWorld& world) {
             container->defaultObject.world = this;
             container->defaultObject.componentID = i;
             container->defaultObject.data = createComponent(i);
-            std::cout << container->defaultObject.data <<std::endl;
             componentName = "ScriptComponent";
             return container;
         });
