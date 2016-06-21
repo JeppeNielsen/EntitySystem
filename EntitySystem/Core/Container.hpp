@@ -73,14 +73,6 @@ namespace Pocket {
             return &entries[index];
         }
         
-        void Iterate(std::function<void(T* object)> function) {
-            for(int i=0; i<references.size(); ++i) {
-                if (references[i] > 0) {
-                    function(&entries[i]);
-                }
-            }
-        }
-        
         void Clear() override {
             entries.clear();
             references.clear();
