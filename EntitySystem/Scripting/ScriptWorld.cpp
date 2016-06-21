@@ -284,12 +284,12 @@ void ScriptWorld::WriteMainGameObject(std::ofstream &file) {
     file << "class GameObject {"<<std::endl;
     file << "private:"<<std::endl;
     file << "    virtual void* GetComponent(int componentID) = 0;"<<std::endl;
-    file << "    virtual void* AddComponent(int componentID) = 0;"<<std::endl;
-    file << "    virtual void* AddComponent(int componentID, GameObject* referenceObject) = 0;"<<std::endl;
+    file << "    virtual void AddComponent(int componentID) = 0;"<<std::endl;
+    file << "    virtual void AddComponent(int componentID, GameObject* referenceObject) = 0;"<<std::endl;
     file << "    virtual void RemoveComponent(int componentID) = 0;"<<std::endl;
     file << "public:" << std::endl;
     file << "    template<typename T> T* GetComponent() { return (T*)0; }"<<std::endl;
-    file << "    template<typename T> T* AddComponent() { return (T*)0; }"<<std::endl;
+    file << "    template<typename T> T* AddComponent() { }"<<std::endl;
     file << "    template<typename T> void RemoveComponent() { }"<<std::endl;
     file << "};"<<std::endl;
     
@@ -300,7 +300,7 @@ void ScriptWorld::WriteMainGameObject(std::ofstream &file) {
     
     for(auto& componentName : worldComponentNames) {
         std::string nameWithNamespace = namespaceName + componentName.name;
-        file<<"template<> " << nameWithNamespace  << "* GameObject::AddComponent<"<< nameWithNamespace << ">() { return ("<< nameWithNamespace <<"*) AddComponent("<<componentName.index<<"); }"<<std::endl;
+        file<<"template<> " << nameWithNamespace  << "* GameObject::AddComponent<"<< nameWithNamespace << ">() { AddComponent("<<componentName.index<<"); return ("<< nameWithNamespace <<"*) GetComponent("<<componentName.index<<"); }"<<std::endl;
     }
     
     for(auto& componentName : worldComponentNames) {
@@ -313,7 +313,7 @@ void ScriptWorld::WriteMainGameObject(std::ofstream &file) {
         auto& component = it.second;
         file<<"template<> " << component.name  << "* GameObject::GetComponent<"<< component.name << ">() { return ("<< component.name <<"*) GetComponent("<<index<<"); }"<<std::endl;
         
-        file<<"template<> " << component.name  << "* GameObject::AddComponent<"<< component.name << ">() { return ("<< component.name <<"*) AddComponent("<<index<<"); }"<<std::endl;
+        file<<"template<> " << component.name  << "* GameObject::AddComponent<"<< component.name << ">() { AddComponent("<<index<<"); return ("<< component.name <<"*) GetComponent("<<index<<"); }"<<std::endl;
         
         file<<"template<> void GameObject::RemoveComponent<"<< component.name << ">() { RemoveComponent("<<index<<"); }"<<std::endl;
         index++;
@@ -362,7 +362,7 @@ void ScriptWorld::WriteMainComponents(std::ofstream &file) {
     
     {
         file<<"extern \"C\" void* CreateComponent(int componentID) {"<<std::endl;
-        file << "std::cout << \"Create Component: \"<<componentID<< std::endl;"<<std::endl;
+        //file << "std::cout << \"Create Component: \"<<componentID<< std::endl;"<<std::endl;
         
                 file << "   switch (componentID) { " << std::endl;
                 int index = 0;
@@ -377,7 +377,7 @@ void ScriptWorld::WriteMainComponents(std::ofstream &file) {
     
     {
        file<<"extern \"C\" void DeleteComponent(int componentID, void* component) {"<<std::endl;
-            file << "std::cout << \"Delete Component\"<<componentID<<std::endl;"<<std::endl;
+            //file << "std::cout << \"Delete Component\"<<componentID<<std::endl;"<<std::endl;
             file << "   switch (componentID) { " << std::endl;
                 int index = 0;
                 for(auto& component : components) {
@@ -665,3 +665,9 @@ TypeInfo ScriptWorld::GetTypeInfo(GameObject& object, ComponentID id) {
 }
 
 int ScriptWorld::ComponentCount() { return componentCount; }
+
+template<> void* Container<ScriptComponent>::Get(int index) {
+    return entries[index].data;
+}
+
+

@@ -12,7 +12,6 @@
 class GameObject;
 
 struct IGameSystem {
-    virtual ~IGameSystem() {}
     virtual void Initialize()=0;
     virtual void ObjectAdded(GameObject* object) = 0;
     virtual void ObjectRemoved(GameObject* object) = 0;
@@ -25,7 +24,8 @@ struct IGameSystem {
 template<typename... T>
 class GameSystem : public IGameSystem {
 protected:
-    virtual void Initialize() override { };
+    virtual ~GameSystem() { }
+    virtual void Initialize() override { }
     virtual void ObjectAdded(GameObject* object) override { }
     virtual void ObjectRemoved(GameObject* object) override { }
     virtual void Update(float dt) override {}

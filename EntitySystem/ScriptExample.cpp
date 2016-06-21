@@ -4,11 +4,13 @@
 #include "GameSystem.hpp"
 
 struct Position {
+    Position() : x(0), y(0) {}
     int x;
     int y;
 };
 
 struct Velocity {
+    Velocity() : vx(0), vy(0) {}
     int vx;
     int vy;
 };
@@ -16,7 +18,9 @@ struct Velocity {
 struct MovementSystem : public GameSystem<Position, Velocity> {
 
     void ObjectAdded(GameObject* object) {
-        std::cout << "MovementSystem::ObjectAdded"<<std::endl;
+        int x = object->GetComponent<Position>()->x;
+        
+        std::cout << "MovementSystem::ObjectAdded "<<x<<std::endl;
     }
  
     void ObjectRemoved(GameObject* object) {

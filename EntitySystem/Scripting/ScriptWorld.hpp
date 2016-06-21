@@ -17,7 +17,8 @@
 namespace Pocket {
 
 class TypeInfo;
-
+class ScriptComponent;
+    
 class ScriptWorld {
 public:
 
@@ -97,6 +98,9 @@ private:
     GetTypeInfoFunction getTypeInfo;
     DeleteTypeInfo deleteTypeInfo;
     
+public:
+    friend class ScriptComponent;
+};
     
     struct ScriptComponent {
         void* data;
@@ -104,49 +108,35 @@ private:
         ScriptWorld* world;
         
         ScriptComponent() : data(0), world(0), componentID(0) { }
-        
         ScriptComponent(ScriptComponent&& other) = delete;
         
-        /*ScriptComponent(ScriptComponent&& other) : data(0) {
-            world = other.world;
-            componentID = other.componentID;
-            data = world->createComponent(componentID);
-            other.world = 0;
-            other.data = 0;
-        }
-        */
-        
-         ScriptComponent (const ScriptComponent& other) {
+        ScriptComponent (const ScriptComponent& other) {
             this->componentID = other.componentID;
             this->world = other.world;
             data = world->createComponent(componentID);
             world->resetComponent(componentID, data, other.data);
-            std::cout << data<<std::endl;
+            //std::cout << data<<std::endl;
         }
-
+        
         ScriptComponent& operator=(const ScriptComponent& other) {
             this->componentID = other.componentID;
             this->world = other.world;
             if (!data) {
-               data = world->createComponent(componentID);
+                data = world->createComponent(componentID);
             }
             world->resetComponent(componentID, data, other.data);
             return *this;
         }
         
         ~ScriptComponent() {
-            if (data && world) {
+            //std::cout <<"dtor"<< data<<std::endl;
+            if (data) {
                 world->deleteComponent(componentID, data);
             }
         }
     };
     
-    
-    
-    
-    
-    
-    
-};
+   
+
 
 }

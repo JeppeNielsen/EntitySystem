@@ -6,19 +6,19 @@ struct Velocity;
 class GameObject {
 private:
     virtual void* GetComponent(int componentID) = 0;
-    virtual void* AddComponent(int componentID) = 0;
-    virtual void* AddComponent(int componentID, GameObject* referenceObject) = 0;
+    virtual void AddComponent(int componentID) = 0;
+    virtual void AddComponent(int componentID, GameObject* referenceObject) = 0;
     virtual void RemoveComponent(int componentID) = 0;
 public:
     template<typename T> T* GetComponent() { return (T*)0; }
-    template<typename T> T* AddComponent() { return (T*)0; }
+    template<typename T> T* AddComponent() { }
     template<typename T> void RemoveComponent() { }
 };
 template<> Position* GameObject::GetComponent<Position>() { return (Position*) GetComponent(0); }
-template<> Position* GameObject::AddComponent<Position>() { return (Position*) AddComponent(0); }
+template<> Position* GameObject::AddComponent<Position>() { AddComponent(0); return (Position*) GetComponent(0); }
 template<> void GameObject::RemoveComponent<Position>() { RemoveComponent(0); }
 template<> Velocity* GameObject::GetComponent<Velocity>() { return (Velocity*) GetComponent(1); }
-template<> Velocity* GameObject::AddComponent<Velocity>() { return (Velocity*) AddComponent(1); }
+template<> Velocity* GameObject::AddComponent<Velocity>() { AddComponent(1); return (Velocity*) GetComponent(1); }
 template<> void GameObject::RemoveComponent<Velocity>() { RemoveComponent(1); }
 #include "TypeInfo.hpp"
 #include "Property.hpp"
@@ -40,7 +40,6 @@ extern "C" int CountComponents() {
    return 2;
 }
 extern "C" void* CreateComponent(int componentID) {
-std::cout << "Create Component: "<<componentID<< std::endl;
    switch (componentID) { 
       case 0: return new Position();
       case 1: return new Velocity();
@@ -48,7 +47,6 @@ std::cout << "Create Component: "<<componentID<< std::endl;
    }
 }
 extern "C" void DeleteComponent(int componentID, void* component) {
-std::cout << "Delete Component"<<componentID<<std::endl;
    switch (componentID) { 
       case 0: { delete ((Position*)component); break; }
       case 1: { delete ((Velocity*)component); break; }
