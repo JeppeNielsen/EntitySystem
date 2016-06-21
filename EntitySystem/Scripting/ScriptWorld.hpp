@@ -102,41 +102,38 @@ public:
     friend class ScriptComponent;
 };
     
-    struct ScriptComponent {
-        void* data;
-        int componentID;
-        ScriptWorld* world;
-        
-        ScriptComponent() : data(0), world(0), componentID(0) { }
-        ScriptComponent(ScriptComponent&& other) = delete;
-        
-        ScriptComponent (const ScriptComponent& other) {
-            this->componentID = other.componentID;
-            this->world = other.world;
-            data = world->createComponent(componentID);
-            world->resetComponent(componentID, data, other.data);
-            //std::cout << data<<std::endl;
-        }
-        
-        ScriptComponent& operator=(const ScriptComponent& other) {
-            this->componentID = other.componentID;
-            this->world = other.world;
-            if (!data) {
-                data = world->createComponent(componentID);
-            }
-            world->resetComponent(componentID, data, other.data);
-            return *this;
-        }
-        
-        ~ScriptComponent() {
-            //std::cout <<"dtor"<< data<<std::endl;
-            if (data) {
-                world->deleteComponent(componentID, data);
-            }
-        }
-    };
+struct ScriptComponent {
+    void* data;
+    int componentID;
+    ScriptWorld* world;
     
-   
-
-
+    ScriptComponent() : data(0), world(0), componentID(0) { }
+    ScriptComponent(ScriptComponent&& other) = delete;
+    
+    ScriptComponent (const ScriptComponent& other) {
+        this->componentID = other.componentID;
+        this->world = other.world;
+        data = world->createComponent(componentID);
+        world->resetComponent(componentID, data, other.data);
+        //std::cout << data<<std::endl;
+    }
+    
+    ScriptComponent& operator=(const ScriptComponent& other) {
+        this->componentID = other.componentID;
+        this->world = other.world;
+        if (!data) {
+            data = world->createComponent(componentID);
+        }
+        world->resetComponent(componentID, data, other.data);
+        return *this;
+    }
+    
+    ~ScriptComponent() {
+        //std::cout <<"dtor"<< data<<std::endl;
+        if (data) {
+            world->deleteComponent(componentID, data);
+        }
+    }
+};
+    
 }
