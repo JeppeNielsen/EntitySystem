@@ -19,18 +19,18 @@ void GameSystemBase::TryAddComponentContainer(ComponentID id, std::function<ICon
 }
 
 void GameSystemBase::Initialize() {}
-void GameSystemBase::ObjectAdded(Pocket::IGameObject *object) {}
-void GameSystemBase::ObjectRemoved(Pocket::IGameObject *object) {}
+void GameSystemBase::ObjectAdded(Pocket::GameObject *object) {}
+void GameSystemBase::ObjectRemoved(Pocket::GameObject *object) {}
 void GameSystemBase::Update(float dt) {}
 void GameSystemBase::Render() {}
 const ObjectCollection& GameSystemBase::Objects() const { return objects; }
 
-int GameSystemBase::AddObject(Pocket::IGameObject *object) {
+int GameSystemBase::AddObject(Pocket::GameObject *object) {
     int count = (int)objects.size();
-    objects.push_back((GameObject*)object);
+    objects.push_back(object);
     return count;
 }
 
-void GameSystemBase::RemoveObject(Pocket::IGameObject *object) {
-    objects.erase(std::find(objects.begin(), objects.end(), (GameObject*)object));
+void GameSystemBase::RemoveObject(Pocket::GameObject *object) {
+    objects.erase(std::find(objects.begin(), objects.end(), object));
 }

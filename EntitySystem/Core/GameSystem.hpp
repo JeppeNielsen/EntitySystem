@@ -17,12 +17,12 @@ namespace Pocket {
     
     struct IGameSystem {
         virtual void Initialize() = 0;
-        virtual void ObjectAdded(IGameObject* object) = 0;
-        virtual void ObjectRemoved(IGameObject* object) = 0;
+        virtual void ObjectAdded(GameObject* object) = 0;
+        virtual void ObjectRemoved(GameObject* object) = 0;
         virtual void Update(float dt) = 0;
         virtual void Render() = 0;
-        virtual int AddObject(IGameObject* object) = 0;
-        virtual void RemoveObject(IGameObject* object) = 0;
+        virtual int AddObject(GameObject* object) = 0;
+        virtual void RemoveObject(GameObject* object) = 0;
     };
     
     class GameSystemBase : public IGameSystem {
@@ -34,13 +34,13 @@ namespace Pocket {
         void TryAddComponentContainer(ComponentID id, std::function<IContainer*(std::string&)>&& constructor);
         
         virtual void Initialize();
-        virtual void ObjectAdded(IGameObject* object);
-        virtual void ObjectRemoved(IGameObject* object);
+        virtual void ObjectAdded(GameObject* object);
+        virtual void ObjectRemoved(GameObject* object);
         virtual void Update(float dt);
         virtual void Render();
         
-        int AddObject(IGameObject* object);
-        void RemoveObject(IGameObject* object);
+        int AddObject(GameObject* object);
+        void RemoveObject(GameObject* object);
         
     private:
         ObjectCollection objects;
