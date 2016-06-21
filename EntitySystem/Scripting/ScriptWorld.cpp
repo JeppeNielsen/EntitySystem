@@ -45,6 +45,10 @@ string ScriptWorld::ExtractHeaderName(const std::string &headerFile) {
     return headerFile.substr(lastPath + 1, headerFile.size() - lastPath - 1);
 }
 
+void ScriptWorld::SetClangSdkPath(const std::string& clangSdkPath) {
+    this->clangSdkPath = clangSdkPath;
+}
+
 void ScriptWorld::SetFiles(const std::string& dynamicLibPath, const std::string& scriptingIncludeDir, const std::vector<std::string> &sourceFiles, const std::vector<std::string> &headerFiles) {
     
     this->sourceFiles.clear();
@@ -96,13 +100,12 @@ bool ScriptWorld::Build() {
     
     WriteMainCppFile(mainCppFile);
     
-    string compilerPath ="/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/bin/clang++";
+    string compilerPath = clangSdkPath + "bin/clang++";
     string compilerFlags = "-v -dynamiclib -std=c++11 -stdlib=libc++ -g";
-    //-stdlib=libc++
     string outputFile = "-o " + dynamicLibPath;
     
     string compilerArgs = compilerPath + " " + compilerFlags + " ";
-    //compilerArgs += "-I/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/include/c++/v1/ ";
+    //compilerArgs += "-I"+clangSdkPath+"/include/c++/v1/ ";
     
     for(auto& header : headerPaths) {
         compilerArgs += header + " ";

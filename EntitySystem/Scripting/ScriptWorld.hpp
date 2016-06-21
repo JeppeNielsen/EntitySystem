@@ -24,6 +24,8 @@ public:
 
     ScriptWorld();
     
+    void SetClangSdkPath(const std::string& clangSdkPath);
+    
     void SetFiles(
                   const std::string& dynamicLibPath,
                   const std::string& scriptingIncludeDir,
@@ -55,6 +57,7 @@ private:
     
     bool FindComponentIndex(std::string componentName, bool& staticComponent, int& index);
     
+    std::string clangSdkPath;
     std::string dynamicLibPath;
     std::string scriptingIncludeDir;
     std::vector<std::string> sourceFiles;

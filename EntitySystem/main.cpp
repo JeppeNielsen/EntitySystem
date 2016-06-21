@@ -37,7 +37,7 @@ int main(int argc, const char * argv[]) {
     world.CreateSystem<RenderSystem>();
     
     ScriptWorld scriptWorld;
-    
+    scriptWorld.SetClangSdkPath("/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/");
     
     scriptWorld.SetFiles(
         "EntitySystem.so",
