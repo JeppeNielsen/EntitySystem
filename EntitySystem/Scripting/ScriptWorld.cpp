@@ -287,10 +287,13 @@ void ScriptWorld::WriteMainGameObject(std::ofstream &file) {
     file << "    virtual void AddComponent(int componentID) = 0;"<<std::endl;
     file << "    virtual void AddComponent(int componentID, GameObject* referenceObject) = 0;"<<std::endl;
     file << "    virtual void RemoveComponent(int componentID) = 0;"<<std::endl;
+    file << "    virtual void CloneComponent(int componentID, GameObject* source) = 0;"<<std::endl;
+    
     file << "public:" << std::endl;
     file << "    template<typename T> T* GetComponent() { return (T*)0; }"<<std::endl;
     file << "    template<typename T> T* AddComponent() { }"<<std::endl;
     file << "    template<typename T> void RemoveComponent() { }"<<std::endl;
+    file << "    template<typename T> T* CloneComponent(GameObject* source) { }"<<std::endl;
     file << "};"<<std::endl;
     
     for(auto& componentName : worldComponentNames) {
@@ -316,6 +319,9 @@ void ScriptWorld::WriteMainGameObject(std::ofstream &file) {
         file<<"template<> " << component.name  << "* GameObject::AddComponent<"<< component.name << ">() { AddComponent("<<index<<"); return ("<< component.name <<"*) GetComponent("<<index<<"); }"<<std::endl;
         
         file<<"template<> void GameObject::RemoveComponent<"<< component.name << ">() { RemoveComponent("<<index<<"); }"<<std::endl;
+        
+        file<<"template<> " << component.name  << "* GameObject::CloneComponent<"<< component.name << ">(GameObject* source) { CloneComponent("<<index<<", source); return ("<< component.name <<"*) GetComponent("<<index<<"); }"<<std::endl;
+        
         index++;
     }
 }

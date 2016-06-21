@@ -29,7 +29,7 @@ namespace Pocket {
         virtual void AddComponent(ComponentID id) = 0;
         virtual void AddComponent(ComponentID id, GameObject* referenceObject) = 0;
         virtual void RemoveComponent(ComponentID id) = 0;
-        //virtual void CloneComponent(ComponentID id, GameObject* object) = 0;
+        virtual void CloneComponent(ComponentID id, GameObject* object) = 0;
     };
     
     class GameObject : public IGameObject {
@@ -93,7 +93,7 @@ namespace Pocket {
         void* GetComponent(ComponentID id) override;
         void AddComponent(ComponentID id) override;
         void AddComponent(ComponentID id, GameObject* source) override;
-        void CloneComponent(ComponentID id, GameObject* source);
+        void CloneComponent(ComponentID id, GameObject* source) override;
         void RemoveComponent(ComponentID id) override;
     private:
         void TryAddComponentContainer(ComponentID id, std::function<IContainer*(std::string&)>&& constructor);

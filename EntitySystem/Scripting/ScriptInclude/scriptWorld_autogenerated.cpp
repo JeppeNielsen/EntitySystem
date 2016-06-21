@@ -9,17 +9,21 @@ private:
     virtual void AddComponent(int componentID) = 0;
     virtual void AddComponent(int componentID, GameObject* referenceObject) = 0;
     virtual void RemoveComponent(int componentID) = 0;
+    virtual void CloneComponent(int componentID, GameObject* source) = 0;
 public:
     template<typename T> T* GetComponent() { return (T*)0; }
     template<typename T> T* AddComponent() { }
     template<typename T> void RemoveComponent() { }
+    template<typename T> T* CloneComponent(GameObject* source) { }
 };
 template<> Position* GameObject::GetComponent<Position>() { return (Position*) GetComponent(0); }
 template<> Position* GameObject::AddComponent<Position>() { AddComponent(0); return (Position*) GetComponent(0); }
 template<> void GameObject::RemoveComponent<Position>() { RemoveComponent(0); }
+template<> Position* GameObject::CloneComponent<Position>(GameObject* source) { CloneComponent(0, source); return (Position*) GetComponent(0); }
 template<> Velocity* GameObject::GetComponent<Velocity>() { return (Velocity*) GetComponent(1); }
 template<> Velocity* GameObject::AddComponent<Velocity>() { AddComponent(1); return (Velocity*) GetComponent(1); }
 template<> void GameObject::RemoveComponent<Velocity>() { RemoveComponent(1); }
+template<> Velocity* GameObject::CloneComponent<Velocity>(GameObject* source) { CloneComponent(1, source); return (Velocity*) GetComponent(1); }
 #include "TypeInfo.hpp"
 #include "Property.hpp"
 #include "ScriptExample.cpp"
