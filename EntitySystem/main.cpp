@@ -8,6 +8,7 @@
 #include "GameWorld.hpp"
 #include "ScriptWorld.hpp"
 #include <iostream>
+#include "ScriptingTests.hpp"
 
 using namespace Pocket;
 
@@ -32,7 +33,13 @@ struct RenderSystem : public GameSystem<Transform, Renderable> {
 };
 
 int main(int argc, const char * argv[]) {
+
+    ScriptingTests tests;
+    tests.Run();
+
     
+    return 0;
+ 
     GameWorld world;
     world.CreateSystem<RenderSystem>();
     
@@ -47,28 +54,20 @@ int main(int argc, const char * argv[]) {
         },{
             "/Projects/EntitySystem/EntitySystem/Data/Property.hpp"
         }
-        /*{
-            "/Projects/PocketEngine/Pocket/Logic/Spatial/Transform.hpp",
-            "/Projects/PocketEngine/Pocket/Logic/Rendering/Mesh.hpp",
-            "/Projects/PocketEngine/Pocket/Data/Property.hpp",
-            "/Projects/PocketEngine/Pocket/Math/Vector2.hpp",
-            "/Projects/PocketEngine/Pocket/Math/Vector3.hpp",
-            "/Projects/PocketEngine/Pocket/Logic/Gui/Sizeable.hpp",
-            "/Projects/PocketEngine/Pocket/Rendering/VertexMesh.hpp",
-            "/Projects/PocketEngine/Pocket/Rendering/TextureAtlas.hpp",
-            "/Projects/PocketEngine/Pocket/Rendering/Colour.hpp",
-            "/Projects/PocketEngine/Pocket/Logic/Interaction/Touchable.hpp",
-        }
-        */
         );
     
     scriptWorld.SetWorldType(world);
-    scriptWorld.Build();
+    scriptWorld.Build(true);
     scriptWorld.AddGameWorld(world);
     
     auto object = world.CreateObject();
     object->AddComponent(2);
     object->AddComponent(3);
+    
+    world.Update(0);
+    world.Update(0);
+    world.Update(0);
+    
     /*
     auto type = scriptWorld.GetTypeInfo(*object, 1);
     
@@ -82,12 +81,11 @@ int main(int argc, const char * argv[]) {
     
     type.Serialize(writer);
     writer.close();
+     
+    
+    
     */
-    
-    
-    world.Update(0);
-    world.Update(0);
-    world.Update(0);
+
     
     return 0;
 }

@@ -153,7 +153,7 @@ bool ScriptParser::ParseCode(ScriptClass& root, std::string cppFile, std::vector
 
     std::vector<const char*> arguments;
     arguments.push_back("c++");
-    arguments.push_back("-std=c++14");
+    arguments.push_back("-std=c++11");
     arguments.push_back("-stdlib=libc++");
     //arguments.push_back("-I/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/include/c++/v1");
     //arguments.push_back("-I/usr/include");

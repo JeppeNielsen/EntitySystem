@@ -33,7 +33,7 @@ public:
                   const std::vector<std::string>& headerFiles);
     
     void SetWorldType(GameWorld& world);
-    bool Build();
+    bool Build(bool enableOutput);
     bool LoadLib();
     void UnloadLib();
     
