@@ -28,7 +28,7 @@ bool ScriptingTests::CompileScriptingWorld(Pocket::GameWorld &world, Pocket::Scr
     counter++;
     
     std::stringstream s;
-    s<<"Example"<<counter<<"so";
+    s<<"Example"<<counter<<".so";
     
     scriptWorld.SetFiles(
         s.str(),
