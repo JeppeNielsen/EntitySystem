@@ -17,6 +17,6 @@ class ScriptingTests : public UnitTest {
 protected:
     virtual void RunTests();
 private:
-    bool CompileScriptingWorld(std::string o, GameWorld& world, ScriptWorld& scriptWorld, const std::string& scriptCode);
+    bool CompileScriptingWorld(GameWorld& world, ScriptWorld& scriptWorld, const std::string& scriptCode);
     void WriteFile(const std::string& path, const std::string& content);
 };

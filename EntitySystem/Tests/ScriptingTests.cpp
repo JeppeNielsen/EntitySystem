@@ -8,6 +8,7 @@
 
 #include "ScriptingTests.hpp"
 #include <fstream>
+#include <sstream>
 
 void ScriptingTests::WriteFile(const std::string &path, const std::string &content) {
     std::ofstream file;
@@ -16,15 +17,21 @@ void ScriptingTests::WriteFile(const std::string &path, const std::string &conte
     file.close();
 }
 
-bool ScriptingTests::CompileScriptingWorld(std::string o, Pocket::GameWorld &world, Pocket::ScriptWorld &scriptWorld, const std::string &scriptCode) {
+bool ScriptingTests::CompileScriptingWorld(Pocket::GameWorld &world, Pocket::ScriptWorld &scriptWorld, const std::string &scriptCode) {
     std::string pathToTempFile = "/Projects/EntitySystem/Build/Build/Products/Debug/example_temp.cpp";
     
     WriteFile(pathToTempFile, scriptCode);
     
     scriptWorld.SetClangSdkPath("/Users/Jeppe/Downloads/clang+llvm-3.7.0-x86_64-apple-darwin/");
     
+    static int counter = 0;
+    counter++;
+    
+    std::stringstream s;
+    s<<"Example"<<counter<<"so";
+    
     scriptWorld.SetFiles(
-        o,
+        s.str(),
         "/Projects/EntitySystem/EntitySystem/Scripting/ScriptInclude",
         {
             pathToTempFile
@@ -59,16 +66,26 @@ void ScriptingTests::RunTests() {
     AddTest("Compile Script", [this]() {
         GameWorld world;
         ScriptWorld scriptWorld;
-        bool succes = this->CompileScriptingWorld("script1.so",world, scriptWorld,
+        bool succes = this->CompileScriptingWorld(world, scriptWorld,
             " struct Position { int x; }; "
         );
         return succes;
     });
- 
+    
+    
+    AddTest("Compiler Error", [this]() {
+        GameWorld world;
+        ScriptWorld scriptWorld;
+        bool succes = this->CompileScriptingWorld(world, scriptWorld,
+            " struct Position { int x; } "
+        );
+        return !succes;
+    });
+    
     AddTest("Create Object", [this]() {
         GameWorld world;
         ScriptWorld scriptWorld;
-        if (!this->CompileScriptingWorld("script2.so",world, scriptWorld,
+        if (!this->CompileScriptingWorld(world, scriptWorld,
             "#include \"GameSystem.hpp\"\n"
             " struct Position { int x; }; \n"
             " struct System : public GameSystem<Position> {};\n"
@@ -80,6 +97,4 @@ void ScriptingTests::RunTests() {
         void* ptr = object->GetComponent(0);
         return object && ptr;
     });
-    
-    
 }
