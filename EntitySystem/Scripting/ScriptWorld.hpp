@@ -37,7 +37,7 @@ public:
     bool LoadLib();
     void UnloadLib();
     
-    void AddGameWorld(GameWorld& world);
+    bool AddGameWorld(GameWorld& world);
     void RemoveGameWorld(GameWorld& world);
     TypeInfo GetTypeInfo(GameObject& object, ComponentID id);
     
@@ -72,6 +72,8 @@ private:
     std::vector<ComponentName> worldComponentNames;
     ScriptClass scriptClasses;
     int componentCount;
+    int baseComponentIndex;
+    int baseSystemIndex;
     
     using LibHandle = void*;
     

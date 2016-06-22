@@ -72,6 +72,8 @@ namespace Pocket {
         Systems systems;
         using SystemsPerComponent = std::vector<std::vector<int>>;
         SystemsPerComponent systemsPerComponent;
+        using DeleteSystems = std::vector<std::function<void()>>;
+        DeleteSystems deleteSystems;
         
         using SystemBitsets = std::vector<Bitset>;
         SystemBitsets systemBitsets;

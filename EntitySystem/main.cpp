@@ -37,9 +37,6 @@ int main(int argc, const char * argv[]) {
     ScriptingTests tests;
     tests.Run();
 
-    
-    return 0;
- 
     GameWorld world;
     world.CreateSystem<RenderSystem>();
     

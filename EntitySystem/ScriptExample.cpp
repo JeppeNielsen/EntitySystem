@@ -1,6 +1,7 @@
 
 
 #include <iostream>
+#include <vector>
 #include "GameSystem.hpp"
 
 struct Position {
@@ -18,12 +19,20 @@ struct Velocity {
 struct MovementSystem : public GameSystem<Position, Velocity> {
 
     void ObjectAdded(GameObject* object) {
+    
+        std::vector<int> bla;
+        bla.push_back(2);
+        bla.push_back(3);
+        
+        int sum = 0;
+        for(auto i : bla) sum+=i;
+        
         int x = object->GetComponent<Position>()->x;
         
         object->AddComponent<Pocket::Transform>();
         object->AddComponent<Pocket::Renderable>();
         
-        std::cout << "MovementSystem::ObjectAdded "<<x<<std::endl;
+        std::cout << "MovementSystem::ObjectAdded "<<sum<<std::endl;
     }
  
     void ObjectRemoved(GameObject* object) {

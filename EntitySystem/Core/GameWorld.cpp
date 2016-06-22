@@ -19,8 +19,12 @@ GameWorld::GameWorld() {
 
 GameWorld::~GameWorld() {
     Clear();
-    for(auto s : systems) {
-        delete s;
+    for(int i=0; i<systems.size(); ++i) {
+        if (deleteSystems[i]) {
+            deleteSystems[i]();
+        } else {
+            delete systems[i];
+        }
     }
     for(int i=0; i<numComponentTypes; ++i) {
         delete components[i];
@@ -149,6 +153,7 @@ IGameSystem* GameWorld::TryAddSystem(SystemID id, std::function<IGameSystem *(st
         systemsIndexed[id] = system;
         systems.push_back(system);
         systemBitsets.push_back(systemBitset);
+        deleteSystems.push_back(0);
         system->Initialize();
         
         IterateObjects([system, &systemBitset](GameObject* o) {
