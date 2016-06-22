@@ -43,6 +43,9 @@ public:
     
     int ComponentCount();
     
+    using ScriptComponents = std::map<std::string, int>;
+    ScriptComponents Components();
+    
 private:
     void ExtractScriptClasses();
     void WriteMainIncludes(std::ofstream &file);
@@ -74,6 +77,7 @@ private:
     int componentCount;
     int baseComponentIndex;
     int baseSystemIndex;
+    ScriptComponents scriptComponents;
     
     using LibHandle = void*;
     

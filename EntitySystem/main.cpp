@@ -9,6 +9,7 @@
 #include "ScriptWorld.hpp"
 #include <iostream>
 #include "ScriptingTests.hpp"
+#include "LogicTests.hpp"
 
 using namespace Pocket;
 
@@ -34,6 +35,9 @@ struct RenderSystem : public GameSystem<Transform, Renderable> {
 
 int main(int argc, const char * argv[]) {
 
+    LogicTests logicTests;
+    logicTests.Run();
+    
     ScriptingTests tests;
     tests.Run();
 
@@ -57,9 +61,13 @@ int main(int argc, const char * argv[]) {
     scriptWorld.Build(true);
     scriptWorld.AddGameWorld(world);
     
+    for(auto c : scriptWorld.Components()) {
+        std::cout << " " << c.first << ": " << c.second<<std::endl;
+    }
+
     auto object = world.CreateObject();
-    object->AddComponent(2);
-    object->AddComponent(3);
+    object->AddComponent(scriptWorld.Components()["Position"]);
+    object->AddComponent(scriptWorld.Components()["Velocity"]);
     
     world.Update(0);
     world.Update(0);

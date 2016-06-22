@@ -193,9 +193,14 @@ void GameWorld::TryRemoveSystem(SystemID id) {
         }
     }
     
-    systems.erase(std::find(systems.begin(), systems.end(), system));
+    systems.erase(systems.begin() + systemIndex);
     systemsIndexed[id] = 0;
-    delete system;
+    if (deleteSystems[systemIndex]) {
+        deleteSystems[systemIndex]();
+    } else {
+        delete system;
+    }
+    deleteSystems.erase(deleteSystems.begin()+systemIndex);
 }
 
 void GameWorld::DoActions(Actions &actions) {

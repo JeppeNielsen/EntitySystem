@@ -319,7 +319,7 @@ void ScriptWorld::WriteMainGameObject(std::ofstream &file) {
         file<<"template<> " << nameWithNamespace  << "* GameObject::CloneComponent<"<< nameWithNamespace << ">(GameObject* source) { CloneComponent("<<componentName.index<<", source); return ("<< nameWithNamespace <<"*) GetComponent("<<componentName.index<<"); }"<<std::endl;
     }
     
-    int index = (int)worldComponentNames.size();
+    int index = baseComponentIndex;
     for (auto it : scriptComponents) {
         auto& component = it.second;
         file<<"template<> " << component.name  << "* GameObject::GetComponent<"<< component.name << ">() { return ("<< component.name <<"*) GetComponent("<<index<<"); }"<<std::endl;
@@ -377,7 +377,7 @@ void ScriptWorld::WriteMainComponents(std::ofstream &file) {
     {
         file<<"extern \"C\" void* CreateComponent(int componentID) {"<<std::endl;
         file << "   switch (componentID) { " << std::endl;
-        int index = (int)worldComponentNames.size();
+        int index = baseComponentIndex;
         for(auto& component : components) {
             file<<"      case "<<index <<":"<<" return new "<<component.second.name<<"();"<<std::endl;
             index++;
@@ -390,7 +390,7 @@ void ScriptWorld::WriteMainComponents(std::ofstream &file) {
     {
        file<<"extern \"C\" void DeleteComponent(int componentID, void* component) {"<<std::endl;
         file << "   switch (componentID) { " << std::endl;
-        int index = (int)worldComponentNames.size();
+        int index = baseComponentIndex;
         for(auto& component : components) {
             file<<"      case "<<index <<":"<<" { delete (("<<component.second.name<<"*)component); break; }"<<std::endl;
             index++;
@@ -402,7 +402,7 @@ void ScriptWorld::WriteMainComponents(std::ofstream &file) {
     {
        file<<"extern \"C\" void ResetComponent(int componentID, void* c, void* s) {"<<std::endl;
             file << "   switch (componentID) { " << std::endl;
-                int index = (int)worldComponentNames.size();
+                int index = baseComponentIndex;
                 for(auto& component : components) {
                     file<<"      case "<<index <<":"<<" { "<<component.second.name<<"* co = ("<<component.second.name<<"*)c; "<<std::endl;
                     file<<"      "<<component.second.name<<"* so = (("<<component.second.name<<"*)s);"<<std::endl;
@@ -422,7 +422,7 @@ void ScriptWorld::WriteMainSerializedComponents(std::ofstream &file) {
 
     file<<"extern \"C\" Pocket::TypeInfo* GetTypeInfo(int componentID, void* componentPtr) {"<<std::endl;
         file << "   switch (componentID) { " << std::endl;
-            int index = 0;
+            int index = baseComponentIndex;
             for(auto& componentIt : components) {
                 auto& component = componentIt.second;
                 file<<"      case "<<index <<": {"<<std::endl;
@@ -502,6 +502,18 @@ void ScriptWorld::SetWorldType(GameWorld& world) {
             worldComponentNames.push_back({ nameWithoutNamespace, i });
         }
     }
+    
+    
+    baseComponentIndex = 0;
+    
+    if (!worldComponentNames.empty()) {
+        for(auto& componentName : worldComponentNames) {
+            if (componentName.index>baseComponentIndex) {
+                baseComponentIndex = componentName.index;
+            }
+        }
+        baseComponentIndex++;
+    }
 }
 
 bool ScriptWorld::AddGameWorld(GameWorld& world) {
@@ -510,7 +522,7 @@ bool ScriptWorld::AddGameWorld(GameWorld& world) {
     int numberOfComponents = countComponents();
     componentCount = numberOfComponents;
 
-    baseComponentIndex = (int)world.components.size();
+    assert(baseComponentIndex == (int)world.components.size());
     baseSystemIndex = (int)world.systems.size();
     
     auto& scriptSystems = scriptClasses.children["Systems"].children;
@@ -546,6 +558,15 @@ bool ScriptWorld::AddGameWorld(GameWorld& world) {
             componentName = "ScriptComponent";
             return container;
         });
+        
+        auto& components = scriptClasses.children["Components"].children;
+        int componentNameCounter = 0;
+        for(auto c : components) {
+            if (componentNameCounter == i) {
+                scriptComponents[c.second.name] = componentIndex;
+            }
+            componentNameCounter++;
+        }
     }
     return true;
 }
@@ -570,6 +591,10 @@ TypeInfo ScriptWorld::GetTypeInfo(GameObject& object, ComponentID id) {
 }
 
 int ScriptWorld::ComponentCount() { return componentCount; }
+
+ScriptWorld::ScriptComponents ScriptWorld::Components() {
+    return scriptComponents;
+}
 
 template<> void* Container<ScriptComponent>::Get(int index) {
     return entries[index].data;
