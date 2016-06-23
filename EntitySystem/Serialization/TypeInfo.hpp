@@ -255,10 +255,16 @@ public:
             //case 4: AddField(*static_cast<FieldInfo<Pocket::Vector2>*>(fieldInfo)->field, fieldInfo->name); break;
             //case 5: AddField(*static_cast<FieldInfo<Pocket::Vector3>*>(fieldInfo)->field, fieldInfo->name); break;
             
-            case 1000: AddField(*static_cast<FieldInfo<Property<int>>*>(fieldInfo)->field, fieldInfo->name); break;
-            case 1001: AddField(*static_cast<FieldInfo<Property<float>>*>(fieldInfo)->field, fieldInfo->name); break;
-            case 1002: AddField(*static_cast<FieldInfo<Property<double>>*>(fieldInfo)->field, fieldInfo->name); break;
-            case 1003: AddField(*static_cast<FieldInfo<Property<std::string>>*>(fieldInfo)->field, fieldInfo->name); break;
+            case 1000: AddField(*static_cast<FieldInfo<std::vector<int>>*>(fieldInfo)->field, fieldInfo->name); break;
+            case 1001: AddField(*static_cast<FieldInfo<std::vector<float>>*>(fieldInfo)->field, fieldInfo->name); break;
+            case 1002: AddField(*static_cast<FieldInfo<std::vector<double>>*>(fieldInfo)->field, fieldInfo->name); break;
+            case 1003: AddField(*static_cast<FieldInfo<std::vector<std::string>>*>(fieldInfo)->field, fieldInfo->name); break;
+
+            
+            case 2000: AddField(*static_cast<FieldInfo<Property<int>>*>(fieldInfo)->field, fieldInfo->name); break;
+            case 2001: AddField(*static_cast<FieldInfo<Property<float>>*>(fieldInfo)->field, fieldInfo->name); break;
+            case 2002: AddField(*static_cast<FieldInfo<Property<double>>*>(fieldInfo)->field, fieldInfo->name); break;
+            case 2003: AddField(*static_cast<FieldInfo<Property<std::string>>*>(fieldInfo)->field, fieldInfo->name); break;
             //case 1004: AddField(*static_cast<FieldInfo<Property<Pocket::Vector2>>*>(fieldInfo)->field, fieldInfo->name); break;
             //case 1005: AddField(*static_cast<FieldInfo<Property<Pocket::Vector3>>*>(fieldInfo)->field, fieldInfo->name); break;
         }

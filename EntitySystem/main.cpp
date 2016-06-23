@@ -34,7 +34,7 @@ struct RenderSystem : public GameSystem<Transform, Renderable> {
 };
 
 int main(int argc, const char * argv[]) {
-
+    
     LogicTests logicTests;
     logicTests.Run();
     
@@ -75,8 +75,8 @@ int main(int argc, const char * argv[]) {
     world.Update(0);
     world.Update(0);
     
-    /*
-    auto type = scriptWorld.GetTypeInfo(*object, 1);
+    
+    auto type = scriptWorld.GetTypeInfo(*object, scriptWorld.Components()["Velocity"]);
     
     FieldInfo<int>* info =  ((FieldInfo<int>*) type.GetField("vx"));
     *info->field = 2;
@@ -88,11 +88,7 @@ int main(int argc, const char * argv[]) {
     
     type.Serialize(writer);
     writer.close();
-     
     
-    
-    */
-
     
     return 0;
 }

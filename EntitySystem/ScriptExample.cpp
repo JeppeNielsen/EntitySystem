@@ -14,6 +14,8 @@ struct Velocity {
     Velocity() : vx(0), vy(0) {}
     int vx;
     int vy;
+    std::string name;
+    std::vector<std::string> children;
 };
 
 struct MovementSystem : public GameSystem<Position, Velocity> {
@@ -31,6 +33,11 @@ struct MovementSystem : public GameSystem<Position, Velocity> {
         
         object->AddComponent<Pocket::Transform>();
         object->AddComponent<Pocket::Renderable>();
+        
+        object->GetComponent<Velocity>()->children.push_back("First");
+        object->GetComponent<Velocity>()->children.push_back("Second");
+        object->GetComponent<Velocity>()->children.push_back("Third");
+        
         
         std::cout << "MovementSystem::ObjectAdded "<<sum<<std::endl;
     }
