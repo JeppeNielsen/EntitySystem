@@ -363,7 +363,7 @@ void ScriptWorld::WriteMainSystems(std::ofstream &file) {
     {
         file<<"extern \"C\" IGameSystem* CreateSystem(int systemID) {"<<std::endl;
             file << "   switch (systemID) { " << std::endl;
-                int index = 0;
+                int index = baseSystemIndex;
                 for(auto& system : systems) {
                     file<<"      case "<<index <<":"<<" return new "<<system.second.name<<"();"<<std::endl;
                     index++;
@@ -519,34 +519,27 @@ void ScriptWorld::SetWorldType(GameWorld& world) {
         }
     }
     
-    
-    baseComponentIndex = 0;
-    
-    if (!worldComponentNames.empty()) {
-        for(auto& componentName : worldComponentNames) {
-            if (componentName.index>baseComponentIndex) {
-                baseComponentIndex = componentName.index;
-            }
-        }
-        baseComponentIndex++;
-    }
+    baseComponentIndex = world.components.size();
+    baseSystemIndex = world.systemsIndexed.size();
 }
 
 bool ScriptWorld::AddGameWorld(GameWorld& world) {
     if (!libHandle) return false;
     
+    scriptComponents.clear();
+    
     int numberOfComponents = countComponents();
     componentCount = numberOfComponents;
 
     assert(baseComponentIndex == (int)world.components.size());
-    baseSystemIndex = (int)world.systems.size();
+    assert(baseSystemIndex == (int)world.systemsIndexed.size());
     
     auto& scriptSystems = scriptClasses.children["Systems"].children;
     
     int index = 0;
     for (auto& scriptSystem : scriptSystems) {
         int systemIndex = baseSystemIndex + index;
-        world.TryAddSystem(systemIndex, [this, &scriptSystem, index](std::vector<int>& components) {
+        world.TryAddSystem(systemIndex, [this, &scriptSystem, &systemIndex](std::vector<int>& components) {
             
             for (auto& component : scriptSystem.second.templateArguments) {
                 int componentIndex;
@@ -556,10 +549,10 @@ bool ScriptWorld::AddGameWorld(GameWorld& world) {
                 }
             }
             
-            return createSystem(index);
+            return createSystem(systemIndex);
         });
         world.deleteSystems[world.deleteSystems.size()-1] = [this, &world, systemIndex]() {
-            deleteSystem(world.systems[systemIndex]);
+            deleteSystem(world.systemsIndexed[systemIndex]);
         };
         index++;
     }
@@ -588,10 +581,28 @@ bool ScriptWorld::AddGameWorld(GameWorld& world) {
 }
 
 void ScriptWorld::RemoveGameWorld(GameWorld& world) {
-    /*world.ClearScripingData([this] (auto scriptSystem){
-        deleteSystem(scriptSystem);
+    int endSystemIndex = (int)world.systemsIndexed.size();
+    for(int i=baseSystemIndex; i<endSystemIndex; ++i){
+        world.TryRemoveSystem(i);
+    }
+    world.systemsIndexed.resize(endSystemIndex);
+    int endComponentIndex = (int)world.components.size();
+    for(int i=baseComponentIndex; i<endComponentIndex; ++i) {
+        delete world.components[i];
+    }
+    world.components.resize(baseComponentIndex);
+    world.componentNames.resize(baseComponentIndex);
+    world.numComponentTypes = baseComponentIndex;
+    
+    world.IterateObjects([this](GameObject* o) {
+        o->data->activeComponents.Resize(baseComponentIndex);
+        o->data->enabledComponents.Resize(baseComponentIndex);
     });
-    */
+    world.objectComponents.resize(baseComponentIndex);
+    for(int i=0; i<baseComponentIndex; ++i) {
+        world.objectComponents[i].resize(baseComponentIndex);
+    }
+    world.systemsPerComponent.resize(baseComponentIndex);
 }
 
 TypeInfo ScriptWorld::GetTypeInfo(GameObject& object, ComponentID id) {

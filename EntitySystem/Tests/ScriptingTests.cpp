@@ -82,7 +82,7 @@ void ScriptingTests::RunTests() {
         return !succes;
     });
     
-    AddTest("Create Object", [this]() {
+    AddTest("AddComponent", [this]() {
         GameWorld world;
         ScriptWorld scriptWorld;
         if (!this->CompileScriptingWorld(world, scriptWorld,
@@ -97,4 +97,43 @@ void ScriptingTests::RunTests() {
         void* ptr = object->GetComponent(0);
         return object && ptr;
     });
+    
+    
+    AddTest("Recompile", [this]() {
+        
+        struct EngineComponent { int data; };
+        struct EngineSystem : public GameSystem<EngineComponent> {
+            void ObjectAdded(GameObject* object) {}
+            void ObjectRemoved(GameObject* object) {}
+        };
+        
+        GameWorld world;
+        world.CreateSystem<EngineSystem>();
+        GameObject* object = world.CreateObject();
+        object->AddComponent<EngineComponent>();
+        
+        ScriptWorld scriptWorld;
+        if (!this->CompileScriptingWorld(world, scriptWorld,
+            "#include \"GameSystem.hpp\"\n"
+            " struct Position { int x; }; \n"
+            " struct System : public GameSystem<Position> {};\n"
+        )) {
+            return false;
+        }
+        int numberOfComponentsPreviously = scriptWorld.Components().size();
+        scriptWorld.RemoveGameWorld(world);
+        if (!this->CompileScriptingWorld(world, scriptWorld,
+            "#include \"GameSystem.hpp\"\n"
+            " struct Position { int x; }; \n"
+            " struct Velocity { int x; }; \n"
+            " struct MovementSystem : public GameSystem<Position, Velocity> {};\n"
+        )) {
+            return false;
+        }
+        return scriptWorld.Components().size() == 2 && numberOfComponentsPreviously == 1;
+    });
+
+    
+    
+    
 }

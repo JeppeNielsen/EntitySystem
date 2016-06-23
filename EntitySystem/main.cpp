@@ -35,13 +35,14 @@ struct RenderSystem : public GameSystem<Transform, Renderable> {
 
 int main(int argc, const char * argv[]) {
 
-    //LogicTests logicTests;
-    //logicTests.Run();
+    LogicTests logicTests;
+    logicTests.Run();
     
     ScriptingTests tests;
     tests.Run();
 
     return 0;
+    
     GameWorld world;
     world.CreateSystem<RenderSystem>();
     
