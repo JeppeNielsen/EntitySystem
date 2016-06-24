@@ -1,5 +1,4 @@
 namespace Pocket {
-struct EngineComponent;
 }
 struct Position;
 struct Velocity;
@@ -17,18 +16,14 @@ public:
     template<typename T> void RemoveComponent() { }
     template<typename T> T* CloneComponent(GameObject* source) { }
 };
-template<> Pocket::EngineComponent* GameObject::GetComponent<Pocket::EngineComponent>() { return (Pocket::EngineComponent*) GetComponent(27); }
-template<> Pocket::EngineComponent* GameObject::AddComponent<Pocket::EngineComponent>() { AddComponent(27); return (Pocket::EngineComponent*) GetComponent(27); }
-template<> void GameObject::RemoveComponent<Pocket::EngineComponent>() { RemoveComponent(27); }
-template<> Pocket::EngineComponent* GameObject::CloneComponent<Pocket::EngineComponent>(GameObject* source) { CloneComponent(27, source); return (Pocket::EngineComponent*) GetComponent(27); }
-template<> Position* GameObject::GetComponent<Position>() { return (Position*) GetComponent(28); }
-template<> Position* GameObject::AddComponent<Position>() { AddComponent(28); return (Position*) GetComponent(28); }
-template<> void GameObject::RemoveComponent<Position>() { RemoveComponent(28); }
-template<> Position* GameObject::CloneComponent<Position>(GameObject* source) { CloneComponent(28, source); return (Position*) GetComponent(28); }
-template<> Velocity* GameObject::GetComponent<Velocity>() { return (Velocity*) GetComponent(29); }
-template<> Velocity* GameObject::AddComponent<Velocity>() { AddComponent(29); return (Velocity*) GetComponent(29); }
-template<> void GameObject::RemoveComponent<Velocity>() { RemoveComponent(29); }
-template<> Velocity* GameObject::CloneComponent<Velocity>(GameObject* source) { CloneComponent(29, source); return (Velocity*) GetComponent(29); }
+template<> Position* GameObject::GetComponent<Position>() { return (Position*) GetComponent(0); }
+template<> Position* GameObject::AddComponent<Position>() { AddComponent(0); return (Position*) GetComponent(0); }
+template<> void GameObject::RemoveComponent<Position>() { RemoveComponent(0); }
+template<> Position* GameObject::CloneComponent<Position>(GameObject* source) { CloneComponent(0, source); return (Position*) GetComponent(0); }
+template<> Velocity* GameObject::GetComponent<Velocity>() { return (Velocity*) GetComponent(1); }
+template<> Velocity* GameObject::AddComponent<Velocity>() { AddComponent(1); return (Velocity*) GetComponent(1); }
+template<> void GameObject::RemoveComponent<Velocity>() { RemoveComponent(1); }
+template<> Velocity* GameObject::CloneComponent<Velocity>(GameObject* source) { CloneComponent(1, source); return (Velocity*) GetComponent(1); }
 class IGameSystem;
 #include "TypeInfo.hpp"
 #include "Property.hpp"
@@ -39,7 +34,7 @@ extern "C" int CountSystems() {
 }
 extern "C" IGameSystem* CreateSystem(int systemID) {
    switch (systemID) { 
-      case 11: return new MovementSystem();
+      case 0: return new MovementSystem();
       default: return 0;
    }
 }
@@ -51,23 +46,23 @@ extern "C" int CountComponents() {
 }
 extern "C" void* CreateComponent(int componentID) {
    switch (componentID) { 
-      case 28: return new Position();
-      case 29: return new Velocity();
+      case 0: return new Position();
+      case 1: return new Velocity();
       default: return 0;
    }
 }
 extern "C" void DeleteComponent(int componentID, void* component) {
    switch (componentID) { 
-      case 28: { delete ((Position*)component); break; }
-      case 29: { delete ((Velocity*)component); break; }
+      case 0: { delete ((Position*)component); break; }
+      case 1: { delete ((Velocity*)component); break; }
    }
 }
 extern "C" void ResetComponent(int componentID, void* c, void* s) {
    switch (componentID) { 
-      case 28: { Position* co = (Position*)c; 
+      case 0: { Position* co = (Position*)c; 
       Position* so = ((Position*)s);
         co->operator=(*so);             break; }
-      case 29: { Velocity* co = (Velocity*)c; 
+      case 1: { Velocity* co = (Velocity*)c; 
       Velocity* so = ((Velocity*)s);
         co->operator=(*so);             break; }
    }
@@ -75,14 +70,14 @@ extern "C" void ResetComponent(int componentID, void* c, void* s) {
 
 extern "C" Pocket::TypeInfo* GetTypeInfo(int componentID, void* componentPtr) {
    switch (componentID) { 
-      case 28: {
+      case 0: {
       Position* component = (Position*)componentPtr;
 	      Pocket::TypeInfo* info = new Pocket::TypeInfo();
 	      info->name = "Position";
 	      info->AddField(component->x, "x");
       return info;
       break; }
-      case 29: {
+      case 1: {
       Velocity* component = (Velocity*)componentPtr;
 	      Pocket::TypeInfo* info = new Pocket::TypeInfo();
 	      info->name = "Velocity";

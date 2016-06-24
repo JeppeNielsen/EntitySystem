@@ -534,6 +534,29 @@ bool ScriptWorld::AddGameWorld(GameWorld& world) {
     assert(baseComponentIndex == (int)world.components.size());
     assert(baseSystemIndex == (int)world.systemsIndexed.size());
     
+    
+    for(int i=0; i<numberOfComponents; ++i) {
+        int componentIndex = baseComponentIndex + i;
+        world.TryAddComponentContainer(componentIndex, [this, componentIndex](std::string& componentName) {
+            Container<ScriptComponent>* container = new Container<ScriptComponent>();
+            container->defaultObject.world = this;
+            container->defaultObject.componentID = componentIndex;
+            container->defaultObject.data = createComponent(componentIndex);
+            componentName = "ScriptComponent";
+            return container;
+        });
+        
+        auto& components = scriptClasses.children["Components"].children;
+        int componentNameCounter = 0;
+        for(auto c : components) {
+            if (componentNameCounter == i) {
+                scriptComponents[c.second.name] = componentIndex;
+            }
+            componentNameCounter++;
+        }
+    }
+
+    
     auto& scriptSystems = scriptClasses.children["Systems"].children;
     
     int index = 0;
@@ -557,26 +580,6 @@ bool ScriptWorld::AddGameWorld(GameWorld& world) {
         index++;
     }
 
-    for(int i=0; i<numberOfComponents; ++i) {
-        int componentIndex = baseComponentIndex + i;
-        world.TryAddComponentContainer(componentIndex, [this, componentIndex](std::string& componentName) {
-            Container<ScriptComponent>* container = new Container<ScriptComponent>();
-            container->defaultObject.world = this;
-            container->defaultObject.componentID = componentIndex;
-            container->defaultObject.data = createComponent(componentIndex);
-            componentName = "ScriptComponent";
-            return container;
-        });
-        
-        auto& components = scriptClasses.children["Components"].children;
-        int componentNameCounter = 0;
-        for(auto c : components) {
-            if (componentNameCounter == i) {
-                scriptComponents[c.second.name] = componentIndex;
-            }
-            componentNameCounter++;
-        }
-    }
     return true;
 }
 
