@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "GameSystem.hpp"
+#include "Property.hpp"
 
 struct Position {
     Position() : x(0), y(0) {}
@@ -16,6 +17,8 @@ struct Velocity {
     int vy;
     std::string name;
     std::vector<std::string> children;
+    Pocket::Property<int> Size;
+    std::vector<double> coords;
 };
 
 struct MovementSystem : public GameSystem<Position, Velocity> {
@@ -37,6 +40,12 @@ struct MovementSystem : public GameSystem<Position, Velocity> {
         object->GetComponent<Velocity>()->children.push_back("First");
         object->GetComponent<Velocity>()->children.push_back("Second");
         object->GetComponent<Velocity>()->children.push_back("Third");
+        object->GetComponent<Velocity>()->Size = 43;
+        
+        auto& c = object->GetComponent<Velocity>()->coords;
+        c.push_back(43.22);
+        c.push_back(43.22*2);
+        c.push_back(43.22*5);
         
         
         std::cout << "MovementSystem::ObjectAdded "<<sum<<std::endl;

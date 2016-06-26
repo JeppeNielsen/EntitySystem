@@ -7,9 +7,6 @@
 //
 
 #pragma once
-#include <vector>
-#include <string>
-#include "FieldInfoIndexer.hpp"
 #include <functional>
 
 namespace Pocket {

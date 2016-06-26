@@ -34,7 +34,12 @@ vector<string> RunBashCommmand(const string &cmd) {
     return out;
 }
 
-ScriptWorld::ScriptWorld() : libHandle(0) { }
+ScriptWorld::ScriptWorld() : libHandle(0) {
+    Types.Add<int>();
+    Types.Add<float>();
+    Types.Add<double>();
+    Types.Add<std::string>();
+}
 
 string ScriptWorld::ExtractHeaderPath(const std::string &headerFile) {
     size_t lastPath = headerFile.rfind("/");
@@ -246,6 +251,7 @@ void ScriptWorld::WriteMainCppFile(const std::string &path) {
     ofstream file;
     file.open(path);
     
+    WriteTypes(file);
     WriteMainGameObject(file);
     WriteMainIncludes(file);
     WriteMainSystems(file);
@@ -474,6 +480,20 @@ void ScriptWorld::WriteMainSerializedComponents(std::ofstream &file) {
     file<<"}"<<std::endl;
 }
 
+void ScriptWorld::WriteTypes(std::ofstream &file) {
+
+    file << "#include <string>"<<std::endl;
+    file << "#include <vector>"<<std::endl;
+    file << "#include \"Property.hpp\""<<std::endl;
+    file << "template<typename T> struct FieldInfoIndexer { static int Index() { return 0; } };" << std::endl;
+    auto typeNames = Types.GetTypeNames();
+    
+    for(auto n : typeNames) {
+        file<<"template<> struct FieldInfoIndexer<"<< n.second << "> { static int Index() { return "<< n.first << "; } };"<<std::endl;
+    }
+    file<<""<<std::endl;
+}
+
 bool ScriptWorld::FindComponentIndex(std::string componentName, bool &staticComponent, int& index) {
     auto& scriptComponents = scriptClasses.children["Components"].children;
     {
@@ -615,7 +635,7 @@ TypeInfo ScriptWorld::GetTypeInfo(GameObject& object, ComponentID id) {
     }
     TypeInfo* info = getTypeInfo(id, component);
     TypeInfo t;
-    t.UpdateFromPointer(info);
+    t.UpdateFromPointer(info, Types);
     deleteTypeInfo(info);
     return t;
 }

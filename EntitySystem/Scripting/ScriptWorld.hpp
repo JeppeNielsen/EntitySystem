@@ -46,6 +46,8 @@ public:
     using ScriptComponents = std::map<std::string, int>;
     ScriptComponents Components();
     
+    TypeIndexList Types;
+    
 private:
     void ExtractScriptClasses();
     void WriteMainIncludes(std::ofstream &file);
@@ -54,6 +56,7 @@ private:
     void WriteMainSystems(std::ofstream& file);
     void WriteMainComponents(std::ofstream& file);
     void WriteMainSerializedComponents(std::ofstream& file);
+    void WriteTypes(std::ofstream& file);
     
     std::string ExtractHeaderPath(const std::string& headerFile);
     std::string ExtractHeaderName(const std::string& headerFile);

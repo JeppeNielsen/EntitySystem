@@ -133,7 +133,7 @@ void ScriptingTests::RunTests() {
         return scriptWorld.Components().size() == 2 && numberOfComponentsPreviously == 1;
     });
 
-    AddTest("Add Object", [this]() {
+    AddTest("Added To System", [this]() {
         
         GameWorld world;
         GameObject* object = world.CreateObject();
@@ -154,9 +154,28 @@ void ScriptingTests::RunTests() {
         object->AddComponent(scriptWorld.Components()["Position"]);
         object->AddComponent(scriptWorld.Components()["Velocity"]);
         world.Update(0);
+        return object->GetComponent(scriptWorld.Components()["Position"])!=0 ||
+            object->GetComponent(scriptWorld.Components()["Velocity"])!=0;
+    });
+
+    AddTest("AddComponent", [this]() {
+        
+        GameWorld world;
+        GameObject* object = world.CreateObject();
+        ScriptWorld scriptWorld;
+               if (!this->CompileScriptingWorld(world, scriptWorld,
+            "#include \"GameSystem.hpp\"\n"
+            "#include <iostream>\n"
+            " struct Position { int x; Position() : x(123) {} }; \n"
+            " struct PositionSystem : public GameSystem<Position> { }; \n"
+        )) {
+            return false;
+        }
+        object->AddComponent(scriptWorld.Components()["Position"]);
+        object->AddComponent(scriptWorld.Components()["Velocity"]);
+        world.Update(0);
         return scriptWorld.Components().size() == 2;
     });
 
-    
     
 }
