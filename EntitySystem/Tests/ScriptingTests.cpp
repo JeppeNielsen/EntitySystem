@@ -172,9 +172,11 @@ void ScriptingTests::RunTests() {
             return false;
         }
         object->AddComponent(scriptWorld.Components()["Position"]);
-        object->AddComponent(scriptWorld.Components()["Velocity"]);
         world.Update(0);
-        return scriptWorld.Components().size() == 2;
+        auto typeInfo = scriptWorld.GetTypeInfo(*object, scriptWorld.Components()["Position"]);
+        IFieldInfo* fieldInfo = typeInfo.GetField("x");
+        FieldInfo<int>* intFieldInfo = (FieldInfo<int>*)fieldInfo;
+        return *intFieldInfo->field == 123;
     });
 
     

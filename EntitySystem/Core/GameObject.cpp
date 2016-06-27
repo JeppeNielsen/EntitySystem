@@ -161,6 +161,21 @@ void GameObject::Remove() {
     }
 }
 
+GameObject* GameObject::Clone() {
+    GameObject* clone = world->CreateObject();
+    for(int i=0; i<world->numComponentTypes; ++i) {
+        if (data->activeComponents[i]) {
+            clone->CloneComponent(i, this);
+        }
+    }
+    for(auto child : data->children) {
+        auto childClone = child->Clone();
+        childClone->Parent() = clone;
+    }
+    return clone;
+}
+
+
 void GameObject::TryAddComponentContainer(ComponentID id, std::function<IContainer *(std::string&)>&& constructor) {
     world->TryAddComponentContainer(id, std::move(constructor));
 }

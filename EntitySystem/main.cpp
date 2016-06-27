@@ -34,7 +34,7 @@ struct RenderSystem : public GameSystem<Transform, Renderable> {
 };
 
 int main(int argc, const char * argv[]) {
-    /*
+    
     LogicTests logicTests;
     logicTests.Run();
     
@@ -42,7 +42,6 @@ int main(int argc, const char * argv[]) {
     tests.Run();
 
     return 0;
-    */
     
     GameWorld world;
     world.CreateSystem<RenderSystem>();

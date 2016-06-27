@@ -43,8 +43,8 @@ GameObject* GameWorld::CreateObject() {
                 objectComponents[i].resize(index + 32);
             }
         }
-        objects[index].data->activeComponents.Resize(numComponentTypes);
-        objects[index].data->enabledComponents.Resize(numComponentTypes);
+        objects[index].object.data->activeComponents.Resize(numComponentTypes);
+        objects[index].object.data->enabledComponents.Resize(numComponentTypes);
     } else {
         index = objectsFreeIndicies.back();
         objectsFreeIndicies.pop_back();
@@ -54,7 +54,7 @@ GameObject* GameWorld::CreateObject() {
         objectComponents[i][index] = -1;
     }
     ++objectCount;
-    GameObject& object = objects[index];
+    GameObject& object = objects[index].object;
     object.data->activeComponents.Reset();
     object.data->enabledComponents.Reset();
     object.Parent() = &root;
@@ -113,7 +113,7 @@ void GameWorld::Trim() {
     
     int smallestSize = 0;
     for(int i = (int)objects.size() - 1; i>=0; --i) {
-        if (objects[i].index>=-1) {
+        if (objects[i].object.index>=-1) {
             smallestSize = i + 1;
             break;
         }
@@ -212,8 +212,8 @@ void GameWorld::DoActions(Actions &actions) {
 
 void GameWorld::IterateObjects(std::function<void (GameObject *)> callback) {
     for(auto& o : objects) {
-        if (o.index >= 0) {
-            callback(&o);
+        if (o.object.index >= 0) {
+            callback(&o.object);
         }
     }
 }

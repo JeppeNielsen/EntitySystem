@@ -73,15 +73,17 @@ namespace Pocket {
         
         void Remove();
         
+        GameObject* Clone();
+        
         const ObjectCollection& Children() const;
         Property<GameObject*>& Parent();
         Property<bool>& Enabled();
         DirtyProperty<bool>& WorldEnabled();
         
+    private:
+    
         GameObject();
         virtual ~GameObject();
-        
-    private:
         
         GameObject(GameObject&& o) = delete;
         GameObject(const GameObject& o) = delete;

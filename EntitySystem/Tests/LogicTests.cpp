@@ -471,5 +471,29 @@ void LogicTests::RunTests() {
         return ObjectCount == 0;
     });
 
-    
+    AddTest("Clone Object", []() {
+        struct Transform { int x; };
+        struct Renderable { int imageNo; };
+        struct RenderSystem : public GameSystem<Transform, Renderable> {
+            void ObjectAdded(GameObject* o) {  }
+            void ObjectRemoved(GameObject* o) {  }
+        };
+        
+        GameWorld world;
+        world.CreateSystem<RenderSystem>();
+        auto original = world.CreateObject();
+        original->AddComponent<Transform>()->x = 567;
+        original->AddComponent<Renderable>()->imageNo = 123;
+        auto clone = original->Clone();
+        world.Update(0);
+        return original!=clone &&
+             original->GetComponent<Transform>() &&
+             clone->GetComponent<Transform>() &&
+             original->GetComponent<Transform>()!=clone->GetComponent<Transform>() &&
+             clone->GetComponent<Transform>()->x == 567 &&
+             clone->GetComponent<Renderable>() &&
+             original->GetComponent<Renderable>()!=clone->GetComponent<Renderable>() &&
+             clone->GetComponent<Renderable>()->imageNo == 123;
+    });
+
 }

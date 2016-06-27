@@ -55,8 +55,12 @@ namespace Pocket {
     private:
     
         GameObject root;
+        
+        struct GameObjectEntry {
+            GameObject object;
+        };
     
-        using Objects = std::deque<GameObject>;
+        using Objects = std::deque<GameObjectEntry>;
         Objects objects;
         using ObjectsFreeIndicies = std::vector<int>;
         ObjectsFreeIndicies objectsFreeIndicies;
