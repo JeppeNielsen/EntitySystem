@@ -8,6 +8,7 @@
 
 #pragma once
 #include <vector>
+#include <map>
 #include "GameIDHelper.hpp"
 #include "GameObject.hpp"
 
@@ -43,7 +44,13 @@ namespace Pocket {
         int AddObject(GameObject* object);
         void RemoveObject(GameObject* object);
         
+        void SetMetaData(GameObject* object, void* data);
+        void* GetMetaData(GameObject* object);
+        
     private:
+        using MetaData = std::map<GameObject*, void*>;
+        MetaData metaData;
+    
         ObjectCollection objects;
         Bitset componentMask;
         friend class GameObject;
