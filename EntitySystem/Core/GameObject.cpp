@@ -77,7 +77,7 @@ bool GameObject::HasComponent(ComponentID id) const {
     return data->activeComponents[id];
 }
 
-void* GameObject::GetComponent(ComponentID id) {
+void* GameObject::GetComponent(ComponentID id) const {
     assert(id<world->numComponentTypes);
     if (!data->activeComponents[id]) return 0;
     IContainer* container = world->components[id];
