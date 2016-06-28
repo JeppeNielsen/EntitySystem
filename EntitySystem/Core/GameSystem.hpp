@@ -84,5 +84,5 @@ namespace Pocket {
         friend class GameWorld;
     };
     
-    class GameConcept : GameSystem<> {};
+    class GameConcept : public GameSystem<> {};
 }
