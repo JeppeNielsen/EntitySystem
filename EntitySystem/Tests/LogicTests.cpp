@@ -495,5 +495,13 @@ void LogicTests::RunTests() {
              original->GetComponent<Renderable>()!=clone->GetComponent<Renderable>() &&
              clone->GetComponent<Renderable>()->imageNo == 123;
     });
+    
+    AddTest("Game Concept", []() {
+        struct Transform { int pos; };
+        struct ConceptSystem : public GameConcept {};
+        GameWorld world;
+        world.CreateSystem<ConceptSystem>();
+        return true;
+    });
 
 }

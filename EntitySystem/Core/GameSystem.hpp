@@ -84,5 +84,10 @@ namespace Pocket {
         friend class GameWorld;
     };
     
-    class GameConcept : public GameSystem<> {};
+    class GameConcept : public GameSystemBase {
+    private:
+        void ExtractAllComponents(std::vector<int>& components) {
+        }
+        friend class GameWorld;
+    };
 }
