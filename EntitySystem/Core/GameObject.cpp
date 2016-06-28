@@ -16,6 +16,7 @@ const ObjectCollection& GameObject::Children() const { return data->children; }
 Property<GameObject*>& GameObject::Parent() { return data->Parent; }
 Property<bool>& GameObject::Enabled() { return data->Enabled; }
 DirtyProperty<bool>& GameObject::WorldEnabled() { return data->WorldEnabled; }
+Property<int>& GameObject::Order() { return data->Order; }
 
 GameObject::GameObject()
     :
@@ -25,6 +26,7 @@ GameObject::GameObject()
 
     data->Enabled = true;
     data->Parent = 0;
+    data->Order = 0;
     
     data->Parent.Changed.Bind([this]() {
         assert(data->Parent!=this);

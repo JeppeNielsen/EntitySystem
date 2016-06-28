@@ -79,6 +79,7 @@ namespace Pocket {
         Property<GameObject*>& Parent();
         Property<bool>& Enabled();
         DirtyProperty<bool>& WorldEnabled();
+        Property<int>& Order();
         
     private:
     
@@ -111,6 +112,7 @@ namespace Pocket {
             Property<bool> Enabled;
             DirtyProperty<bool> WorldEnabled;
             ObjectCollection children;
+            Property<int> Order;
         };
         
         int index;
