@@ -143,7 +143,9 @@ IGameSystem* GameWorld::TryAddSystem(SystemID id, std::function<IGameSystem *(st
         Bitset systemBitset;
         int systemIndex = (int)systems.size();
         for(auto c : componentIndices) {
-            systemBitset.Resize(c + 1);
+            if (c>=systemBitset.Size()) {
+                systemBitset.Resize(c + 1);
+            }
             systemBitset.Set(c, true);
             if (c>=systemsPerComponent.size()) {
                 systemsPerComponent.resize(c + 1);

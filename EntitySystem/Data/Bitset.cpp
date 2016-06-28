@@ -36,3 +36,7 @@ void Bitset::Reset() {
         bits[i]=false;
     }
 }
+
+int Bitset::Size() {
+    return (int)bits.size();
+}
