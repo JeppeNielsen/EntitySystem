@@ -72,6 +72,7 @@ namespace Pocket {
         };
         
         void Remove();
+        bool IsRemoved();
         
         GameObject* Clone();
         

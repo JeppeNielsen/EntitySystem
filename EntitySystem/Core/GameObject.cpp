@@ -163,6 +163,10 @@ void GameObject::Remove() {
     }
 }
 
+bool GameObject::IsRemoved() {
+    return index<0;
+}
+
 GameObject* GameObject::Clone() {
     GameObject* clone = world->CreateObject();
     for(int i=0; i<world->numComponentTypes; ++i) {
