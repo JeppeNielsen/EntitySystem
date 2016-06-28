@@ -120,7 +120,7 @@ void ScriptingTests::RunTests() {
         )) {
             return false;
         }
-        int numberOfComponentsPreviously = scriptWorld.Components().size();
+        int numberOfComponentsPreviously = (int)scriptWorld.Components().size();
         scriptWorld.RemoveGameWorld(world);
         if (!this->CompileScriptingWorld(world, scriptWorld,
             "#include \"GameSystem.hpp\"\n"

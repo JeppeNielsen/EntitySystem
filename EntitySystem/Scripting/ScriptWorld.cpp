@@ -539,8 +539,8 @@ void ScriptWorld::SetWorldType(GameWorld& world) {
         }
     }
     
-    baseComponentIndex = world.components.size();
-    baseSystemIndex = world.systemsIndexed.size();
+    baseComponentIndex = (int)world.components.size();
+    baseSystemIndex = (int)world.systemsIndexed.size();
 }
 
 bool ScriptWorld::AddGameWorld(GameWorld& world) {

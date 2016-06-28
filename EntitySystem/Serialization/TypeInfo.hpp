@@ -254,12 +254,10 @@ void TypeIndexList::TypeIndex<T>::AddToTypeInfo(Pocket::TypeInfo *typeInfo, Pock
     typeInfo->AddField<T>(*derived->field, fieldInfo->name);
 }
 
-
-
 template<typename T>
 struct TypeIndexList::TypeIndex<std::vector<T>> : public TypeIndexList::ITypeIndex {
     
-    void AddToTypeInfo(Pocket::TypeInfo *typeInfo, Pocket::IFieldInfo* fieldInfo) {
+    void AddToTypeInfo(Pocket::TypeInfo *typeInfo, Pocket::IFieldInfo* fieldInfo) override {
         FieldInfo<std::vector<T>>* derived = static_cast<FieldInfo<std::vector<T>>*>(fieldInfo);
         typeInfo->AddField<std::vector<T>>(*derived->field, fieldInfo->name);
     }
