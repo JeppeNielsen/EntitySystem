@@ -20,10 +20,11 @@ Property<int>& GameObject::Order() { return data->Order; }
 
 GameObject::GameObject()
     :
-    world(0), index(-1), data(0)
+    world(0), index(0), data(0)
 {
     data = new Data();
 
+    data->removed = false;
     data->Enabled = true;
     data->Parent = 0;
     data->Order = 0;
@@ -33,7 +34,7 @@ GameObject::GameObject()
         GameObject* prevParent = data->Parent.PreviousValue();
         GameObject* currentParent = data->Parent;
         
-        if (index>=0) {
+        if (!data->removed) {
             if (!prevParent) {
                 prevParent = &world->root;
             }
@@ -148,15 +149,14 @@ void GameObject::RemoveComponent(ComponentID id) {
 }
 
 void GameObject::Remove() {
-    if (index<0) return;
+    if (data->removed) return;
     int localIndex = index;
     world->removeActions.emplace_back([this, localIndex]() {
         SetEnabled(false);
         world->objectsFreeIndicies.push_back(localIndex);
         --world->objectCount;
-        index = -2;
     });
-    index = -1;
+    data->removed = true;
     data->Parent = 0;
     for(auto child : data->children) {
         child->Remove();
@@ -164,7 +164,7 @@ void GameObject::Remove() {
 }
 
 bool GameObject::IsRemoved() {
-    return index<0;
+    return data->removed;
 }
 
 GameObject* GameObject::Clone() {

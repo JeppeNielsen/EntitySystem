@@ -105,6 +105,10 @@ void GameWorld::Clear() {
 }
 
 void GameWorld::Trim() {
+
+    DoActions(createActions);
+    DoActions(removeActions);
+    
     for(int i=0; i<numComponentTypes; ++i) {
         if (components[i]) {
             components[i]->Trim();
@@ -113,7 +117,7 @@ void GameWorld::Trim() {
     
     int smallestSize = 0;
     for(int i = (int)objects.size() - 1; i>=0; --i) {
-        if (objects[i].object.index>=-1) {
+        if (!objects[i].object.IsRemoved()) {
             smallestSize = i + 1;
             break;
         }
@@ -214,7 +218,7 @@ void GameWorld::DoActions(Actions &actions) {
 
 void GameWorld::IterateObjects(std::function<void (GameObject *)> callback) {
     for(auto& o : objects) {
-        if (o.object.index >= 0) {
+        if (!o.object.IsRemoved()) {
             callback(&o.object);
         }
     }

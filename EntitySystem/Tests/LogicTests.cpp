@@ -325,12 +325,9 @@ void LogicTests::RunTests() {
         o2->Remove();
         o3->Remove();
         world.Trim();
-        bool isCapacityStillThree = world.CapacityCount() == 3;
-        world.Update(0);
-        world.Trim();
         bool isCapacityOne = world.CapacityCount() == 1;
         bool oneObjectLeft = world.ObjectCount() == 1;
-        return wasThree && wasThreeCapacity && isCapacityStillThree && isCapacityOne && oneObjectLeft;
+        return wasThree && wasThreeCapacity && isCapacityOne && oneObjectLeft;
     });
     
     AddTest("GameWorld::Trim2", []() {

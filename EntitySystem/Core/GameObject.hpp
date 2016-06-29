@@ -106,7 +106,7 @@ namespace Pocket {
         void TrySetComponentEnabled(ComponentID id, bool enable);
         
         struct Data {
-            Data() {}
+            bool removed;
             Bitset activeComponents;
             Bitset enabledComponents;
             Property<GameObject*> Parent;

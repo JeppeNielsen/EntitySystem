@@ -54,7 +54,7 @@ struct Velocity {
 
 
 
-int main() {
+int main_copy() {
 
     Velocity a;
     a.Vel = 232;
