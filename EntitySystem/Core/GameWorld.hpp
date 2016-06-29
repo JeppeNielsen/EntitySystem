@@ -106,7 +106,7 @@ namespace Pocket {
     
     
     template<typename T>
-    T* GameObject::GetComponent() const {
+    T* GameObject::GetComponent() {
         ComponentID id = GameIDHelper::GetComponentID<T>();
         int componentIndex = world->objectComponents[id][index];
         if (componentIndex == -1) return 0;

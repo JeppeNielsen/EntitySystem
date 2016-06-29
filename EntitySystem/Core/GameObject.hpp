@@ -25,7 +25,7 @@ namespace Pocket {
     class GameWorld;
     
     struct IGameObject {
-        virtual void* GetComponent(ComponentID id) const = 0;
+        virtual void* GetComponent(ComponentID id) = 0;
         virtual void AddComponent(ComponentID id) = 0;
         virtual void AddComponent(ComponentID id, GameObject* referenceObject) = 0;
         virtual void RemoveComponent(ComponentID id) = 0;
@@ -41,7 +41,7 @@ namespace Pocket {
         }
     
         template<typename T>
-        T* GetComponent() const;
+        T* GetComponent();
         
         template<typename T>
         T* AddComponent() {
@@ -94,7 +94,7 @@ namespace Pocket {
         bool HasComponent(ComponentID id) const;
         
     public:
-        void* GetComponent(ComponentID id) const override;
+        void* GetComponent(ComponentID id) override;
         void AddComponent(ComponentID id) override;
         void AddComponent(ComponentID id, GameObject* source) override;
         void CloneComponent(ComponentID id, GameObject* source) override;
