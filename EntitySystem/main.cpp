@@ -33,7 +33,7 @@ struct RenderSystem : public GameSystem<Transform, Renderable> {
 
 };
 
-int main(int argc, const char * argv[]) {
+int main_tests(int argc, const char * argv[]) {
     
     LogicTests logicTests;
     logicTests.Run();

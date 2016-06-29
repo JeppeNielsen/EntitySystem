@@ -23,6 +23,7 @@
 		724E33E21D19D7750007E8CA /* ScriptingTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33E01D19D7750007E8CA /* ScriptingTests.cpp */; };
 		724E33E41D1F21A50007E8CA /* mainTypeToIndex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 724E33E31D1F21A50007E8CA /* mainTypeToIndex.cpp */; };
 		726DFCED1D207A2600C862B7 /* TypeIndexList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726DFCEC1D207A2600C862B7 /* TypeIndexList.cpp */; };
+		726DFD061D24462500C862B7 /* testEventCopy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726DFD051D24462500C862B7 /* testEventCopy.cpp */; };
 		72772F461D05F8D1005AC1D8 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72772F451D05F8D1005AC1D8 /* main.cpp */; };
 		727734881D0C731D005AC1D8 /* LogicTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734861D0C731D005AC1D8 /* LogicTests.cpp */; };
 		7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727734891D0C76BD005AC1D8 /* UnitTest.cpp */; };
@@ -81,6 +82,7 @@
 		724E33E31D1F21A50007E8CA /* mainTypeToIndex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mainTypeToIndex.cpp; sourceTree = "<group>"; };
 		726DFCEA1D20798500C862B7 /* TypeIndexList.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TypeIndexList.hpp; sourceTree = "<group>"; };
 		726DFCEC1D207A2600C862B7 /* TypeIndexList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TypeIndexList.cpp; sourceTree = "<group>"; };
+		726DFD051D24462500C862B7 /* testEventCopy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testEventCopy.cpp; sourceTree = "<group>"; };
 		72772F421D05F8D1005AC1D8 /* EntitySystem */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = EntitySystem; sourceTree = BUILT_PRODUCTS_DIR; };
 		72772F451D05F8D1005AC1D8 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		727734821D0B5D0E005AC1D8 /* DirtyProperty.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DirtyProperty.hpp; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 				72772F451D05F8D1005AC1D8 /* main.cpp */,
 				724E33DF1D187AB90007E8CA /* ScriptExample.cpp */,
 				724E33E31D1F21A50007E8CA /* mainTypeToIndex.cpp */,
+				726DFD051D24462500C862B7 /* testEventCopy.cpp */,
 			);
 			path = EntitySystem;
 			sourceTree = "<group>";
@@ -304,6 +307,7 @@
 				727734881D0C731D005AC1D8 /* LogicTests.cpp in Sources */,
 				72772F461D05F8D1005AC1D8 /* main.cpp in Sources */,
 				7241D1A01D0DAE0C00A3AEBB /* Timer.cpp in Sources */,
+				726DFD061D24462500C862B7 /* testEventCopy.cpp in Sources */,
 				724E33E21D19D7750007E8CA /* ScriptingTests.cpp in Sources */,
 				7277348B1D0C76BD005AC1D8 /* UnitTest.cpp in Sources */,
 				7241D19B1D0DAB4A00A3AEBB /* TimeTest.cpp in Sources */,
