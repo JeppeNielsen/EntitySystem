@@ -39,14 +39,14 @@ namespace Pocket {
             if (freeIndicies.empty()) {
                 freeIndex = (int)references.size();
                 references.emplace_back(0);
-                entries.emplace_back(defaultObject);
+                entries.resize(freeIndex + 1);
             } else {
                 freeIndex = freeIndicies.back();
                 freeIndicies.pop_back();
-                entries[freeIndex] = defaultObject;
             }
             
             ++count;
+            entries[freeIndex] = defaultObject;
             references[freeIndex] = 1;
             return freeIndex;
         }
