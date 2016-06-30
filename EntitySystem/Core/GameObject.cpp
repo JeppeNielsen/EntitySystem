@@ -104,7 +104,7 @@ void GameObject::AddComponent(ComponentID id, GameObject* source) {
     if (HasComponent(id)) {
         return;
     }
-    auto& sourceObjectComponent = world->objectComponents[id][source->index];
+    auto& sourceObjectComponent = source->world->objectComponents[id][source->index];
     world->objectComponents[id][index] = sourceObjectComponent;
     sourceObjectComponent.container->Reference(sourceObjectComponent.index);
     data->activeComponents.Set(id, true);
