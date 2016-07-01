@@ -500,5 +500,33 @@ void LogicTests::RunTests() {
         world.CreateSystem<ConceptSystem>();
         return true;
     });
+    
+    AddTest("Component refs across worlds", [] () {
+        struct Transform { int x; };
+        struct Renderable { int imageNo; };
+        struct RenderSystem : public GameSystem<Transform, Renderable> { };
+        GameWorld dataWorld;
+        GameObject* prefab = dataWorld.CreateObject();
+        prefab->AddComponent<Transform>()->x = 123;
+        prefab->AddComponent<Renderable>()-> imageNo = 567;
+        
+        GameWorld logicWorld;
+        
+        GameObject* instance = logicWorld.CreateObject();
+        instance->AddComponent<Transform>(prefab);
+        instance->AddComponent<Renderable>(prefab);
+        
+    
+        return prefab->GetComponent<Transform>() == instance->GetComponent<Transform>() &&
+               prefab->GetComponent<Renderable>() == instance->GetComponent<Renderable>();
+    });
+    
+    
+    AddTest("Test non added GetComponent", []() {
+        struct Transform { int pos; };
+        GameWorld world;
+        GameObject* go = world.CreateObject();
+        return !go->GetComponent<Transform>();
+    });
 
 }
