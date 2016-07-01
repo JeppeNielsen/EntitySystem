@@ -47,23 +47,23 @@ void LogicTests::RunTests() {
         return wasOne && wasNone;
     });
     
-    AddTest("Default parent should be Root", []() {
+    AddTest("Default parent should be 0", []() {
         GameWorld world;
         GameObject* object = world.CreateObject();
-        return object->Parent() == world.Root();
+        return object->Parent() == 0;
     });
     
     AddTest("Parent set to 0 should be child of root", []() {
         GameWorld world;
         GameObject* object = world.CreateObject();
-        bool parentWasRoot = object->Parent() == world.Root();
+        bool objectWasRootChild = std::find(world.Root()->Children().begin(), world.Root()->Children().end(), object)!=world.Root()->Children().end();
         GameObject* parent = world.CreateObject();
         object->Parent() = parent;
         bool objectNotRootChild = std::find(world.Root()->Children().begin(), world.Root()->Children().end(), object)==world.Root()->Children().end();
         bool parentWasParent = object->Parent() == parent;
         object->Parent() = 0;
         bool objectIsRootChild = std::find(world.Root()->Children().begin(), world.Root()->Children().end(), object)!=world.Root()->Children().end();
-        return parentWasRoot && parentWasParent && objectIsRootChild && objectNotRootChild;
+        return objectWasRootChild && parentWasParent && objectIsRootChild && objectNotRootChild;
     });
     
     AddTest("GameObject::AddComponent", []() {

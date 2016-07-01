@@ -88,9 +88,8 @@ namespace Pocket {
         SystemBitsets systemBitsets;
         
         using Action = std::function<void()>;
-        using Actions = std::vector<Action>;
-        Actions createActions;
-        Actions removeActions;
+        using Actions = std::deque<Action>;
+        Actions delayedActions;
         
         using ComponentNames = std::vector<std::string>;
         ComponentNames componentNames;

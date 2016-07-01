@@ -57,18 +57,19 @@ GameObject* GameWorld::CreateObject() {
     GameObject& object = objects[index].object;
     object.data->activeComponents.Reset();
     object.data->enabledComponents.Reset();
-    object.Parent() = &root;
+    object.data->removed = false;
+    root.data->children.push_back(&object);
     object.index = index;
     object.world = this;
     return &object;
 }
 
 void GameWorld::Update(float dt) {
+    DoActions(delayedActions);
     for(auto system : systems) {
         system->Update(dt);
     }
-    DoActions(createActions);
-    DoActions(removeActions);
+    DoActions(delayedActions);
 }
 
 void GameWorld::Render() {
@@ -106,8 +107,7 @@ void GameWorld::Clear() {
 
 void GameWorld::Trim() {
 
-    DoActions(createActions);
-    DoActions(removeActions);
+    DoActions(delayedActions);
     
     for(int i=0; i<numComponentTypes; ++i) {
         if (components[i]) {
