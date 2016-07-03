@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 #include <type_traits>
-//#include "MetaLibrary.hpp"
+#include "MetaLibrary.hpp"
 #include "JsonSerializer.hpp"
 #include "TypeIndexList.hpp"
 
@@ -254,10 +254,12 @@ void TypeIndexList::TypeIndex<T>::AddToTypeInfo(Pocket::TypeInfo *typeInfo, Pock
     typeInfo->AddField<T>(*derived->field, fieldInfo->name);
 }
 
+
+
 template<typename T>
 struct TypeIndexList::TypeIndex<std::vector<T>> : public TypeIndexList::ITypeIndex {
     
-    void AddToTypeInfo(Pocket::TypeInfo *typeInfo, Pocket::IFieldInfo* fieldInfo) override {
+    void AddToTypeInfo(Pocket::TypeInfo *typeInfo, Pocket::IFieldInfo* fieldInfo) {
         FieldInfo<std::vector<T>>* derived = static_cast<FieldInfo<std::vector<T>>*>(fieldInfo);
         typeInfo->AddField<std::vector<T>>(*derived->field, fieldInfo->name);
     }
@@ -267,7 +269,7 @@ struct TypeIndexList::TypeIndex<std::vector<T>> : public TypeIndexList::ITypeInd
     };
 };
 
-/*
+
 template<typename T>
 struct JsonSerializer<T, typename std::enable_if_t< Pocket::Meta::HasGetTypeFunction::apply<T>::value >> {
     static void Serialize(std::string& key, const T& value, minijson::object_writer& writer) {
@@ -289,7 +291,6 @@ struct JsonSerializer<T, typename std::enable_if_t< Pocket::Meta::HasGetTypeFunc
         type.Deserialize(context);
     }
 };
-*/
 
 inline std::string className(const std::string& prettyFunction)
 {
