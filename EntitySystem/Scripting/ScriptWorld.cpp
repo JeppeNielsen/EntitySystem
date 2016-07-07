@@ -598,8 +598,8 @@ bool ScriptWorld::AddGameWorld(GameWorld& world) {
             
             return createSystem(systemIndex);
         });
-        world.deleteSystems[world.deleteSystems.size()-1] = [this, &world, systemIndex]() {
-            deleteSystem(world.systemsIndexed[systemIndex]);
+        world.systemsIndexed[systemIndex].deleteFunction = [this, &world, systemIndex]() {
+            deleteSystem(world.systemsIndexed[systemIndex].system);
         };
         index++;
     }
