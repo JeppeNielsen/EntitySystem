@@ -9,6 +9,7 @@
 #include "LogicTests.hpp"
 #include "GameWorld.hpp"
 #include <cstdlib>
+#include <sstream>
 
 using namespace Pocket;
 
@@ -528,5 +529,107 @@ void LogicTests::RunTests() {
         GameObject* go = world.CreateObject();
         return !go->GetComponent<Transform>();
     });
+    
+    
+    AddTest("Serialize Component", [] () {
+        struct Transform {
+            Transform():position(0) {}
+            int position;
+            TYPE_FIELDS_BEGIN
+            TYPE_FIELD(position)
+            TYPE_FIELDS_END
+        };
+        GameWorld world;
+        GameObject* go = world.CreateObject();
+        go->AddComponent<Transform>()->position = 5678;
+        std::stringstream s;
+        go->ToJson(s);
+        GameObject* clone = world.CreateObject(s);
+        //std::cout << s.str()<<std::endl;
+        return clone->GetComponent<Transform>()->position == 5678;
+    });
+    
+    AddTest("Serialize Component reference", [] () {
+        struct Transform {
+            Transform():position(0) {}
+            int position;
+            TYPE_FIELDS_BEGIN
+            TYPE_FIELD(position)
+            TYPE_FIELDS_END
+        };
+        GameWorld world;
+        
+        std::stringstream s;
+        
+        GameObject* go = world.CreateObject();
+        go->AddComponent<Transform>()->position = 1234;
+        
+        GameObject* child = world.CreateObject();
+        child->Parent() = go;
+        child->AddComponent<Transform>(go);
+        go->ToJson(s);
+        //std::cout << s.str() << std::endl;
+        GameObject* clone = world.CreateObject(s);
+        return clone->GetComponent<Transform>() == clone->Children()[0]->GetComponent<Transform>() &&
+            clone->GetComponent<Transform>()!=go->GetComponent<Transform>() &&
+            clone->GetComponent<Transform>()->position == go->GetComponent<Transform>()->position;
+    });
+
+    
+    AddTest("Serialize Component id reference", [] () {
+        struct Transform {
+            Transform():position(0) {}
+            int position;
+            TYPE_FIELDS_BEGIN
+            TYPE_FIELD(position)
+            TYPE_FIELDS_END
+        };
+        GameWorld world;
+        
+        GameObject* prefab = world.CreateObject();
+        prefab->AddComponent<Transform>()->position = 1234;
+        prefab->SetID("Prefab");
+        
+        std::stringstream s;
+        
+        GameObject* go = world.CreateObject();
+        go->AddComponent<Transform>(prefab);
+        go->ToJson(s);
+        
+        GameObject* clone = world.CreateObject(s);
+        return clone->GetComponent<Transform>() == prefab->GetComponent<Transform>();
+    });
+    
+    AddTest("Serialize Ignore component", [] () {
+        struct Transform {
+            Transform():position(0) {}
+            int position;
+            TYPE_FIELDS_BEGIN
+            TYPE_FIELD(position)
+            TYPE_FIELDS_END
+        };
+        
+        struct Velocity {
+            Velocity():velocity(0) {}
+            int velocity;
+            TYPE_FIELDS_BEGIN
+            TYPE_FIELD(velocity)
+            TYPE_FIELDS_END
+        };
+        
+        GameWorld world;
+        
+        std::stringstream s;
+        GameObject* go = world.CreateObject();
+        go->AddComponent<Transform>();
+        go->AddComponent<Velocity>();
+        go->ToJson(s, [](GameObject* object, int componentID) {
+            return componentID != GameIDHelper::GetComponentID<Velocity>();
+        });
+        //std::cout << s.str() << std::endl;
+        GameObject* clone = world.CreateObject(s);
+        return clone->GetComponent<Transform>() && !clone->GetComponent<Velocity>();
+    });
+    
 
 }
