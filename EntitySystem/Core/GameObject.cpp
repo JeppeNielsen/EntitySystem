@@ -286,14 +286,15 @@ void GameObject::WriteJson(minijson::object_writer& writer, SerializePredicate p
 }
 
 void GameObject::SerializeComponent(int componentID, minijson::array_writer& writer, bool isReference, GameObject* referenceObject ) {
-    ComponentInfo& componentInfo = world->componentInfos[componentID];
-    if (!componentInfo.getTypeInfo) return;
     minijson::object_writer componentWriter = writer.nested_object();
+    ComponentInfo& componentInfo = world->componentInfos[componentID];
     
     if (!isReference) {
         minijson::object_writer jsonComponent = componentWriter.nested_object(componentInfo.name.c_str());
-        auto type = componentInfo.getTypeInfo(this);
-        type.Serialize(jsonComponent);
+        if (componentInfo.getTypeInfo) {
+            auto type = componentInfo.getTypeInfo(this);
+            type.Serialize(jsonComponent);
+        }
         jsonComponent.close();
     } else {
         std::string referenceName = componentInfo.name + ":ref";
