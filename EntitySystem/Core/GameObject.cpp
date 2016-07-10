@@ -286,9 +286,9 @@ void GameObject::WriteJson(minijson::object_writer& writer, SerializePredicate p
 }
 
 void GameObject::SerializeComponent(int componentID, minijson::array_writer& writer, bool isReference, GameObject* referenceObject ) {
-    minijson::object_writer componentWriter = writer.nested_object();
     ComponentInfo& componentInfo = world->componentInfos[componentID];
     if (!componentInfo.getTypeInfo) return;
+    minijson::object_writer componentWriter = writer.nested_object();
     
     if (!isReference) {
         minijson::object_writer jsonComponent = componentWriter.nested_object(componentInfo.name.c_str());
